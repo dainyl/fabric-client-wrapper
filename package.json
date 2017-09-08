@@ -1,0 +1,60 @@
+{
+  "name": "@blockchain/fabric-client-wrapper",
+  "version": "0.1.2",
+  "description": "A wrapper around the Fabric Node SDK",
+  "main": "dist/index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "BABEL_ENV=production babel lib -d dist --source-maps inline",
+    "lint": "eslint \"**/*.js\"",
+    "format": "eslint --fix \"**/*.js\"",
+    "test": "mocha --compilers js:babel-core/register --require babel-polyfill lib/**/*.spec.js",
+    "e2e": "GOPATH=./test/fixtures/chaincode HFC_LOGGING={} mocha --compilers js:babel-core/register --require babel-polyfill test/e2e/**/*.js",
+    "precommit": "lint-staged",
+    "flow": "flow",
+    "build-doc": "documentation build lib/index.js -f md -o DOCUMENTATION.md",
+    "serve-doc": "documentation serve --watch lib/index.js"
+  },
+  "lint-staged": {
+    "**/*.js": "eslint"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "nano": "^6.4.0"
+  },
+  "peerDependencies": {
+    "fabric-ca-client": "~1.0.2",
+    "fabric-client": "~1.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-rewire": "^1.1.0",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^4.0.0",
+    "eslint-config-airbnb-base": "11.3.2",
+    "eslint-config-prettier": "1.6.0",
+    "eslint-plugin-flowtype": "^2.35.0",
+    "eslint-plugin-flowtype-errors": "^3.3.1",
+    "eslint-plugin-import": "2.7.0",
+    "eslint-plugin-lodash-fp": "^2.1.3",
+    "eslint-plugin-prettier": "2.2.0",
+    "fabric-ca-client": "~1.0.2",
+    "fabric-client": "~1.0.2",
+    "flow-bin": "^0.49.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.3",
+    "mocha": "^3.5.0",
+    "prettier": "^1.1.0",
+    "prettier-eslint": "^5.1.0"
+  },
+  "publishConfig": {
+    "registry": "https://na.artifactory.swg-devops.com/artifactory/api/npm/aur-npm-packages-local"
+  }
+}

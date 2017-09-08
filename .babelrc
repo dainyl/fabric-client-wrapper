@@ -1,0 +1,21 @@
+{
+    "presets": [
+        ["env", {
+            "targets": {
+                "node": 6
+            }
+        }],
+        "stage-3",
+        "flow"
+    ],
+    "env": {
+        "test": {
+            "plugins": ["rewire"]
+        }
+    },
+    "env": {
+        "production": {
+            "ignore": ["**/*.spec.js"]
+        }
+    }
+}

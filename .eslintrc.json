@@ -1,0 +1,68 @@
+{
+    "root": true,
+    "parser": "babel-eslint",
+    "extends": [
+        "airbnb-base",
+        "prettier",
+        "plugin:flowtype/recommended"
+    ],
+    "plugins": [
+        "import",
+        "flowtype",
+        "flowtype-errors",
+        "prettier"
+    ],
+    "rules": {
+        "no-console": "off",
+        "no-param-reassign": ["error", {
+            "props": false
+        }],
+        "no-underscore-dangle": ["warn", {
+            "allow": ["_id", "_rev", "_path", "_cryptoSuite", "_stateStore", "_keyStorePath", "_peers", "_userContext"]
+        }],
+        "no-unused-vars": ["warn", {
+            "vars": "local",
+            "args": "none"
+        }],
+        "no-unused-expressions": ["error", {
+            "allowTernary": true
+        }],
+        "no-plusplus": ["error", {
+            "allowForLoopAfterthoughts": true
+        }],
+        "no-duplicate-imports": 0,
+        "handle-callback-err": "error",
+        "import/no-unresolved": "off",
+        "import/extensions": "off",
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": ["lib/**/*.spec.js", "test/**/*.js"]
+            }
+        ],
+        "prettier/prettier": [
+            "error", {
+                "tabWidth": 4,
+                "semi": false,
+                "singleQuote": true,
+                "trailingComma": "es5",
+                "printWidth": 120
+            }
+        ],
+        "flowtype-errors/show-errors": 2
+    },
+    "env": {
+        "node": true
+    },
+    "overrides": [{
+        "files": ["lib/**/*.spec.js", "test/e2e/**/*.js"],
+        "rules": {
+            "func-names": 0,
+            "no-unused-expressions": 0,
+            "prefer-arrow-callback": 0
+        },
+        "env": {
+            "mocha": true
+        }
+    }]
+}
