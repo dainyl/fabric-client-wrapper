@@ -36,7 +36,7 @@ describe('first-network', function() {
         const invokeResponse = await transactor.invoke('move', ['a', 'b', '10'])
         expect(invokeResponse.transactionResponse).to.be.a('object')
         expect(invokeResponse.proposalResponse).to.be.a('object')
-        expect(invokeResponse.txId).to.be.a('object')
+        expect(invokeResponse.transactionId).to.be.a('string')
 
         const queryResponse = await transactor.query('query', ['a'])
         expect(queryResponse).to.be.a('object')
