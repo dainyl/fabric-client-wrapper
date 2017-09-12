@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
+import uuidv4 from 'uuid/v4'
 import path from 'path'
 import { expect } from 'chai'
 import networkBootstrap from '../helpers/networkBootstrap'
@@ -22,9 +22,13 @@ import fcw from '../../lib'
 describe('first-network', function() {
     let network
 
-    it('should setup a network and make a transaction', async function() {
+    before(async function() {
         this.timeout(60000)
         network = await networkBootstrap(path.join(__dirname, '../fixtures/network-configs/first-network.json'))
+    })
+
+    it('should make a transaction', async function() {
+        this.timeout(60000)
         const org1 = network.organizations.Org1MSP
         const transactor = fcw(
             org1.admins.greg,
@@ -43,6 +47,42 @@ describe('first-network', function() {
         expect(queryResponse.status).to.equal(200)
         expect(queryResponse.message).to.equal('OK')
         expect(parseFloat(queryResponse.payload)).to.be.a('number')
+    })
+
+    it('should try load the admin from the store', async function() {
+        await fcw.createUserClientFromStore('greg', {
+            organizationConfig: network.organizations.Org1MSP.config,
+        })
+        await fcw.createUserClientFromStore('greg', {
+            userClient: network.organizations.Org1MSP.admins.greg,
+        })
+    })
+
+    it('should register+enroll a new user and try load it from the store', async function() {
+        this.timeout(60000)
+        const fabricCAClient = fcw.createFabricCAClient('https://localhost:7054', network.organizations.Org1MSP.config)
+        const caAdmin = await fcw.createUserClientFromCAEnroll(
+            fabricCAClient,
+            {
+                username: 'admin',
+                secret: 'adminpw',
+            },
+            network.organizations.Org1MSP.config
+        )
+        caAdmin.setFabricCAClient(fabricCAClient)
+
+        const username = uuidv4()
+        await fcw.createUserClientFromCARegisterAndEnroll(caAdmin, username, 'org1.department1')
+
+        await fcw.createUserClientFromStore(username, {
+            userClient: network.organizations.Org1MSP.admins.greg,
+        })
+        await fcw.createUserClientFromStore(username, {
+            userClient: caAdmin,
+        })
+        await fcw.createUserClientFromStore(username, {
+            organizationConfig: network.organizations.Org1MSP.config,
+        })
     })
 
     after(function() {

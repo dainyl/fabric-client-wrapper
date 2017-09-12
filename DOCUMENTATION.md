@@ -56,8 +56,8 @@
     -   [getEventHub](#geteventhub)
 -   [FcwChannel](#fcwchannel)
 -   [createFabricCAClient](#createfabriccaclient)
--   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
 -   [OrganizationConfig](#organizationconfig)
+-   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
 -   [createCouchDBKeyValueStoreOrganizationConfig](#createcouchdbkeyvaluestoreorganizationconfig)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
 -   [createUserClientFromCAEnroll](#createuserclientfromcaenroll)
@@ -727,17 +727,6 @@ Creates a new FabricCaClient
 
 Returns **FabricCaClient** A new FabricCAClient instance
 
-## createFileKeyValueStoreOrganizationConfig
-
-Creates a new OrganizationConfig that's based on a file based key value store
-
-**Parameters**
-
--   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
--   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[OrganizationConfig](#organizationconfig)>** an object holding information about a organization
-
 ## OrganizationConfig
 
 A set of objects and configuration used by/representing the organization
@@ -749,6 +738,17 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 -   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
 -   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
 -   `store` **KeyValueStore** A key value store used to store user credentials
+
+## createFileKeyValueStoreOrganizationConfig
+
+Creates a new OrganizationConfig that's based on a file based key value store
+
+**Parameters**
+
+-   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
+-   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[OrganizationConfig](#organizationconfig)>** an object holding information about a organization
 
 ## createCouchDBKeyValueStoreOrganizationConfig
 
@@ -812,7 +812,7 @@ Creates a new UserClient from the key value store
 -   `username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username of the new user
 -   `opts` **any** An array containing the roles that the user has (optional, default `{}`)
     -   `opts.userClient` **[UserClient](#userclient)?** The UserClient to use to retrieve the user from the store
-    -   `opts.organizationConfig` **[OrganizationConfig](#organizationconfig)?** The OrganizationConfig to use, Note only used if UserClient is not specfied
+    -   `opts.organizationConfig` **[OrganizationConfig](#organizationconfig)?** The OrganizationConfig to use, Note required if UserClient is not specfied
     -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
