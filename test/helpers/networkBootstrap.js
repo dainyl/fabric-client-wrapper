@@ -107,7 +107,6 @@ function parseOrganizationsJSON(organizationsJSON) {
                         })
                     )
                 })
-                await Promise.all(organization.peers.map(peer => peer.waitEventHubConnected()))
             }
             return organization
         })

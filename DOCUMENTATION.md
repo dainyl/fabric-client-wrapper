@@ -53,7 +53,7 @@
     -   [getAdminMspIds](#getadminmspids)
 -   [EventHubPeer](#eventhubpeer)
     -   [waitEventHubConnected](#waiteventhubconnected)
-    -   [getEventHub](#geteventhub)
+    -   [getEventHubManager](#geteventhub)
 -   [FcwChannel](#fcwchannel)
 -   [createFabricCAClient](#createfabriccaclient)
 -   [OrganizationConfig](#organizationconfig)
@@ -206,7 +206,7 @@ Adds an upgradeChaincode operation to the builder
 
 **Parameters**
 
--   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** 
+-   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest**
 -   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to wait on until the chaincode is instantiated
 -   `waitTransactionTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `60000`)
 -   `chaincodeUpgradeRequest`  The chaincode upgrade request to be made
@@ -235,10 +235,10 @@ Class for issuing chaincode transactions
 
 **Parameters**
 
--   `userClient` **[UserClient](#userclient)** 
--   `channel` **Channel** 
--   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)** 
+-   `userClient` **[UserClient](#userclient)**
+-   `channel` **Channel**
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
+-   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)**
 
 ### constructor
 
@@ -326,25 +326,25 @@ Class representing a user and also a wrapper over FabricClient
 
 Gets the underlying FabricClient instance
 
-Returns **FabricClient** 
+Returns **FabricClient**
 
 ### getOrganizationConfig
 
 Gets the organization config for the user
 
-Returns **[OrganizationConfig](#organizationconfig)** 
+Returns **[OrganizationConfig](#organizationconfig)**
 
 ### getUsername
 
 Gets the username of the user
 
-Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
 
 ### getRoles
 
 Gets the roles of the user
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** 
+Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>**
 
 ### setRoles
 
@@ -358,7 +358,7 @@ Sets the roles of the user, also saves user to store
 
 Gets the FabricCAClient for the user
 
-Returns **FabricCAClient** 
+Returns **FabricCAClient**
 
 ### setFabricCAClient
 
@@ -372,7 +372,7 @@ Sets the FabricCAClient for the user
 
 gets the FabricCAClient for the user
 
-Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** 
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**
 
 ### setEnrollmentSecret
 
@@ -388,7 +388,7 @@ Creates an EventHubPeer object
 
 **Parameters**
 
--   `opts` **{requestUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), eventUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), connectionOpts: ConnectionOpts, role: ([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | void)}** 
+-   `opts` **{requestUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), eventUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), connectionOpts: ConnectionOpts, role: ([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | void)}**
 -   `requestUrl`  the peer url to make requests to
 -   `eventUrl`  the peer url to listen to for events
 -   `connectionOpts` **ReducedConnectionOpts** The options for connecting to the peers request url
@@ -647,7 +647,7 @@ An extended version of the fabric-client Peer which adds additional information
 
 Gets the role of the peer
 
-Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
 
 ### setRole
 
@@ -655,7 +655,7 @@ Sets the role of the peer
 
 **Parameters**
 
--   `role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
 
 ### getMspId
 
@@ -691,13 +691,13 @@ Waits until the EventHub has been connected
 
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum amount of time to wait for the EventHub to connect (optional, default `60000`)
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>**
 
-### getEventHub
+### getEventHubManager
 
 Gets the underlying EventHub instance
 
-Returns **EventHub** 
+Returns **EventHub**
 
 ## FcwChannel
 

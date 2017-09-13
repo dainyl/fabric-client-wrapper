@@ -84,12 +84,4 @@ describe('first-network', function() {
             organizationConfig: network.organizations.Org1MSP.config,
         })
     })
-
-    after(function() {
-        Object.values(network.organizations).forEach(org => {
-            org.peers.forEach(peer => {
-                peer.getEventHub().disconnect()
-            })
-        })
-    })
 })
