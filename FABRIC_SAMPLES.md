@@ -36,9 +36,7 @@ This generates the files like so:
 ├── configtx.yaml
 ```
 
-3. configure the `app.js` to use `config-fabric-samples.json`
-
-4. Bring up the network using the `docker-compose-e2e.yaml`
+3. Bring up the network using the `docker-compose-e2e.yaml`
 ```
 first-network$ docker-compose -f docker-compose-e2e.yaml up
 ```
