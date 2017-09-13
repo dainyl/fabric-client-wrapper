@@ -52,8 +52,16 @@
     -   [getMspId](#getmspid)
     -   [getAdminMspIds](#getadminmspids)
 -   [EventHubPeer](#eventhubpeer)
+    -   [getEventHubManager](#geteventhubmanager)
+-   [EventHubManager](#eventhubmanager)
+    -   [getEventHubManager](#geteventhubmanager-1)
     -   [waitEventHubConnected](#waiteventhubconnected)
-    -   [getEventHubManager](#geteventhub)
+    -   [registerBlockEvent](#registerblockevent)
+    -   [registerChaincodeEvent](#registerchaincodeevent-1)
+    -   [registerTxEvent](#registertxevent)
+    -   [unregisterBlockEvent](#unregisterblockevent)
+    -   [unregisterChaincodeEvent](#unregisterchaincodeevent)
+    -   [unregisterTxEvent](#unregistertxevent)
 -   [FcwChannel](#fcwchannel)
 -   [createFabricCAClient](#createfabriccaclient)
 -   [OrganizationConfig](#organizationconfig)
@@ -206,7 +214,7 @@ Adds an upgradeChaincode operation to the builder
 
 **Parameters**
 
--   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest**
+-   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** 
 -   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to wait on until the chaincode is instantiated
 -   `waitTransactionTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `60000`)
 -   `chaincodeUpgradeRequest`  The chaincode upgrade request to be made
@@ -235,10 +243,10 @@ Class for issuing chaincode transactions
 
 **Parameters**
 
--   `userClient` **[UserClient](#userclient)**
--   `channel` **Channel**
--   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
--   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)**
+-   `userClient` **[UserClient](#userclient)** 
+-   `channel` **Channel** 
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)** 
 
 ### constructor
 
@@ -326,25 +334,25 @@ Class representing a user and also a wrapper over FabricClient
 
 Gets the underlying FabricClient instance
 
-Returns **FabricClient**
+Returns **FabricClient** 
 
 ### getOrganizationConfig
 
 Gets the organization config for the user
 
-Returns **[OrganizationConfig](#organizationconfig)**
+Returns **[OrganizationConfig](#organizationconfig)** 
 
 ### getUsername
 
 Gets the username of the user
 
-Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
 ### getRoles
 
 Gets the roles of the user
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>**
+Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** 
 
 ### setRoles
 
@@ -358,7 +366,7 @@ Sets the roles of the user, also saves user to store
 
 Gets the FabricCAClient for the user
 
-Returns **FabricCAClient**
+Returns **FabricCAClient** 
 
 ### setFabricCAClient
 
@@ -372,7 +380,7 @@ Sets the FabricCAClient for the user
 
 gets the FabricCAClient for the user
 
-Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** 
 
 ### setEnrollmentSecret
 
@@ -388,7 +396,7 @@ Creates an EventHubPeer object
 
 **Parameters**
 
--   `opts` **{requestUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), eventUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), connectionOpts: ConnectionOpts, role: ([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | void)}**
+-   `opts` **{requestUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), eventUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), connectionOpts: ConnectionOpts, role: ([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | void)}** 
 -   `requestUrl`  the peer url to make requests to
 -   `eventUrl`  the peer url to listen to for events
 -   `connectionOpts` **ReducedConnectionOpts** The options for connecting to the peers request url
@@ -647,7 +655,7 @@ An extended version of the fabric-client Peer which adds additional information
 
 Gets the role of the peer
 
-Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
 ### setRole
 
@@ -655,7 +663,7 @@ Sets the role of the peer
 
 **Parameters**
 
--   `role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
+-   `role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
 ### getMspId
 
@@ -683,6 +691,26 @@ A Peer that contains an EventHub and other additional information
     -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
     -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The role of the Peer. Defaults to member
 
+### getEventHubManager
+
+Gets the underlying EventHubManager instance
+
+Returns **[EventHubManager](#eventhubmanager)** 
+
+## EventHubManager
+
+A class that manages an EventHub and when it is connected
+
+**Parameters**
+
+-   `eventHub` **EventHub** The EventHub to manage
+
+### getEventHubManager
+
+Gets the underlying EventHub
+
+Returns **EventHub** 
+
 ### waitEventHubConnected
 
 Waits until the EventHub has been connected
@@ -691,13 +719,67 @@ Waits until the EventHub has been connected
 
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum amount of time to wait for the EventHub to connect (optional, default `60000`)
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>**
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
 
-### getEventHubManager
+### registerBlockEvent
 
-Gets the underlying EventHub instance
+Connects Eventhub if it is not connected and registers a listener to receive all block events from all the channels that the target peer is part of. The listener's "onEvent" callback gets called on the arrival of every block. If the target peer is expected to participate in more than one channel, then care must be taken in the listener's implementation to differentiate blocks from different channels. See the example below on how to accomplish that. An error may be thrown by this call if no "onError" callback is provided and this EventHub has noticed that the connection has not been established. However since the connection establishment is running asynchronously, a register call could be made before this EventHub has been notified of the network issue. The best practice would be to provide an "onError" callback to be notified when this EventHub has an issue.
 
-Returns **EventHub**
+**Parameters**
+
+-   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function that takes a single parameter of a Block object
+-   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)>** 
+
+### registerChaincodeEvent
+
+Connects Eventhub if it is not connected and registers a listener to receive chaincode events. An error may be thrown by this call if no "onError" callback is provided and this EventHub has noticed that the connection has not been established. However since the connection establishment is running asynchronously, a register call could be made before this EventHub has been notified of the network issue. The best practice would be to provide an "onError" callback to be notified when this EventHub has an issue.
+
+**Parameters**
+
+-   `ccId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Id of the chaincode of interest
+-   `eventName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The exact name of the chaincode event (must match the name given to the target chaincode's call to stub.SetEvent(name, payload)), or a regex string to match more than one event by this chaincode
+-   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function for matched events. It gets passed a single parameter which is a ChaincodeEvent object
+-   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)>** 
+
+### registerTxEvent
+
+Connects Eventhub if it is not connected and register a callback function to receive a notification when the transaction by the given id has been committed into a block. An error may be thrown by this call if no "onError" callback is provided and this EventHub has noticed that the connection has not been established. However since the connection establishment is running asynchronously, a register call could be made before this EventHub has been notified of the network issue. The best practice would be to provide an "onError" callback to be notified when this EventHub has an issue.
+
+**Parameters**
+
+-   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Transaction id string
+-   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function that takes a parameter of type Transaction, and a string parameter which indicates if the transaction is valid (code = 'VALID'), or not (code string indicating the reason for invalid transaction)
+-   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** 
+
+### unregisterBlockEvent
+
+Unregister the block event listener using the block registration number that is returned by the call to the registerBlockEvent() method. If there are no more listeners, it disconnects the EventHub
+
+**Parameters**
+
+-   `handle` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** block registration number that was returned during registration.
+
+### unregisterChaincodeEvent
+
+Unregister the chaincode event listener represented by the listener_handle object returned by the registerChaincodeEvent() method. If there are no more listeners, it disconnects the EventHub
+
+**Parameters**
+
+-   `handle` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** The handle object returned from the call to registerChaincodeEvent.
+
+### unregisterTxEvent
+
+Unregister transaction event listener for the transaction id. If there are no more listeners, it disconnects the EventHub
+
+**Parameters**
+
+-   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID
 
 ## FcwChannel
 
