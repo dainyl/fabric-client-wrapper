@@ -38,15 +38,18 @@ describe('first-network', function() {
         )
 
         const invokeResponse = await transactor.invoke('move', ['a', 'b', '10'])
-        expect(invokeResponse.transactionResponse).to.be.a('object')
-        expect(invokeResponse.proposalResponse).to.be.a('object')
-        expect(invokeResponse.transactionId).to.be.a('string')
+        expect(invokeResponse.data).to.be.an('object')
+        expect(invokeResponse.data.transactionResponse).to.be.an('object')
+        expect(invokeResponse.data.proposalResponse).to.be.an('object')
+        expect(invokeResponse.data.transactionId).to.be.a('string')
+        expect(invokeResponse.wait).to.be.a('function')
 
         const queryResponse = await transactor.query('query', ['a'])
-        expect(queryResponse).to.be.a('object')
-        expect(queryResponse.status).to.equal(200)
-        expect(queryResponse.message).to.equal('OK')
-        expect(parseFloat(queryResponse.payload)).to.be.a('number')
+        expect(queryResponse).to.be.an('object')
+        expect(queryResponse.data).to.be.an('object')
+        expect(queryResponse.data.status).to.equal(200)
+        expect(queryResponse.data.message).to.equal('OK')
+        expect(parseFloat(queryResponse.data.payload)).to.be.a('number')
     })
 
     it('should try load the admin from the store', async function() {

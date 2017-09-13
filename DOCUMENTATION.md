@@ -30,6 +30,9 @@
     -   [getEnrollmentSecret](#getenrollmentsecret)
     -   [setEnrollmentSecret](#setenrollmentsecret)
     -   [createEventHubPeer](#createeventhubpeer)
+    -   [registerUserInCA](#registeruserinca)
+    -   [extractChannelConfig](#extractchannelconfig)
+    -   [signChannelConfig](#signchannelconfig)
     -   [bindChannel](#bindchannel)
     -   [createChannel](#createchannel)
     -   [updateChannel](#updatechannel)
@@ -43,9 +46,6 @@
     -   [sendTransaction](#sendtransaction-1)
     -   [queryChaincode](#querychaincode)
     -   [invokeChaincode](#invokechaincode)
-    -   [registerUserInCA](#registeruserinca)
-    -   [extractChannelConfig](#extractchannelconfig)
-    -   [signChannelConfig](#signchannelconfig)
 -   [FcwPeer](#fcwpeer)
     -   [getRole](#getrole)
     -   [setRole](#setrole)
@@ -407,199 +407,6 @@ Creates an EventHubPeer object
 
 Returns **[EventHubPeer](#eventhubpeer)** a new EventHubPeer instance
 
-### bindChannel
-
-Creates a channel instance bound to the user
-
-**Parameters**
-
--   `channel` **Channel** the channel object to use
-
-Returns **Channel** The new bound channel instance
-
-### createChannel
-
-Calls the orderer to start building the new channel. A channel typically has more than one participating organizations. To create a new channel, one of the participating organizations should call this method to submit the creation request to the orderer service. Once the channel is successfully created by the orderer, the next step is to have each organization's peer nodes join the channel, by sending the channel configuration to each of the peer nodes. The step is accomplished by calling the joinChannel() method.
-
-**Parameters**
-
--   `channel` **Channel** The channel object to users
--   `createChannelOpts` **any** The options for building a new channel on the network
-    -   `createChannelOpts.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
-    -   `createChannelOpts.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
-    -   `createChannelOpts.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
-    -   `createChannelOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for the channel to be created (optional, default `60000`)
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;GenesisBlock>** The genesis block for the channel
-
-### updateChannel
-
-Calls the orderer to update an existing channel. After the channel updates are successfully processed by the orderer, the orderer cuts a new block containing the new channel configuration and delivers it to all the participating peers in the channel.
-
-**Parameters**
-
--   `channel` **Channel** The channel object to users
--   `updateChannelOpts` **any** The options for updating a channel on the network
-    -   `updateChannelOpts.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
-    -   `updateChannelOpts.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
-    -   `updateChannelOpts.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
-    -   `updateChannelOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for the channel to be created (optional, default `60000`)
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;GenesisBlock>** The genesis block for the channel
-
-### joinChannel
-
-This method sends a join channel proposal to one or more endorsing peers.
-
-**Parameters**
-
--   `channel` **Channel** The channel object to use
--   `joinChannelOpts` **any** The options for joining the channel
-    -   `joinChannelOpts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects or Peer names that will be asked to join this channel.
-    -   `joinChannelOpts.genesisBlock` **GenesisBlock?** The genesis block for the channel
-    -   `joinChannelOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for a peers to join (optional, default `60000`)
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ProposalResponseObject>>** a promise containing an array of proposal response objects
-
-### getChannelGenesisBlock
-
-Gets the genesis block for the channel
-
-**Parameters**
-
--   `channel` **Channel** The channel object to use
-
-### initializeChannel
-
-Initializes a channel
-
-**Parameters**
-
--   `channel` **Channel** The channel object to use
-
-### installChaincode
-
-In fabric v1.0, a chaincode must be installed and instantiated before it can be called to process transactions. Chaincode installation is simply uploading the chaincode source and dependencies to the peers. This operation is "channel-agnostic" and is performed on a peer-by-peer basis. Only the peer organization's ADMIN identities are allowed to perform this operation.
-
-**Parameters**
-
--   `chaincodeInstallRequest` **ChaincodeInstallRequest** The chaincode install request to be made
-    -   `chaincodeInstallRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** An array of Peer objects that the chaincode will be installed on
-    -   `chaincodeInstallRequest.chaincodePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The path to the location of the source code of the chaincode. If the chaincode type is golang, then this path is the fully qualified package name, such as 'mycompany.com/myproject/mypackage/mychaincode'
-    -   `chaincodeInstallRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
-    -   `chaincodeInstallRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
-    -   `chaincodeInstallRequest.chaincodePackage` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Byte array of the archive content for the chaincode source. The archive must have a 'src' folder containing subfolders corresponding to the 'chaincodePath' field. For instance, if the chaincodePath is 'mycompany.com/myproject/mypackage/mychaincode', then the archive must contain a folder 'src/mycompany.com/myproject/mypackage/mychaincode', where the GO source code resides.
-    -   `chaincodeInstallRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
--   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings.
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ProposalResponseObject>** a promise containing a proposal response object
-
-### instantiateChaincode
-
-Sends a chaincode instantiate proposal to one or more endorsing peers. A chaincode must be instantiated on a channel-by-channel basis before it can be used. The chaincode must first be installed on the endorsing peers where this chaincode is expected to run
-
-**Parameters**
-
--   `channel` **Channel** The channel to use
--   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode instantiation request to be made
-    -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeInstantiateRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
-    -   `chaincodeInstantiateRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
-    -   `chaincodeInstantiateRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
-    -   `chaincodeInstantiateRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
-    -   `chaincodeInstantiateRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
-    -   `chaincodeInstantiateRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
-    -   `chaincodeInstantiateRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
-    -   `chaincodeInstantiateRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
--   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to wait on until the chaincode is instantiated
--   `waitTransactionPeersTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings. (optional, default `60000`)
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ProposalResponseObject>** a promise containing a proposal response object
-
-### upgradeChaincode
-
-Sends a chaincode upgrade proposal to one or more endorsing peers. A chaincode must be instantiated on a channel-by-channel basis before it can be used. The chaincode must first be installed on the endorsing peers where this chaincode is expected to run
-
-**Parameters**
-
--   `channel` **Channel** The channel to use
--   `chaincodeUpgradeRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode upgrade request to be made
-    -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeUpgradeRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
-    -   `chaincodeUpgradeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
-    -   `chaincodeUpgradeRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
-    -   `chaincodeUpgradeRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
-    -   `chaincodeUpgradeRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
-    -   `chaincodeUpgradeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
-    -   `chaincodeUpgradeRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
-    -   `chaincodeUpgradeRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
--   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to wait on until the chaincode is instantiated
--   `waitTransactionPeersTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings. (optional, default `60000`)
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ProposalResponseObject>** a promise containing a proposal response object
-
-### sendTransactionProposal
-
-Sends a Transaction Proposal to peers in a channel
-
-**Parameters**
-
--   `channel` **Channel** The channel object to use
--   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
--   `targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
--   `opts` **TransactionProposalOpts** The options for the transaction proposal
-    -   `opts.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
-    -   `opts.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
-    -   `opts.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{txId: TransactionID, transactionRequest: TransactionRequest}>** A promise containing the transaction ID and transaction request objects
-
-### sendTransaction
-
-Sends a Transaction to peers in a channel
-
-**Parameters**
-
--   `channel` **Channel** The channel object to use
--   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to wait on
--   `transactionRequest` **TransactionRequest** An object containing the proposal responses from the peers and the proposal
--   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum amount of time to wait for the transaction (optional, default `60000`)
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}>** A promise containing the response to the transaction
-
-### queryChaincode
-
-Sends a Transaction Proposal to peers in a channel and formats the response
-
-**Parameters**
-
--   `channel` **Channel** The channel object to use
--   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
--   `targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
--   `opts` **TransactionProposalOpts** The options for the transaction proposal
-    -   `opts.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
-    -   `opts.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
-    -   `opts.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}>** A formatted proposal response from a single peer
-
-### invokeChaincode
-
-Sends a Transaction Proposal to peers in a channel and formats the response
-
-**Parameters**
-
--   `channel` **Channel** The channel object to use
--   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
--   `targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
--   `opts` **TransactionProposalOpts** The options for the transaction proposal
-    -   `opts.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
-    -   `opts.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
-    -   `opts.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
--   `sendTransactionTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum amount of time to wait for the transaction
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}>** An object holding the transaction response, transaction proposal response, and transaction ID
-
 ### registerUserInCA
 
 This method registers a new user in the CA, requires an admin of the CA
@@ -634,6 +441,199 @@ Channel configuration updates can be sent to the orderers to be processed. The o
 -   `channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>** The channel configuration to sign
 
 Returns **ConfigSignature** The signature of the user on the config bytes
+
+### bindChannel
+
+Creates a channel instance bound to the user
+
+**Parameters**
+
+-   `channel` **Channel** the channel object to use
+
+Returns **Channel** The new bound channel instance
+
+### createChannel
+
+Calls the orderer to start building the new channel. A channel typically has more than one participating organizations. To create a new channel, one of the participating organizations should call this method to submit the creation request to the orderer service. Once the channel is successfully created by the orderer, the next step is to have each organization's peer nodes join the channel, by sending the channel configuration to each of the peer nodes. The step is accomplished by calling the joinChannel() method.
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to users
+-   `createChannelOpts` **any** The options for building a new channel on the network
+    -   `createChannelOpts.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
+    -   `createChannelOpts.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
+    -   `createChannelOpts.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
+    -   `createChannelOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for the channel to be created (optional, default `60000`)
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: function (): [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)>}>** Promise containing the status of the create channel order, note that the wait function returns the genesis block
+
+### updateChannel
+
+Calls the orderer to update an existing channel. After the channel updates are successfully processed by the orderer, the orderer cuts a new block containing the new channel configuration and delivers it to all the participating peers in the channel.
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to users
+-   `updateChannelOpts` **any** The options for updating a channel on the network
+    -   `updateChannelOpts.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
+    -   `updateChannelOpts.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
+    -   `updateChannelOpts.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
+    -   `updateChannelOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for the channel to be created (optional, default `60000`)
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: function (): [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;any>}>** Promise containing the status of the update channel order
+
+### joinChannel
+
+This method sends a join channel proposal to one or more endorsing peers.
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to use
+-   `joinChannelOpts` **any** The options for joining the channel
+    -   `joinChannelOpts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects or Peer names that will be asked to join this channel.
+    -   `joinChannelOpts.genesisBlock` **GenesisBlock?** The genesis block for the channel
+    -   `joinChannelOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for a peers to join (optional, default `60000`)
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)>, wait: function (): [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;any>}>** a promise containing an array of proposal response objects
+
+### getChannelGenesisBlock
+
+Gets the genesis block for the channel
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to use
+
+### initializeChannel
+
+Initializes a channel
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to use
+
+### installChaincode
+
+In fabric v1.0, a chaincode must be installed and instantiated before it can be called to process transactions. Chaincode installation is simply uploading the chaincode source and dependencies to the peers. This operation is "channel-agnostic" and is performed on a peer-by-peer basis. Only the peer organization's ADMIN identities are allowed to perform this operation.
+
+**Parameters**
+
+-   `chaincodeInstallRequest` **ChaincodeInstallRequest** The chaincode install request to be made
+    -   `chaincodeInstallRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** An array of Peer objects that the chaincode will be installed on
+    -   `chaincodeInstallRequest.chaincodePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The path to the location of the source code of the chaincode. If the chaincode type is golang, then this path is the fully qualified package name, such as 'mycompany.com/myproject/mypackage/mychaincode'
+    -   `chaincodeInstallRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
+    -   `chaincodeInstallRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
+    -   `chaincodeInstallRequest.chaincodePackage` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Byte array of the archive content for the chaincode source. The archive must have a 'src' folder containing subfolders corresponding to the 'chaincodePath' field. For instance, if the chaincodePath is 'mycompany.com/myproject/mypackage/mychaincode', then the archive must contain a folder 'src/mycompany.com/myproject/mypackage/mychaincode', where the GO source code resides.
+    -   `chaincodeInstallRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
+-   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings.
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)}>** a promise containing a proposal response object
+
+### instantiateChaincode
+
+Sends a chaincode instantiate proposal to one or more endorsing peers. A chaincode must be instantiated on a channel-by-channel basis before it can be used. The chaincode must first be installed on the endorsing peers where this chaincode is expected to run
+
+**Parameters**
+
+-   `channel` **Channel** The channel to use
+-   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode instantiation request to be made
+    -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
+    -   `chaincodeInstantiateRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
+    -   `chaincodeInstantiateRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
+    -   `chaincodeInstantiateRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
+    -   `chaincodeInstantiateRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
+    -   `chaincodeInstantiateRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+    -   `chaincodeInstantiateRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
+    -   `chaincodeInstantiateRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
+    -   `chaincodeInstantiateRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
+-   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to wait on until the chaincode is instantiated
+-   `waitTransactionPeersTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings. (optional, default `60000`)
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
+
+### upgradeChaincode
+
+Sends a chaincode upgrade proposal to one or more endorsing peers. A chaincode must be instantiated on a channel-by-channel basis before it can be used. The chaincode must first be installed on the endorsing peers where this chaincode is expected to run
+
+**Parameters**
+
+-   `channel` **Channel** The channel to use
+-   `chaincodeUpgradeRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode upgrade request to be made
+    -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
+    -   `chaincodeUpgradeRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
+    -   `chaincodeUpgradeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
+    -   `chaincodeUpgradeRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
+    -   `chaincodeUpgradeRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
+    -   `chaincodeUpgradeRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+    -   `chaincodeUpgradeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
+    -   `chaincodeUpgradeRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
+    -   `chaincodeUpgradeRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
+-   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to wait on until the chaincode is instantiated
+-   `waitTransactionPeersTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings. (optional, default `60000`)
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
+
+### sendTransactionProposal
+
+Sends a Transaction Proposal to peers in a channel
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to use
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
+-   `targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+-   `opts` **TransactionProposalOpts** The options for the transaction proposal
+    -   `opts.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
+    -   `opts.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
+    -   `opts.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {txId: TransactionID, transactionRequest: TransactionRequest}}>** A promise containing the transaction ID and transaction request objects
+
+### sendTransaction
+
+Sends a Transaction to peers in a channel
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to use
+-   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to wait on
+-   `transactionRequest` **TransactionRequest** An object containing the proposal responses from the peers and the proposal
+-   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum amount of time to wait for the transaction (optional, default `60000`)
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** A promise containing the response to the transaction
+
+### queryChaincode
+
+Sends a Transaction Proposal to peers in a channel and formats the response
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to use
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
+-   `targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+-   `opts` **TransactionProposalOpts** The options for the transaction proposal
+    -   `opts.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
+    -   `opts.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
+    -   `opts.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}}>** A formatted proposal response from a single peer
+
+### invokeChaincode
+
+Sends a Transaction Proposal to peers in a channel and formats the response
+
+**Parameters**
+
+-   `channel` **Channel** The channel object to use
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
+-   `targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+-   `opts` **TransactionProposalOpts** The options for the transaction proposal
+    -   `opts.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
+    -   `opts.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
+    -   `opts.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+-   `sendTransactionTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum amount of time to wait for the transaction
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** An object holding the transaction response, transaction proposal response, and transaction ID
 
 ## FcwPeer
 
