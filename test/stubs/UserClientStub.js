@@ -18,6 +18,13 @@
 import { MEMBER_ROLE } from '../../lib/shared'
 import ChannelStub from './ChannelStub'
 
+function createResponse() {
+    return Promise.resolve({
+        data: {},
+        wait: () => Promise.resolve({}),
+    })
+}
+
 export default class UserClientStub {
     constructor(client, organizationConfig, roles = [MEMBER_ROLE]) {
         this.client = client
@@ -30,18 +37,26 @@ export default class UserClientStub {
     }
 
     createChannel() {
-        return Promise.resolve()
+        return createResponse()
     }
 
     joinChannel() {
-        return Promise.resolve()
+        return createResponse()
+    }
+
+    updateChannel() {
+        return createResponse()
     }
 
     installChaincode() {
-        return Promise.resolve()
+        return createResponse()
     }
 
     instantiateChaincode() {
-        return Promise.resolve()
+        return createResponse()
+    }
+
+    upgradeChaincode() {
+        return createResponse()
     }
 }
