@@ -124,9 +124,8 @@ Class for building and running channel setup requests
 **Parameters**
 
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user setting up the channel
--   `channelOrChannelName` **(Channel | [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String))** Either the channel object you wish to use or the name of the channel
--   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[FcwPeer](#fcwpeer)>** The peers you wish to use for the channel, only required when supplying the name of the channel
--   `orderer` **Orderer** The orderer you wish to use for the channel, only required when supplying the name of the channel
+-   `channelOrChannelOpts` **(Channel | FcwChannelOpts)** Either the channel object you wish to use or the arguments to create a new channel
+-   `silenceAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
 
 ### withCreateChannel
 
@@ -139,6 +138,7 @@ Adds a createChannel operation to the builder
     -   `createChannelOpts.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
     -   `createChannelOpts.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
     -   `createChannelOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for the channel to be created (optional, default `60000`)
+-   `silenceAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option to swallow errors about channel being already created. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -152,6 +152,7 @@ Adds a joinChannel operation to the builder
     -   `joinChannelOpts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;(Peer | [FcwPeer](#fcwpeer) \| [EventHubPeer](#eventhubpeer))>?** An array of Peer objects or Peer names that will be asked to join this channel.
     -   `joinChannelOpts.genesisBlock` **GenesisBlock?** The genesis block for the channel
     -   `joinChannelOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for a peers to join (optional, default `60000`)
+-   `silenceAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option to swallow errors about channel being already joined. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -183,6 +184,7 @@ Adds an installChaincode operation to the builder
     -   `chaincodeInstallRequest.chaincodePackage` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Byte array of the archive content for the chaincode source. The archive must have a 'src' folder containing subfolders corresponding to the 'chaincodePath' field. For instance, if the chaincodePath is 'mycompany.com/myproject/mypackage/mychaincode', then the archive must contain a folder 'src/mycompany.com/myproject/mypackage/mychaincode', where the GO source code resides.
     -   `chaincodeInstallRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The max amount of time the chaincode installing can take
+-   `silenceAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option to swallow errors about chaincode being already installed. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -204,7 +206,7 @@ Adds an instantiateChaincode operation to the builder
     -   `chaincodeInstantiateRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to poll to check if the chaincode has been instantiated
 -   `waitTransactionTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The max amount of time to wait for peers to be instantiated (optional, default `60000`)
--   `waitTransactionPeersTimeout`  A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings. (optional, default `60000`)
+-   `silenceAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option to swallow errors about chaincode being already instantiated. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -214,10 +216,7 @@ Adds an upgradeChaincode operation to the builder
 
 **Parameters**
 
--   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** 
--   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to wait on until the chaincode is instantiated
--   `waitTransactionTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `60000`)
--   `chaincodeUpgradeRequest`  The chaincode upgrade request to be made
+-   `chaincodeUpgradeRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode upgrade request to be made
     -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
     -   `chaincodeUpgradeRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeUpgradeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
@@ -227,7 +226,8 @@ Adds an upgradeChaincode operation to the builder
     -   `chaincodeUpgradeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
     -   `chaincodeUpgradeRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
     -   `chaincodeUpgradeRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
--   `waitTransactionPeersTimeout`  A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings. (optional, default `60000`)
+-   `waitTransactionPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to wait on until the chaincode is instantiated
+-   `waitTransactionTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings. (optional, default `60000`)
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 

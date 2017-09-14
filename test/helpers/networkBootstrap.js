@@ -156,58 +156,64 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
         orderer,
     })
 
-    const createChannelPromise = fcw
-        .setupChannel(mainAdmin, channel)
-        .withCreateChannel(createChannelOpts)
-        .run()
+    let alreadyCreated = true
+    try {
+        await mainAdmin.initializeChannel(channel)
+    } catch (error) {
+        alreadyCreated = false
+    }
 
-    const chaincodeInstallPromise = Promise.all(
-        channelOrgs.map(org => {
-            const orgAdmin: any = Object.values(org.admins)[0]
-            return fcw
-                .setupChannel(orgAdmin, channel)
-                .withInstallChaincode({
-                    chaincodeId: chaincodeJSON.id,
-                    chaincodePath: chaincodeJSON.path,
-                    chaincodeVersion: chaincodeJSON.version,
-                })
-                .run()
-        })
-    )
+    if (!alreadyCreated) {
+        const createChannelPromise = fcw
+            .setupChannel(mainAdmin, channel)
+            .withCreateChannel(createChannelOpts)
+            .run()
 
-    await Promise.all([createChannelPromise, chaincodeInstallPromise])
+        const chaincodeInstallPromise = Promise.all(
+            channelOrgs.map(org => {
+                const orgAdmin: any = Object.values(org.admins)[0]
+                return fcw
+                    .setupChannel(orgAdmin, channel)
+                    .withInstallChaincode({
+                        chaincodeId: chaincodeJSON.id,
+                        chaincodePath: chaincodeJSON.path,
+                        chaincodeVersion: chaincodeJSON.version,
+                    })
+                    .run()
+            })
+        )
 
-    await Promise.all(
-        channelOrgs.map(org => {
-            const orgAdmin: any = Object.values(org.admins)[0]
-            return fcw
-                .setupChannel(orgAdmin, channel)
-                .withJoinChannel()
-                .run()
-        })
-    )
+        await Promise.all([createChannelPromise, chaincodeInstallPromise])
 
-    const instantiationPolicy = chaincodeJSON['instantiation-policy']
-    const endorsementPolicy = chaincodeJSON['endorsement-policy']
+        await Promise.all(
+            channelOrgs.map(org => {
+                const orgAdmin: any = Object.values(org.admins)[0]
+                return fcw
+                    .setupChannel(orgAdmin, channel)
+                    .withJoinChannel()
+                    .run()
+            })
+        )
 
-    await fcw
-        .setupChannel(mainAdmin, channel)
-        .withInstantiateChaincode({
-            chaincodeId: chaincodeJSON.id,
-            chaincodeVersion: chaincodeJSON.version,
-            fcn: chaincodeJSON.instantiate.fcn,
-            args: chaincodeJSON.instantiate.args,
-            targetsPolicy: instantiationPolicy,
-            'endorsement-policy': endorsementPolicy,
-        })
-        .run()
+        await fcw
+            .setupChannel(mainAdmin, channel)
+            .withInstantiateChaincode({
+                chaincodeId: chaincodeJSON.id,
+                chaincodeVersion: chaincodeJSON.version,
+                fcn: chaincodeJSON.instantiate.fcn,
+                args: chaincodeJSON.instantiate.args,
+                targetsPolicy: chaincodeJSON['instantiation-policy'],
+                'endorsement-policy': chaincodeJSON['endorsement-policy'],
+            })
+            .run()
+    }
 
     return {
         channel,
         chaincode: {
             id: chaincodeJSON.id,
-            instantiationPolicy,
-            endorsementPolicy,
+            instantiationPolicy: chaincodeJSON['instantiation-policy'],
+            endorsementPolicy: chaincodeJSON['endorsement-policy'],
         },
     }
 }
