@@ -64,8 +64,10 @@ describe('first-network', function() {
         )
         let unregisterListener
         transactor
-            .registerChaincodeEventListener('test', val => {
-                expect(val).to.equal('hello')
+            .registerChaincodeEventListener('test', event => {
+                expect(event).to.be.an('object')
+                expect(event.transactionId).to.be.a('string')
+                expect(event.payload).to.equal('hello')
                 unregisterListener()
                 done()
             })
