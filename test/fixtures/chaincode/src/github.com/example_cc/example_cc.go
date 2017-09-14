@@ -85,6 +85,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		// Deletes an entity from its state
 		return t.move(stub, args)
 	}
+	if function == "event" {
+		return t.event(stub, args)
+	}
 
 	logger.Errorf("Unknown action, check the first argument, must be one of 'delete', 'query', or 'move'. But got: %v", args[0])
 	return shim.Error(fmt.Sprintf("Unknown action, check the first argument, must be one of 'delete', 'query', or 'move'. But got: %v", args[0]))
@@ -191,6 +194,12 @@ func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string)
 	jsonResp := "{\"Name\":\"" + A + "\",\"Amount\":\"" + string(Avalbytes) + "\"}"
 	logger.Infof("Query Response:%s\n", jsonResp)
 	return shim.Success(Avalbytes)
+}
+
+// Emits a chaincode event
+func (t *SimpleChaincode) event(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	stub.SetEvent("test", []byte("hello"))
+	return shim.Success(nil)
 }
 
 func main() {

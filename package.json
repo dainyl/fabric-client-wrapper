@@ -1,12 +1,13 @@
 {
   "name": "@blockchain/fabric-client-wrapper",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "A wrapper around the Fabric Node SDK",
   "main": "dist/index.js",
   "author": "",
   "license": "ISC",
   "scripts": {
     "build": "BABEL_ENV=production babel lib -d dist --source-maps inline",
+    "build-publish": "rm -rf ./dist && npm run build && npm publish",
     "lint": "eslint \"**/*.js\"",
     "format": "eslint --fix \"**/*.js\"",
     "test": "mocha --compilers js:babel-core/register --require babel-polyfill lib/**/*.spec.js",

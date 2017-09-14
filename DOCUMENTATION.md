@@ -18,7 +18,7 @@
     -   [invoke](#invoke)
     -   [sendTransactionProposal](#sendtransactionproposal)
     -   [sendTransaction](#sendtransaction)
-    -   [registerChaincodeEvent](#registerchaincodeevent)
+    -   [registerChaincodeEventListener](#registerchaincodeeventlistener)
 -   [UserClient](#userclient)
     -   [getClient](#getclient)
     -   [getOrganizationConfig](#getorganizationconfig)
@@ -57,12 +57,17 @@
     -   [getEventHubManager](#geteventhubmanager-1)
     -   [waitEventHubConnected](#waiteventhubconnected)
     -   [registerBlockEvent](#registerblockevent)
-    -   [registerChaincodeEvent](#registerchaincodeevent-1)
+    -   [registerChaincodeEvent](#registerchaincodeevent)
     -   [registerTxEvent](#registertxevent)
     -   [unregisterBlockEvent](#unregisterblockevent)
     -   [unregisterChaincodeEvent](#unregisterchaincodeevent)
     -   [unregisterTxEvent](#unregistertxevent)
 -   [FcwChannel](#fcwchannel)
+    -   [getTransactionIdTimeMap](#gettransactionidtimemap)
+-   [TransactionIdTimeMap](#transactionidtimemap)
+    -   [has](#has)
+    -   [set](#set)
+    -   [clear](#clear)
 -   [createFabricCAClient](#createfabriccaclient)
 -   [OrganizationConfig](#organizationconfig)
 -   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
@@ -308,9 +313,9 @@ Performs a chaincode transaction
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;TransactionResponse>** A promise containing an object that contains information about the transaction
 
-### registerChaincodeEvent
+### registerChaincodeEventListener
 
-Registers a chaincode event listener
+Registers a chaincode event listener on the channel. Note this is channel specific!
 
 **Parameters**
 
@@ -785,7 +790,7 @@ Unregister transaction event listener for the transaction id. If there are no mo
 
 **Extends Channel**
 
-A fabric-client Channel with a more flexible constructor
+A fabric-client Channel with a more flexible constructor that keeps track of transactionIds
 
 **Parameters**
 
@@ -794,6 +799,43 @@ A fabric-client Channel with a more flexible constructor
     -   `opts.client` **(FabricClient | [UserClient](#userclient))?** The client context to use for operations
     -   `opts.peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of peers to use for channel operations (optional, default `[]`)
     -   `opts.orderer` **Orderer** The orderer to use for the channel
+    -   `opts.transactionTimeMapLifetime`  
+
+### getTransactionIdTimeMap
+
+Gets the TransactionIdTimeMap instance
+
+Returns **[TransactionIdTimeMap](#transactionidtimemap)** 
+
+## TransactionIdTimeMap
+
+A Class that holds a map of transaction IDs and removes them after a period of time
+
+**Parameters**
+
+-   `lifetime` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** the amount of time in ms to hold onto a transaction ID (optional, default `300000`)
+
+### has
+
+Checks whether the Map has a transaction ID
+
+**Parameters**
+
+-   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to check
+
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+
+### set
+
+Sets the transaction ID in the map. If the transaction ID has been previously set it will reset the timer
+
+**Parameters**
+
+-   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to set
+
+### clear
+
+Clears all timers and transaction IDs
 
 ## createFabricCAClient
 

@@ -43,6 +43,7 @@ describe('first-network', function() {
         expect(invokeResponse.data.proposalResponse).to.be.an('object')
         expect(invokeResponse.data.transactionId).to.be.a('string')
         expect(invokeResponse.wait).to.be.a('function')
+        await invokeResponse.wait()
 
         const queryResponse = await transactor.query('query', ['a'])
         expect(queryResponse).to.be.an('object')
@@ -50,6 +51,28 @@ describe('first-network', function() {
         expect(queryResponse.data.status).to.equal(200)
         expect(queryResponse.data.message).to.equal('OK')
         expect(parseFloat(queryResponse.data.payload)).to.be.a('number')
+    })
+
+    it('should listen to an event', function(done) {
+        this.timeout(60000)
+        const org1 = network.organizations.Org1MSP
+        const transactor = fcw(
+            org1.admins.greg,
+            network.channel,
+            network.chaincode.id,
+            network.chaincode.endorsementPolicy
+        )
+        let unregisterListener
+        transactor
+            .registerChaincodeEventListener('test', val => {
+                expect(val).to.equal('hello')
+                unregisterListener()
+                done()
+            })
+            .then(_unregisterListener => {
+                unregisterListener = _unregisterListener
+                transactor.invoke('event')
+            })
     })
 
     it('should try load the admin from the store', async function() {
