@@ -22,6 +22,7 @@ import path from 'path'
 import Orderer from 'fabric-client/lib/Orderer'
 import fcw, {
     FcwChannel,
+    MultiUserClient,
     createUserClientFromKeys,
     createFileKeyValueStoreOrganizationConfig,
     ADMIN_ROLE,
@@ -145,8 +146,7 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
     const { chaincode: chaincodeJSON, orderer: ordererId, peers: peerIds } = channelJSON
     const orderer = parseOrganizationsJSONForOrderer(organizationsJSON, ordererId)
     const channelOrgs = parseOrganizationsContainingPeers(organizations, peerIds)
-    const mainOrg = channelOrgs[0]
-    const mainAdmin: any = Object.values(mainOrg.admins)[0]
+    const channelAdmins = channelOrgs.map(org => Object.values(org.admins)[0])
     const createChannelOpts = createCreateChannelOpts(organizations, fs.readFileSync(channelJSON.tx))
     const channelPeerFilterLambda = peer => peerIds.some(peerId => peer.getUrl().includes(peerId))
     const peers = _.flatten(organizations.map(organization => organization.peers)).filter(channelPeerFilterLambda)
@@ -158,45 +158,21 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
 
     let alreadyCreated = true
     try {
-        await mainAdmin.initializeChannel(channel)
+        await channelAdmins[0].initializeChannel(channel)
     } catch (error) {
         alreadyCreated = false
     }
 
     if (!alreadyCreated) {
-        const createChannelPromise = fcw
-            .setupChannel(mainAdmin, channel)
-            .withCreateChannel(createChannelOpts)
-            .run()
-
-        const chaincodeInstallPromise = Promise.all(
-            channelOrgs.map(org => {
-                const orgAdmin: any = Object.values(org.admins)[0]
-                return fcw
-                    .setupChannel(orgAdmin, channel)
-                    .withInstallChaincode({
-                        chaincodeId: chaincodeJSON.id,
-                        chaincodePath: chaincodeJSON.path,
-                        chaincodeVersion: chaincodeJSON.version,
-                    })
-                    .run()
-            })
-        )
-
-        await Promise.all([createChannelPromise, chaincodeInstallPromise])
-
-        await Promise.all(
-            channelOrgs.map(org => {
-                const orgAdmin: any = Object.values(org.admins)[0]
-                return fcw
-                    .setupChannel(orgAdmin, channel)
-                    .withJoinChannel()
-                    .run()
-            })
-        )
-
         await fcw
-            .setupChannel(mainAdmin, channel)
+            .setupChannel(new MultiUserClient(channelAdmins), channel)
+            .withCreateChannel(createChannelOpts)
+            .withInstallChaincode({
+                chaincodeId: chaincodeJSON.id,
+                chaincodePath: chaincodeJSON.path,
+                chaincodeVersion: chaincodeJSON.version,
+            })
+            .withJoinChannel()
             .withInstantiateChaincode({
                 chaincodeId: chaincodeJSON.id,
                 chaincodeVersion: chaincodeJSON.version,
