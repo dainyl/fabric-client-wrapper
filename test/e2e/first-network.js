@@ -97,7 +97,6 @@ describe('first-network', function() {
             },
             network.organizations.Org1MSP.config
         )
-        caAdmin.setFabricCAClient(fabricCAClient)
 
         const username = uuidv4()
         await fcw.createUserClientFromCARegisterAndEnroll(caAdmin, username, 'org1.department1')
