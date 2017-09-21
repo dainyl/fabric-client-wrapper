@@ -8,8 +8,8 @@ This has been tested on the following versions:
 
 | software| version  |
 |---------|----------|
-| node |  v6.11.3  |
-| npm | 3.10.10 |
+| node |  v6.11.3, v8.4.0  |
+| npm | 3.10.10, v5.3.0 |
 | fabric-client | 1.0.2 |
 | fabric-ca-client | 1.0.2 |
 
@@ -150,7 +150,7 @@ import Orderer from 'fabric-client/lib/Orderer'
 async function init() {
     const gregClient = ...
     const peers = [
-      gretClient.createEventHubPeer(
+      gregClient.createEventHubPeer(
           'grpcs://localhost:7051',
           'grpcs://localhost:7053',
           {
@@ -164,7 +164,7 @@ async function init() {
     const orderer = new Orderer(
         'grpcs://localhost:7050',
         {
-            pem: pem: fs.readFileSync(path.join(__dirname, './orderer.pem')).toString(),
+            pem: fs.readFileSync(path.join(__dirname, './orderer.pem')).toString(),
             ssl-target-name-override: 'orderer.example.com'
         }
     )
@@ -178,7 +178,7 @@ async function init() {
     })
     await channel.initialize()
     // OR
-    // const channel = await fcw.setupChannel(gregClient, channelName, peers, orderer).run()
+    // const channel = await fcw.setupChannel(gregClient, { channelName, peers, orderer }).run()
 }
 
 init()
@@ -224,8 +224,8 @@ async function init() {
     const gregClient = ...
     const channel = ...
     const transactor = fcw(gregClient, channel, 'awesomecc')
-    const invokeResult = await transactor.invoke('move', ['a', 'b', '10'])
-    const queryResult = await transactor.query('query', ['a'])
+    const invokeResponse = await transactor.invoke('move', ['a', 'b', '10'])
+    const queryResponse = await transactor.query('query', ['a'])
 }
 
 init()
