@@ -1,74 +1,18 @@
 # Hyperledger Fabric Client Wrapper
 
-This is a wrapper over the Hyperledger Fabric Node SDK, that attempts to cover up some of the painpoints.
+This is a wrapper over the [Hyperledger Fabric Node SDK](https://github.com/hyperledger/fabric-sdk-node/), that attempts to cover up some of the pain points.
 
-## Software Versions
+## Node Versions
 
-This has been tested on the following versions:
-
-| software| version  |
-|---------|----------|
-| node |  v6.11.3, v8.4.0  |
-| npm | 3.10.10, v5.3.0 |
-| fabric-client | 1.0.2 |
-| fabric-ca-client | 1.0.2 |
-
+This has been tested on the following versions of Node: 6.11.3, 8.4.0
 
 ## Trying out `fabric-client-wrapper` with `fabric-samples`
+[See Here](./E2E_TESTS.md)
 
-In the `test/fixtures/network-configs/` folder we have sample `config` files.
-```
-test/fixtures/network-configs/
-└── first-network.json
-```
+## Fabric Client Wrapper Documentation
+[See here](./DOCUMENTATION.md)
 
-The `first-network.json` file works with the setup in
-[fabric-samples](https://github.com/hyperledger/fabric-samples). To try it out
-follow these instructions:
-
-Clone the `fabric-samples` directory in the base level of the `harness`
-   directory.
-```
-fabric-client-wrapper$ git clone https://github.com/hyperledger/fabric-samples
-```
-
-Go to the `first-network` example. Build it following the instructions in
-`fabric-samples`; for more details on [fabric-samples](https://github.com/hyperledger/fabric-samples), [see here](./FABRIC_SAMPLES.md).
-Bringup the network in this example via `docker-compose`, for
-instance
-```
-first-network$ docker-compose -f docker-compose-e2e.yaml up
-```
-
-Install the `npm packages` to setup `hfbench-harness-nodejs`.
-```
-fabric-client-wrapper$ npm install
-```
-
-Run the `hfbench-harness-nodejs` e2e script to configure the network.
-```
-fabric-client-wrapper$ npm run e2e
-```
-
-
-## Other NPM Commands
-
-These are a few functions that are available (or planned).
-All instructions are to be executed in the `client` directory (i.e. in the same
-directory as the `package.json` file)
-
-To run unit tests
-```
-fabric-client-wrapper$ npm run test
-```
-
-To serve a documentation website via `documentation.js`
-```
-fabric-client-wrapper$ npm i -g documentation.js
-fabric-client-wrapper$ npm run serve-doc
-```
-
-## Usage
+## Examples
 
 ### Create a configuration object for an organization
 ```JavaScript
@@ -230,7 +174,3 @@ async function init() {
 
 init()
 ```
-
-## Fabric Client Wrapper Documentation
-
-[See here](./DOCUMENTATION.md)

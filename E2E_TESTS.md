@@ -1,11 +1,18 @@
-## Fabric-Samples
+# E2E tests
 
-There now exists a `fabric` repository that contains examples. We can use a
-specific example `first-network` like so:
-
-1. Download the `fabric-samples` into the `hfbench` top directory:
+## Fabric-Samples Setup
+In the `test/fixtures/network-configs/` folder we have sample `config` files.
 ```
-hfbench$ git clone https://github.com/hyperledger/fabric-samples
+test/fixtures/network-configs/
+└── first-network.json
+```
+
+The `first-network.json` file works with the setup in
+[fabric-samples](https://github.com/hyperledger/fabric-samples). To setup, follow the instructions below
+
+1. Download the `fabric-samples` into the `fabric-client-wrapper` directory:
+```
+fabric-client-wrapper$ git clone https://github.com/hyperledger/fabric-samples
 ```
 
 This builds a directory structure like this; each directory is an example.
@@ -39,4 +46,12 @@ This generates the files like so:
 3. Bring up the network using the `docker-compose-e2e.yaml`
 ```
 first-network$ docker-compose -f docker-compose-e2e.yaml up
+```
+
+## Running Tests
+Back in the root fabric-client-wrapper directory you should now be able to run the e2e tests
+
+```
+fabric-client-wrapper$ npm install
+fabric-client-wrapper$ npm run e2e
 ```
