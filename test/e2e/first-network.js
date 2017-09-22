@@ -62,19 +62,16 @@ describe('first-network', function() {
             network.chaincode.id,
             network.chaincode.endorsementPolicy
         )
-        let unregisterListener
-        transactor
-            .registerChaincodeEventListener('test', event => {
-                expect(event).to.be.an('object')
-                expect(event.transactionId).to.be.a('string')
-                expect(event.payload).to.equal('hello')
-                unregisterListener()
-                done()
-            })
-            .then(_unregisterListener => {
-                unregisterListener = _unregisterListener
-                transactor.invoke('event')
-            })
+        const { eventHubManager, handle } = transactor.registerChaincodeEventListener('test', event => {
+            expect(event).to.be.an('object')
+            expect(event.transactionId).to.be.a('string')
+            expect(event.payload).to.equal('hello')
+            eventHubManager.unregisterChaincodeEvent(handle)
+            done()
+        })
+        eventHubManager.waitEventHubConnected().then(() => {
+            transactor.invoke('event')
+        })
     })
 
     it('should try load the admin from the store', async function() {

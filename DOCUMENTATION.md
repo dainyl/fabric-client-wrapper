@@ -87,8 +87,8 @@
     -   [set](#set)
     -   [clear](#clear)
 -   [createFabricCAClient](#createfabriccaclient)
--   [OrganizationConfig](#organizationconfig)
 -   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
+-   [OrganizationConfig](#organizationconfig)
 -   [createCouchDBKeyValueStoreOrganizationConfig](#createcouchdbkeyvaluestoreorganizationconfig)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
 -   [createUserClientFromCAEnroll](#createuserclientfromcaenroll)
@@ -342,7 +342,7 @@ Registers a chaincode event listener on the channel. Note this is channel specif
 -   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function for matched events. It gets passed a single parameter which is a ChaincodeEvent object
 -   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
 
-Returns **UnregisterChaincodeEventFunction** A promise containing a function that can be called to unregister the event listener
+Returns **{eventHubManager: [EventHubManager](#eventhubmanager), handle: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)}** eventHubManager and handle
 
 ## UserClient
 
@@ -981,7 +981,7 @@ Connects Eventhub if it is not connected and registers a listener to receive all
 -   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function that takes a single parameter of a Block object
 -   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)>** 
+Returns **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
 ### registerChaincodeEvent
 
@@ -994,7 +994,7 @@ Connects Eventhub if it is not connected and registers a listener to receive cha
 -   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function for matched events. It gets passed a single parameter which is a ChaincodeEvent object
 -   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)>** 
+Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 
 ### registerTxEvent
 
@@ -1006,7 +1006,7 @@ Connects Eventhub if it is not connected and register a callback function to rec
 -   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function that takes a parameter of type Transaction, and a string parameter which indicates if the transaction is valid (code = 'VALID'), or not (code string indicating the reason for invalid transaction)
 -   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** 
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
 ### unregisterBlockEvent
 
@@ -1097,6 +1097,17 @@ Creates a new FabricCaClient
 
 Returns **FabricCaClient** A new FabricCAClient instance
 
+## createFileKeyValueStoreOrganizationConfig
+
+Creates a new OrganizationConfig that's based on a file based key value store
+
+**Parameters**
+
+-   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
+-   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[OrganizationConfig](#organizationconfig)>** an object holding information about a organization
+
 ## OrganizationConfig
 
 A set of objects and configuration used by/representing the organization
@@ -1108,17 +1119,6 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 -   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
 -   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
 -   `store` **KeyValueStore** A key value store used to store user credentials
-
-## createFileKeyValueStoreOrganizationConfig
-
-Creates a new OrganizationConfig that's based on a file based key value store
-
-**Parameters**
-
--   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
--   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[OrganizationConfig](#organizationconfig)>** an object holding information about a organization
 
 ## createCouchDBKeyValueStoreOrganizationConfig
 
