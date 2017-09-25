@@ -156,33 +156,24 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
         orderer,
     })
 
-    let alreadyCreated = true
-    try {
-        await channelAdmins[0].initializeChannel(channel)
-    } catch (error) {
-        alreadyCreated = false
-    }
-
-    if (!alreadyCreated) {
-        await fcw
-            .setupChannel(new MultiUserClient(channelAdmins), channel)
-            .withCreateChannel(createChannelOpts)
-            .withInstallChaincode({
-                chaincodeId: chaincodeJSON.id,
-                chaincodePath: chaincodeJSON.path,
-                chaincodeVersion: chaincodeJSON.version,
-            })
-            .withJoinChannel()
-            .withInstantiateChaincode({
-                chaincodeId: chaincodeJSON.id,
-                chaincodeVersion: chaincodeJSON.version,
-                fcn: chaincodeJSON.instantiate.fcn,
-                args: chaincodeJSON.instantiate.args,
-                targetsPolicy: chaincodeJSON['instantiation-policy'],
-                'endorsement-policy': chaincodeJSON['endorsement-policy'],
-            })
-            .run()
-    }
+    await fcw
+        .setupChannel(new MultiUserClient(channelAdmins), channel, true)
+        .withCreateChannel(createChannelOpts)
+        .withInstallChaincode({
+            chaincodeId: chaincodeJSON.id,
+            chaincodePath: chaincodeJSON.path,
+            chaincodeVersion: chaincodeJSON.version,
+        })
+        .withJoinChannel()
+        .withInstantiateChaincode({
+            chaincodeId: chaincodeJSON.id,
+            chaincodeVersion: chaincodeJSON.version,
+            fcn: chaincodeJSON.instantiate.fcn,
+            args: chaincodeJSON.instantiate.args,
+            targetsPolicy: chaincodeJSON['instantiation-policy'],
+            'endorsement-policy': chaincodeJSON['endorsement-policy'],
+        })
+        .run()
 
     return {
         channel,

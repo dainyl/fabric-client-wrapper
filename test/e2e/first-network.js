@@ -23,7 +23,7 @@ describe('first-network', function() {
     let network
 
     before(async function() {
-        this.timeout(60000)
+        this.timeout(5 * 60 * 1000)
         network = await networkBootstrap(path.join(__dirname, '../fixtures/network-configs/first-network.json'))
         const org1 = network.organizations.Org1MSP
         expect(
