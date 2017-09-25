@@ -159,20 +159,26 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
     await fcw
         .setupChannel(new MultiUserClient(channelAdmins), channel, true)
         .withCreateChannel(createChannelOpts)
-        .withInstallChaincode({
-            chaincodeId: chaincodeJSON.id,
-            chaincodePath: chaincodeJSON.path,
-            chaincodeVersion: chaincodeJSON.version,
-        })
+        .withInstallChaincode(
+            {
+                chaincodeId: chaincodeJSON.id,
+                chaincodePath: chaincodeJSON.path,
+                chaincodeVersion: chaincodeJSON.version,
+            },
+            5 * 60000
+        )
         .withJoinChannel()
-        .withInstantiateChaincode({
-            chaincodeId: chaincodeJSON.id,
-            chaincodeVersion: chaincodeJSON.version,
-            fcn: chaincodeJSON.instantiate.fcn,
-            args: chaincodeJSON.instantiate.args,
-            targetsPolicy: chaincodeJSON['instantiation-policy'],
-            'endorsement-policy': chaincodeJSON['endorsement-policy'],
-        })
+        .withInstantiateChaincode(
+            {
+                chaincodeId: chaincodeJSON.id,
+                chaincodeVersion: chaincodeJSON.version,
+                fcn: chaincodeJSON.instantiate.fcn,
+                args: chaincodeJSON.instantiate.args,
+                targetsPolicy: chaincodeJSON['instantiation-policy'],
+                'endorsement-policy': chaincodeJSON['endorsement-policy'],
+            },
+            5 * 60000
+        )
         .run()
 
     return {
