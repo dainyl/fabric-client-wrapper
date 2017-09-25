@@ -129,6 +129,7 @@ init()
 ```
 
 ### Setup a channel+chaincode on the network
+## With optional timeouts for chaincode installation and instantiation: default 1 minute, here 5 minutes
 ```JavaScript
 import fs from 'fs'
 import path from 'path'
@@ -145,14 +146,15 @@ async function init() {
     await fcw.setupChannel(gregClient, channel)
       .withCreateChannel({ channelEnvelope })
       .withJoinChannel()
-      .withInstallChaincode({ chaincodeId, chaincodePath, chaincodeVersion })
+      .withInstallChaincode({ chaincodeId, chaincodePath, chaincodeVersion }, 5 * 60000)
       .withInstantiateChaincode({
           {
               chaincodeId,
               chaincodeVersion,
               fcn: 'init',
               args: ["a", "100", "b", "200"],
-          }
+          },
+		  5 * 60000
       )
       .run()
 }
