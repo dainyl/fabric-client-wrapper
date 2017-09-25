@@ -188,6 +188,7 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
         channel,
         chaincode: {
             id: chaincodeJSON.id,
+            version: chaincodeJSON.version,
             instantiationPolicy: chaincodeJSON['instantiation-policy'],
             endorsementPolicy: chaincodeJSON['endorsement-policy'],
         },

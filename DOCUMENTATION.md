@@ -34,6 +34,15 @@
     -   [extractChannelConfig](#extractchannelconfig)
     -   [signChannelConfig](#signchannelconfig)
     -   [newTransactionID](#newtransactionid)
+    -   [queryChannels](#querychannels)
+    -   [queryInstalledChaincodes](#queryinstalledchaincodes)
+    -   [queryChannelInfo](#querychannelinfo)
+    -   [queryInstantiatedChaincodes](#queryinstantiatedchaincodes)
+    -   [queryTransaction](#querytransaction)
+    -   [isChaincodeInstalled](#ischaincodeinstalled)
+    -   [isChannelCreated](#ischannelcreated)
+    -   [isChannelJoined](#ischanneljoined)
+    -   [isChaincodeInstantiated](#ischaincodeinstantiated)
     -   [bindChannel](#bindchannel)
     -   [getChannelGenesisBlock](#getchannelgenesisblock)
     -   [initializeChannel](#initializechannel)
@@ -51,6 +60,15 @@
     -   [getUserClients](#getuserclients)
     -   [getMainUserClient](#getmainuserclient)
     -   [newTransactionID](#newtransactionid-1)
+    -   [queryChannels](#querychannels-1)
+    -   [queryInstalledChaincodes](#queryinstalledchaincodes-1)
+    -   [queryChannelInfo](#querychannelinfo-1)
+    -   [queryInstantiatedChaincodes](#queryinstantiatedchaincodes-1)
+    -   [queryTransaction](#querytransaction-1)
+    -   [isChaincodeInstalled](#ischaincodeinstalled-1)
+    -   [isChannelCreated](#ischannelcreated-1)
+    -   [isChannelJoined](#ischanneljoined-1)
+    -   [isChaincodeInstantiated](#ischaincodeinstantiated-1)
     -   [bindChannel](#bindchannel-1)
     -   [getChannelGenesisBlock](#getchannelgenesisblock-1)
     -   [initializeChannel](#initializechannel-1)
@@ -87,8 +105,8 @@
     -   [set](#set)
     -   [clear](#clear)
 -   [createFabricCAClient](#createfabriccaclient)
--   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
 -   [OrganizationConfig](#organizationconfig)
+-   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
 -   [createCouchDBKeyValueStoreOrganizationConfig](#createcouchdbkeyvaluestoreorganizationconfig)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
 -   [createUserClientFromCAEnroll](#createuserclientfromcaenroll)
@@ -472,6 +490,92 @@ Returns a new TransactionID object. Fabric transaction ids are constructed as a 
 
 Returns **TransactionID** 
 
+### queryChannels
+
+Queries the target peer for the names of all the channels that a peer has joined.
+
+**Parameters**
+
+-   `peer` **Peer** 
+
+### queryInstalledChaincodes
+
+Queries the installed chaincodes on a peer.
+
+**Parameters**
+
+-   `peer` **Peer** 
+
+### queryChannelInfo
+
+Queries for various useful information on the state of the Channel (height, known peers).
+
+**Parameters**
+
+-   `channel` **Channel** 
+-   `target` **Peer** 
+
+### queryInstantiatedChaincodes
+
+Queries the ledger on the target peer for instantiated chaincodes on this channel.
+
+**Parameters**
+
+-   `channel` **Channel** 
+-   `target` **Peer** 
+
+### queryTransaction
+
+Queries the ledger on the target peer for Transaction by id.
+
+**Parameters**
+
+-   `channel` **Channel** 
+-   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `target` **Peer** 
+
+### isChaincodeInstalled
+
+Returns whether a chaincode has been installed on all supplied peers owned by the clients organization
+
+**Parameters**
+
+-   `channelOrPeers` **(Channel | [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>)** 
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+### isChannelCreated
+
+Returns whether a channel has been created
+
+**Parameters**
+
+-   `channel` **Channel** 
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
+
+### isChannelJoined
+
+Returns whether a channel has been joined by all peers owned by the clients organization in the channel object
+
+**Parameters**
+
+-   `channel` **Channel** 
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
+
+### isChaincodeInstantiated
+
+Returns whether a chaincode has been instantiated on a channel
+
+**Parameters**
+
+-   `channel` **Channel** 
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
+
 ### bindChannel
 
 Creates a channel instance bound to the user
@@ -691,6 +795,92 @@ Returns **[UserClient](#userclient)**
 Returns a new TransactionID object. Fabric transaction ids are constructed as a hash of a nonce concatenated with the signing identity's serialized bytes. The TransactionID object keeps the nonce and the resulting id string bundled together as a coherent pair.
 
 Returns **TransactionID** 
+
+### queryChannels
+
+Queries the target peer for the names of all the channels that a peer has joined.
+
+**Parameters**
+
+-   `peer` **Peer** 
+
+### queryInstalledChaincodes
+
+Queries the installed chaincodes on a peer.
+
+**Parameters**
+
+-   `peer` **Peer** 
+
+### queryChannelInfo
+
+Queries for various useful information on the state of the Channel (height, known peers).
+
+**Parameters**
+
+-   `channel` **Channel** 
+-   `target` **Peer** 
+
+### queryInstantiatedChaincodes
+
+Queries the ledger on the target peer for instantiated chaincodes on this channel.
+
+**Parameters**
+
+-   `channel` **Channel** 
+-   `target` **Peer** 
+
+### queryTransaction
+
+Queries the ledger on the target peer for Transaction by id.
+
+**Parameters**
+
+-   `channel` **Channel** 
+-   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `target` **Peer** 
+
+### isChaincodeInstalled
+
+Returns whether a channel has been joined by all peers owned by the clients' organizations in the channel object
+
+**Parameters**
+
+-   `channelOrPeers` **(Channel | [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>)** 
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+### isChannelCreated
+
+Returns whether a channel has been created
+
+**Parameters**
+
+-   `channel` **Channel** 
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
+
+### isChannelJoined
+
+Returns whether a channel has been joined by all peers owned by the clients organization in the channel object
+
+**Parameters**
+
+-   `channel` **Channel** 
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
+
+### isChaincodeInstantiated
+
+Returns whether a chaincode has been instantiated on a channel
+
+**Parameters**
+
+-   `channel` **Channel** 
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
 
 ### bindChannel
 
@@ -1097,17 +1287,6 @@ Creates a new FabricCaClient
 
 Returns **FabricCaClient** A new FabricCAClient instance
 
-## createFileKeyValueStoreOrganizationConfig
-
-Creates a new OrganizationConfig that's based on a file based key value store
-
-**Parameters**
-
--   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
--   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[OrganizationConfig](#organizationconfig)>** an object holding information about a organization
-
 ## OrganizationConfig
 
 A set of objects and configuration used by/representing the organization
@@ -1119,6 +1298,17 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 -   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
 -   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
 -   `store` **KeyValueStore** A key value store used to store user credentials
+
+## createFileKeyValueStoreOrganizationConfig
+
+Creates a new OrganizationConfig that's based on a file based key value store
+
+**Parameters**
+
+-   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
+-   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[OrganizationConfig](#organizationconfig)>** an object holding information about a organization
 
 ## createCouchDBKeyValueStoreOrganizationConfig
 

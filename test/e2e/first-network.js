@@ -25,6 +25,23 @@ describe('first-network', function() {
     before(async function() {
         this.timeout(60000)
         network = await networkBootstrap(path.join(__dirname, '../fixtures/network-configs/first-network.json'))
+        const org1 = network.organizations.Org1MSP
+        expect(
+            await org1.admins.greg.isChaincodeInstalled(
+                network.channel,
+                network.chaincode.id,
+                network.chaincode.version
+            )
+        ).to.be.true
+        expect(await org1.admins.greg.isChannelCreated(network.channel)).to.be.true
+        expect(await org1.admins.greg.isChannelJoined(network.channel)).to.be.true
+        expect(
+            await org1.admins.greg.isChaincodeInstantiated(
+                network.channel,
+                network.chaincode.id,
+                network.chaincode.version
+            )
+        ).to.be.true
     })
 
     it('should make a transaction', async function() {
