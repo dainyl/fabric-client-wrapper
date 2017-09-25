@@ -129,7 +129,7 @@ init()
 ```
 
 ### Setup a channel+chaincode on the network
-## With optional timeouts for chaincode installation and instantiation: default 1 minute, here 5 minutes
+#### With optional timeouts for chaincode installation and instantiation: default 1 minute, here 5 minutes
 ```JavaScript
 import fs from 'fs'
 import path from 'path'
