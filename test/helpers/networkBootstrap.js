@@ -65,7 +65,7 @@ function parseOrganizationsJSON(organizationsJSON) {
             }
             organization.config = await createFileKeyValueStoreOrganizationConfig(
                 mspId,
-                path.join(__dirname, '../', `${mspId}_keystore`)
+                path.join(__dirname, '../keystores/', `${mspId}`)
             )
             await Promise.all(
                 usersJSON.map(async userJSON => {
@@ -165,7 +165,7 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                 chaincodePath: chaincodeJSON.path,
                 chaincodeVersion: chaincodeJSON.version,
             },
-            5 * 60000
+            10 * 60000
         )
         .withJoinChannel()
         .withInstantiateChaincode(
@@ -177,7 +177,7 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                 targetsPolicy: chaincodeJSON['instantiation-policy'],
                 'endorsement-policy': chaincodeJSON['endorsement-policy'],
             },
-            5 * 60000
+            10 * 60000
         )
         .run()
 
