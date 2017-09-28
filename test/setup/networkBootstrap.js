@@ -65,7 +65,7 @@ function parseOrganizationsJSON(organizationsJSON) {
             }
             organization.config = await createFileKeyValueStoreOrganizationConfig(
                 mspId,
-                path.join(__dirname, '../keystores/', `${mspId}`)
+                path.join(__dirname, `../keystores/${mspId}`)
             )
             await Promise.all(
                 usersJSON.map(async userJSON => {
