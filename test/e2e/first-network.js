@@ -80,11 +80,15 @@ describe('first-network', function() {
             network.chaincode.endorsementPolicy
         )
         const { eventHubManager, handle } = transactor.registerChaincodeEventListener('test', event => {
-            expect(event).to.be.an('object')
-            expect(event.transactionId).to.be.a('string')
-            expect(event.payload.toString()).to.equal('hello')
-            eventHubManager.unregisterChaincodeEvent(handle)
-            done()
+            try {
+                expect(event).to.be.an('object')
+                expect(event.tx_id).to.be.a('string')
+                expect(event.payload.toString()).to.equal('hello')
+                eventHubManager.unregisterChaincodeEvent(handle)
+                done()
+            } catch (error) {
+                done(error)
+            }
         })
         eventHubManager.waitEventHubConnected().then(() => {
             transactor.invoke('event')
