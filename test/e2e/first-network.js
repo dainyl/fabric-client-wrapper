@@ -67,7 +67,7 @@ describe('first-network', function() {
         expect(queryResponse.data).to.be.an('object')
         expect(queryResponse.data.status).to.equal(200)
         expect(queryResponse.data.message).to.equal('OK')
-        expect(parseFloat(queryResponse.data.payload)).to.be.a('number')
+        expect(parseFloat(queryResponse.data.payload.toString())).to.be.a('number')
     })
 
     it('should listen to an event', function(done) {
@@ -82,7 +82,7 @@ describe('first-network', function() {
         const { eventHubManager, handle } = transactor.registerChaincodeEventListener('test', event => {
             expect(event).to.be.an('object')
             expect(event.transactionId).to.be.a('string')
-            expect(event.payload).to.equal('hello')
+            expect(event.payload.toString()).to.equal('hello')
             eventHubManager.unregisterChaincodeEvent(handle)
             done()
         })
