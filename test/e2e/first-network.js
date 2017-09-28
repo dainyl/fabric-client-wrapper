@@ -16,7 +16,7 @@
 import uuidv4 from 'uuid/v4'
 import path from 'path'
 import { expect } from 'chai'
-import networkBootstrap from '../helpers/networkBootstrap'
+import networkBootstrap from '../setup/networkBootstrap'
 import fcw from '../../lib'
 
 describe('first-network', function() {
