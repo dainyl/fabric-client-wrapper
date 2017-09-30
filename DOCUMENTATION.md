@@ -311,6 +311,7 @@ Performs a chaincode transaction proposal and formats the response
 -   `args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array of string arguments specific to the chaincode's 'Invoke' method
 -   `opts` **any** The options for the query
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
+    -   `opts.target` **Peer?** The peer to use for the transaction proposal, falls back to the first peer in the channel if unspecified
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ChaincodeQueryResponse>** A promise containing formatted transactionProposal response from a single peer
 
@@ -747,13 +748,13 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ### queryChaincode
 
-Sends a Transaction Proposal to peers in a channel and formats the response
+Sends a Transaction Proposal to a peer in the channel and formats the response
 
 **Parameters**
 
 -   `channel` **Channel** The channel object to use
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
--   `targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+-   `target` **Peer** The peer to use for the transaction proposal, falls back to the first peer in the channel if unspecified
 -   `opts` **TransactionProposalOpts** The options for the transaction proposal
     -   `opts.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `opts.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
@@ -1056,13 +1057,13 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ### queryChaincode
 
-Sends a Transaction Proposal to peers in a channel and formats the response
+Sends a Transaction Proposal to the peer in a channel and formats the response
 
 **Parameters**
 
 -   `channel` **Channel** The channel object to use
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
--   `targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+-   `target` **Peer** The peer to use for the transaction proposal, falls back to the first peer in the channel if unspecified
 -   `opts` **TransactionProposalOpts** The options for the transaction proposal
     -   `opts.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `opts.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
