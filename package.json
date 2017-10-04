@@ -1,6 +1,6 @@
 {
   "name": "@blockchain/fabric-client-wrapper",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "description": "A wrapper around the Fabric Node SDK",
   "main": "dist/index.js",
   "author": "",
