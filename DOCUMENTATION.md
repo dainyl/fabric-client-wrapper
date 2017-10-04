@@ -315,6 +315,7 @@ Performs a chaincode transaction proposal and formats the response
 -   `opts` **any** The options for the query
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
     -   `opts.target` **Peer?** The peer to use for the transaction proposal, falls back to the first peer in the channel if unspecified
+    -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ChaincodeQueryResponse>** A promise containing formatted transactionProposal response from a single peer
 
@@ -326,14 +327,11 @@ Performs a chaincode invoke
 
 -   `fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The function name to be returned when calling `stub.GetFunctionAndParameters()` in the target chaincode. Default is 'invoke'
 -   `args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array of string arguments specific to the chaincode's 'Invoke' method
--   `$2` **any**  (optional, default `{}`)
-    -   `$2.transientMap`  
-    -   `$2.waitPeers`  
-    -   `$2.waitTimeout`  
--   `opts`  The options for the invoke
+-   `opts` **any** The options for the invoke
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
-    -   `opts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** Peers to wait on, defaults to peers in channel
--   `waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The maximum amount of time in ms to wait for a transaction
+    -   `opts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is invoked
+    -   `opts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `opts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ChaincodeInvokeResponse>** A promise containing an object that contains information about the invoke
 
@@ -345,7 +343,10 @@ Performs a chaincode transaction proposal
 
 -   `fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The function name to be returned when calling `stub.GetFunctionAndParameters()` in the target chaincode. Default is 'invoke'
 -   `args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array of string arguments specific to the chaincode's 'Invoke' method
--   `transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
+-   `opts` **any** The options for the transaction proposal
+    -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
+    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to use for the transaction proposal, falls back to the first peer in the channel if unspecified
+    -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;TransactionProposalResponse>** A promise containing a transactionProposal response from all the peers
 
@@ -695,7 +696,8 @@ Sends a chaincode instantiate proposal to one or more endorsing peers. A chainco
     -   `chaincodeInstantiateRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
-    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
 
@@ -718,7 +720,8 @@ Sends a chaincode upgrade proposal to one or more endorsing peers. A chaincode m
     -   `chaincodeUpgradeRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
-    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
 
@@ -735,6 +738,7 @@ Sends a Transaction Proposal to peers in a channel
     -   `transactionProposalRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `transactionProposalRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+-   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {txId: TransactionID, transactionRequest: TransactionRequest}}>** A promise containing the transaction ID and transaction request objects
 
@@ -749,7 +753,7 @@ Sends a Transaction to peers in a channel
 -   `transactionRequest` **TransactionRequest** An object containing the proposal responses from the peers and the proposal
 -   `timeoutPeersOpts` **any** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
-    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** A promise containing the response to the transaction
 
@@ -766,6 +770,7 @@ Sends a Transaction Proposal to a peer in the channel and formats the response
     -   `queryChaincodeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `queryChaincodeRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `queryChaincodeRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+-   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}}>** A formatted proposal response from a single peer
 
@@ -783,8 +788,9 @@ Sends a Transaction Proposal to peers in a channel and formats the response
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `transactionProposalRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
-    -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
-    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is invoked
+    -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** An object holding the transaction response, transaction proposal response, and transaction ID
 
@@ -1008,7 +1014,8 @@ Sends a chaincode instantiate proposal to one or more endorsing peers. A chainco
     -   `chaincodeInstantiateRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
-    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
 
@@ -1031,7 +1038,8 @@ Sends a chaincode upgrade proposal to one or more endorsing peers. A chaincode m
     -   `chaincodeUpgradeRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
-    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
 
@@ -1048,6 +1056,7 @@ Sends a Transaction Proposal to peers in a channel
     -   `transactionProposalRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `transactionProposalRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+-   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {txId: TransactionID, transactionRequest: TransactionRequest}}>** A promise containing the transaction ID and transaction request objects
 
@@ -1062,7 +1071,7 @@ Sends a Transaction to peers in a channel
 -   `transactionRequest` **TransactionRequest** An object containing the proposal responses from the peers and the proposal
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
-    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** A promise containing the response to the transaction
 
@@ -1079,6 +1088,7 @@ Sends a Transaction Proposal to a peer in the channel and formats the response
     -   `queryChaincodeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `queryChaincodeRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `queryChaincodeRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
+-   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}}>** A formatted proposal response from a single peer
 
@@ -1096,8 +1106,9 @@ Sends a Transaction Proposal to peers in a channel and formats the response
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `transactionProposalRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
-    -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
-    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is invoked
+    -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** An object holding the transaction response, transaction proposal response, and transaction ID
 

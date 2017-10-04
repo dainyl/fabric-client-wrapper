@@ -178,6 +178,7 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                 'endorsement-policy': chaincodeJSON['endorsement-policy'],
             },
             {
+                proposalTimeout: 10 * 60000,
                 waitTimeout: 10 * 60000,
             }
         )
