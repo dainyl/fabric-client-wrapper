@@ -14,6 +14,10 @@
     -   [run](#run)
 -   [Transactor](#transactor)
     -   [constructor](#constructor)
+    -   [getUserClient](#getuserclient)
+    -   [getChannel](#getchannel)
+    -   [getChaincodeId](#getchaincodeid)
+    -   [getEndorsingPeers](#getendorsingpeers)
     -   [query](#query)
     -   [invoke](#invoke)
     -   [sendTransactionProposal](#sendtransactionproposal)
@@ -106,6 +110,7 @@
     -   [clear](#clear)
 -   [createFabricCAClient](#createfabriccaclient)
 -   [OrganizationConfig](#organizationconfig)
+-   [createOrganizationConfig](#createorganizationconfig)
 -   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
 -   [createCouchDBKeyValueStoreOrganizationConfig](#createcouchdbkeyvaluestoreorganizationconfig)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
@@ -303,6 +308,30 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 -   `channel` **Channel** The Channel object representing the channel to transact on
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The ID of the chaincode being transacted on
 -   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)** An array of peers to transact with or the endorsement policy to select peers with
+
+### getUserClient
+
+Gets the UserClient
+
+Returns **[UserClient](#userclient)** 
+
+### getChannel
+
+Gets the channel
+
+Returns **Channel** 
+
+### getChaincodeId
+
+Gets the chaincode ID
+
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+### getEndorsingPeers
+
+Gets the endorsingPeers
+
+Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** 
 
 ### query
 
@@ -1334,6 +1363,16 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 -   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
 -   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
 -   `store` **KeyValueStore** A key value store used to store user credentials
+
+## createOrganizationConfig
+
+Creates a new OrganizationConfig that has no store
+
+**Parameters**
+
+-   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
+
+Returns **[OrganizationConfig](#organizationconfig)** an object holding information about a organization
 
 ## createFileKeyValueStoreOrganizationConfig
 
