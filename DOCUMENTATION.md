@@ -340,11 +340,12 @@ Performs a chaincode transaction proposal and formats the response
 **Parameters**
 
 -   `fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The function name to be returned when calling `stub.GetFunctionAndParameters()` in the target chaincode. Default is 'invoke'
--   `args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array of string arguments specific to the chaincode's 'Invoke' method
+-   `argsOrArgBytes` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)> | [Buffer](https://nodejs.org/api/buffer.html))** 
 -   `opts` **any** The options for the query
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
     -   `opts.target` **Peer?** The peer to use for the transaction proposal, falls back to the first peer in the channel if unspecified
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+-   `args`  An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ChaincodeQueryResponse>** A promise containing formatted transactionProposal response from a single peer
 
@@ -355,12 +356,14 @@ Performs a chaincode invoke
 **Parameters**
 
 -   `fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The function name to be returned when calling `stub.GetFunctionAndParameters()` in the target chaincode. Default is 'invoke'
--   `args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array of string arguments specific to the chaincode's 'Invoke' method
+-   `argsOrArgBytes` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)> | [Buffer](https://nodejs.org/api/buffer.html))** 
 -   `opts` **any** The options for the invoke
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
     -   `opts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is invoked
     -   `opts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
     -   `opts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `opts.targets`  
+-   `args`  An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ChaincodeInvokeResponse>** A promise containing an object that contains information about the invoke
 
@@ -371,7 +374,7 @@ Performs a chaincode transaction proposal
 **Parameters**
 
 -   `fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The function name to be returned when calling `stub.GetFunctionAndParameters()` in the target chaincode. Default is 'invoke'
--   `args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array of string arguments specific to the chaincode's 'Invoke' method
+-   `argsOrArgBytes` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)> | [Buffer](https://nodejs.org/api/buffer.html))** An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 -   `opts` **any** The options for the transaction proposal
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
     -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to use for the transaction proposal, falls back to the first peer in the channel if unspecified

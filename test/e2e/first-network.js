@@ -68,6 +68,14 @@ describe('first-network', function() {
         expect(queryResponse.data.status).to.equal(200)
         expect(queryResponse.data.message).to.equal('OK')
         expect(parseFloat(queryResponse.data.payload.toString())).to.be.a('number')
+
+        // buffer example
+        const queryResponse2 = await transactor.query('query', Buffer.from('a', 'utf8'))
+        expect(queryResponse2).to.be.an('object')
+        expect(queryResponse2.data).to.be.an('object')
+        expect(queryResponse2.data.status).to.equal(200)
+        expect(queryResponse2.data.message).to.equal('OK')
+        expect(parseFloat(queryResponse2.data.payload.toString())).to.be.a('number')
     })
 
     it('should listen to an event', function(done) {
