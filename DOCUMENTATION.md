@@ -109,8 +109,8 @@
     -   [set](#set)
     -   [clear](#clear)
 -   [createFabricCAClient](#createfabriccaclient)
--   [OrganizationConfig](#organizationconfig)
 -   [createOrganizationConfig](#createorganizationconfig)
+-   [OrganizationConfig](#organizationconfig)
 -   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
 -   [createCouchDBKeyValueStoreOrganizationConfig](#createcouchdbkeyvaluestoreorganizationconfig)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
@@ -254,6 +254,7 @@ Adds an instantiateChaincode operation to the builder
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
     -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait before polling peers without Eventhubs (optional, default `1000`)
 -   `swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option to swallow errors about chaincode being already instantiated. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
@@ -277,6 +278,7 @@ Adds an upgradeChaincode operation to the builder
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
     -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait before polling peers without Eventhubs (optional, default `1000`)
 -   `swallowAlreadyCreatedErrors`  Option to swallow errors about chaincode being already instantiated. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
@@ -363,6 +365,7 @@ Performs a chaincode invoke
     -   `opts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
     -   `opts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
     -   `opts.targets`  
+    -   `opts.pollInterval`  
 -   `args`  An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;ChaincodeInvokeResponse>** A promise containing an object that contains information about the invoke
@@ -730,8 +733,9 @@ Sends a chaincode instantiate proposal to one or more endorsing peers. A chainco
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
     -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
     -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait before polling peers without Eventhubs (optional, default `1000`)
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** 
 
 ### upgradeChaincode
 
@@ -786,6 +790,7 @@ Sends a Transaction to peers in a channel
 -   `timeoutPeersOpts` **any** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
     -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait before polling peers without Eventhubs (optional, default `1000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** A promise containing the response to the transaction
 
@@ -823,6 +828,7 @@ Sends a Transaction Proposal to peers in a channel and formats the response
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is invoked
     -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
     -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait before polling peers without Eventhubs (optional, default `1000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** An object holding the transaction response, transaction proposal response, and transaction ID
 
@@ -1048,6 +1054,7 @@ Sends a chaincode instantiate proposal to one or more endorsing peers. A chainco
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
     -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
     -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait before polling peers without Eventhubs (optional, default `1000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
 
@@ -1104,6 +1111,7 @@ Sends a Transaction to peers in a channel
 -   `timeoutPeersOpts` **TimeoutPeersOpts** Configuration for waiting on peers for confirmation
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is instantiated
     -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait before polling peers without Eventhubs (optional, default `1000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** A promise containing the response to the transaction
 
@@ -1141,6 +1149,7 @@ Sends a Transaction Proposal to peers in a channel and formats the response
     -   `timeoutPeersOpts.waitPeers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** waitPeers - The peers to wait on until the chaincode is invoked
     -   `timeoutPeersOpts.proposalTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
     -   `timeoutPeersOpts.waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the peers for confirmation before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `timeoutPeersOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait before polling peers without Eventhubs (optional, default `1000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** An object holding the transaction response, transaction proposal response, and transaction ID
 
@@ -1355,6 +1364,16 @@ Creates a new FabricCaClient
 
 Returns **FabricCaClient** A new FabricCAClient instance
 
+## createOrganizationConfig
+
+Creates a new OrganizationConfig that has no store
+
+**Parameters**
+
+-   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
+
+Returns **[OrganizationConfig](#organizationconfig)** an object holding information about a organization
+
 ## OrganizationConfig
 
 A set of objects and configuration used by/representing the organization
@@ -1366,16 +1385,6 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 -   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
 -   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
 -   `store` **KeyValueStore** A key value store used to store user credentials
-
-## createOrganizationConfig
-
-Creates a new OrganizationConfig that has no store
-
-**Parameters**
-
--   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
-
-Returns **[OrganizationConfig](#organizationconfig)** an object holding information about a organization
 
 ## createFileKeyValueStoreOrganizationConfig
 
