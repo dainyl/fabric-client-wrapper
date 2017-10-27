@@ -165,7 +165,9 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                 chaincodePath: chaincodeJSON.path,
                 chaincodeVersion: chaincodeJSON.version,
             },
-            10 * 60000
+            {
+                timeout: 10 * 60000,
+            }
         )
         .withJoinChannel()
         .withInstantiateChaincode(
@@ -177,9 +179,11 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                 targetsPolicy: chaincodeJSON['instantiation-policy'],
                 'endorsement-policy': chaincodeJSON['endorsement-policy'],
             },
-            10 * 60000,
             {
                 timeout: 10 * 60000,
+                waitOpts: {
+                    timeout: 10 * 60000,
+                },
             }
         )
         .run()

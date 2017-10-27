@@ -60,7 +60,7 @@ describe('first-network', function() {
         expect(invokeResponse.data.proposalResponse).to.be.an('object')
         expect(invokeResponse.data.transactionId).to.be.a('string')
         expect(invokeResponse.wait).to.be.a('function')
-        await invokeResponse.wait()
+        await invokeResponse.wait({ race: true })
 
         const queryResponse = await transactor.query('query', ['a'])
         expect(queryResponse).to.be.an('object')
