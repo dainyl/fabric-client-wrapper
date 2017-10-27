@@ -177,9 +177,9 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                 targetsPolicy: chaincodeJSON['instantiation-policy'],
                 'endorsement-policy': chaincodeJSON['endorsement-policy'],
             },
+            10 * 60000,
             {
-                proposalTimeout: 10 * 60000,
-                waitTimeout: 10 * 60000,
+                timeout: 10 * 60000,
             }
         )
         .run()
