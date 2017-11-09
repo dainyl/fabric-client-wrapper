@@ -101,7 +101,11 @@ function parseOrganizationsJSON(organizationsJSON) {
                         admin.createEventHubPeer({
                             requestUrl: peerJSON.requests,
                             eventUrl: peerJSON.events,
-                            connectionOpts: {
+                            peerOpts: {
+                                pem: tlscaPem,
+                                'ssl-target-name-override': peerJSON['server-hostname'],
+                            },
+                            eventHubOpts: {
                                 pem: tlscaPem,
                                 'ssl-target-name-override': peerJSON['server-hostname'],
                             },
