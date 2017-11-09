@@ -21,7 +21,7 @@ import fs from 'fs'
 import path from 'path'
 import Orderer from 'fabric-client/lib/Orderer'
 import fcw, {
-    FcwChannel,
+    createFcwChannel,
     MultiUserClient,
     createUserClientFromKeys,
     createFileKeyValueStoreOrganizationConfig,
@@ -154,10 +154,10 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
     const createChannelOpts = createCreateChannelOpts(organizations, fs.readFileSync(channelJSON.tx))
     const channelPeerFilterLambda = peer => peerIds.some(peerId => peer.getUrl().includes(peerId))
     const peers = _.flatten(organizations.map(organization => organization.peers)).filter(channelPeerFilterLambda)
-    const channel = new FcwChannel({
+    const channel = createFcwChannel({
         channelName: channelJSON.name,
         peers,
-        orderer,
+        orderers: [orderer],
     })
 
     await fcw
