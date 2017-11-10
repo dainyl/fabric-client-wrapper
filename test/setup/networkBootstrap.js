@@ -24,7 +24,7 @@ import fcw, {
     createFcwChannel,
     MultiUserClient,
     createUserClientFromKeys,
-    createFileKeyValueStoreOrganizationConfig,
+    createFileKeyValueStoreAndCryptoSuite,
     ADMIN_ROLE,
 } from '../../lib'
 
@@ -63,28 +63,27 @@ function parseOrganizationsJSON(organizationsJSON) {
                 admins: {},
                 members: {},
             }
-            organization.config = await createFileKeyValueStoreOrganizationConfig(
+            organization.config = {
+                ...(await createFileKeyValueStoreAndCryptoSuite(path.join(__dirname, `../keystores/${mspId}`))),
                 mspId,
-                path.join(__dirname, `../keystores/${mspId}`)
-            )
+            }
             await Promise.all(
                 usersJSON.map(async userJSON => {
                     const keystoreFileName = fs.readdirSync(userJSON.keystore)[0]
                     const signCertFileName = fs.readdirSync(userJSON.signcerts)[0]
                     const privateKeyPEM = fs.readFileSync(path.join(userJSON.keystore, keystoreFileName)).toString()
                     const signedCertPEM = fs.readFileSync(path.join(userJSON.signcerts, signCertFileName)).toString()
-
-                    const user = await createUserClientFromKeys(
-                        {
+                    const user = await createUserClientFromKeys({
+                        ...organization.config,
+                        userKeyConfig: {
                             username: userJSON.username,
                             cryptoContent: {
                                 privateKeyPEM,
                                 signedCertPEM,
                             },
                         },
-                        organization.config,
-                        [userJSON.role]
-                    )
+                        roles: [userJSON.role],
+                    })
                     if (userJSON.role === ADMIN_ROLE) {
                         organization.admins[userJSON.username] = user
                     } else {

@@ -25,7 +25,9 @@
     -   [registerChaincodeEventListener](#registerchaincodeeventlistener)
 -   [UserClient](#userclient)
     -   [getClient](#getclient)
-    -   [getOrganizationConfig](#getorganizationconfig)
+    -   [getMspId](#getmspid)
+    -   [getCryptoSuite](#getcryptosuite)
+    -   [getStore](#getstore)
     -   [getUsername](#getusername)
     -   [getRoles](#getroles)
     -   [setRoles](#setroles)
@@ -86,15 +88,14 @@
     -   [sendTransaction](#sendtransaction-2)
     -   [queryChaincode](#querychaincode-1)
     -   [invokeChaincode](#invokechaincode-1)
--   [FcwPeer](#fcwpeer)
-    -   [getRole](#getrole)
-    -   [setRole](#setrole)
-    -   [getMspId](#getmspid)
-    -   [getAdminMspIds](#getadminmspids)
--   [EventHubPeer](#eventhubpeer)
-    -   [getEventHubManager](#geteventhubmanager)
+-   [upgradePeerToFcwPeer](#upgradepeertofcwpeer)
+-   [getRole](#getrole)
+-   [setRole](#setrole)
+-   [getMspId](#getmspid-1)
+-   [getAdminMspIds](#getadminmspids)
+-   [upgradeFcwPeerToEventHubPeer](#upgradefcwpeertoeventhubpeer)
 -   [EventHubManager](#eventhubmanager)
-    -   [getEventHubManager](#geteventhubmanager-1)
+    -   [getEventHubManager](#geteventhubmanager)
     -   [waitEventHubConnected](#waiteventhubconnected)
     -   [registerBlockEvent](#registerblockevent)
     -   [registerChaincodeEvent](#registerchaincodeevent)
@@ -102,17 +103,15 @@
     -   [unregisterBlockEvent](#unregisterblockevent)
     -   [unregisterChaincodeEvent](#unregisterchaincodeevent)
     -   [unregisterTxEvent](#unregistertxevent)
--   [FcwChannel](#fcwchannel)
-    -   [getTransactionIdTimeMap](#gettransactionidtimemap)
+-   [upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)
+-   [getTransactionIdTimeMap](#gettransactionidtimemap)
 -   [TransactionIdTimeMap](#transactionidtimemap)
     -   [has](#has)
     -   [set](#set)
     -   [clear](#clear)
--   [createFabricCAClient](#createfabriccaclient)
--   [OrganizationConfig](#organizationconfig)
--   [createOrganizationConfig](#createorganizationconfig)
--   [createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)
--   [createCouchDBKeyValueStoreOrganizationConfig](#createcouchdbkeyvaluestoreorganizationconfig)
+-   [createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)
+-   [CryptoStore](#cryptostore)
+-   [createCouchDBKeyValueStoreAndCryptoSuite](#createcouchdbkeyvaluestoreandcryptosuite)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
 -   [createUserClientFromCAEnroll](#createuserclientfromcaenroll)
 -   [createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)
@@ -135,12 +134,12 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 
 -   `UserClient` **[UserClient](#userclient)** Class representing a user and also a wrapper over FabricClient
 -   `MultiUserClient` **[MultiUserClient](#multiuserclient)** Class representing multiple UserClient instances, can be used for making channel/chaincode operations
--   `FcwPeer` **[FcwPeer](#fcwpeer)** An extended version of the fabric-client Peer which adds additional information
--   `EventHubPeer` **[EventHubPeer](#eventhubpeer)** A Peer that contains an EventHub and other additional information
--   `FcwChannel` **[FcwChannel](#fcwchannel)** A fabric-client Channel with a more flexible constructor
--   `createFabricCAClient` **[createFabricCAClient](#createfabriccaclient)** Creates a new FabricCaClient
--   `createFileKeyValueStoreOrganizationConfig` **[createFileKeyValueStoreOrganizationConfig](#createfilekeyvaluestoreorganizationconfig)** Creates a new OrganizationConfig that's based on a file based key value store
--   `createCouchDBKeyValueStoreOrganizationConfig` **[createCouchDBKeyValueStoreOrganizationConfig](#createcouchdbkeyvaluestoreorganizationconfig)** Creates a new OrganizationConfig that's based on a CouchDB key value store
+-   `FcwPeer` **FcwPeer** An extended version of the fabric-client Peer which adds additional information
+-   `EventHubPeer` **EventHubPeer** A Peer that contains an EventHub and other additional information
+-   `FcwChannel` **FcwChannel** A fabric-client Channel with a more flexible constructor
+-   `createFabricCAClient` **createFabricCAClient** Creates a new FabricCaClient
+-   `createFileKeyValueStoreOrganizationConfig` **createFileKeyValueStoreOrganizationConfig** Creates a new OrganizationConfig that's based on a file based key value store
+-   `createCouchDBKeyValueStoreOrganizationConfig` **createCouchDBKeyValueStoreOrganizationConfig** Creates a new OrganizationConfig that's based on a CouchDB key value store
 -   `createUserClientFromKeys` **[createUserClientFromKeys](#createuserclientfromkeys)** Creates a new UserClient from a public private key pair
 -   `createUserClientFromCAEnroll` **[createUserClientFromCAEnroll](#createuserclientfromcaenroll)** Creates a new UserClient from enrolling in the CA
 -   `createUserClientFromCARegisterAndEnroll` **[createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)** Creates a new UserClient from registering and enrolling in the CA
@@ -171,7 +170,7 @@ Class for building and running channel setup requests
 **Parameters**
 
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user setting up the channel
--   `channelOrChannelOpts` **(Channel | FcwChannelOpts)** Either the channel object you wish to use or the arguments to create a new channel
+-   `channelOrChannelOpts` **(Channel | CreateFcwChannelOpts)** Either the channel object you wish to use or the arguments to create a new channel
 -   `swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
 
 ### withCreateChannel
@@ -197,7 +196,7 @@ Adds a joinChannel operation to the builder
 **Parameters**
 
 -   `joinChannelRequest` **JoinChannelRequest** The options for joining the channel on the network
-    -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;(Peer | [FcwPeer](#fcwpeer) \| [EventHubPeer](#eventhubpeer))>?** An array of Peer objects or Peer names that will be asked to join this channel.
+    -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;(Peer | FcwPeer | EventHubPeer)>?** An array of Peer objects or Peer names that will be asked to join this channel.
     -   `joinChannelRequest.genesisBlock` **GenesisBlock?** The genesis block for the channel
 -   `$1` **any**  (optional, default `{}`)
     -   `$1.timeout`  
@@ -422,9 +421,17 @@ Class representing a user and also a wrapper over FabricClient
 
 **Parameters**
 
--   `client` **FabricClient** The FabricClient object to wrap
--   `organizationConfig` **[OrganizationConfig](#organizationconfig)** The config of the organization the user is associated with
--   `roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** The set of roles for the user
+-   `$0` **any** 
+    -   `$0.client`  
+    -   `$0.mspId`  
+    -   `$0.cryptoSuite`  
+    -   `$0.store`  
+    -   `$0.fabricCAClient`  
+    -   `$0.enrollmentSecret`  
+    -   `$0.roles`  
+-   `client`  The FabricClient object to wrap
+-   `organizationConfig`  The config of the organization the user is associated with
+-   `roles`  The set of roles for the user
 
 ### getClient
 
@@ -432,11 +439,23 @@ Gets the underlying FabricClient instance
 
 Returns **FabricClient** 
 
-### getOrganizationConfig
+### getMspId
 
-Gets the organization config for the user
+Gets the mspId for the user's organisation
 
-Returns **[OrganizationConfig](#organizationconfig)** 
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+### getCryptoSuite
+
+Gets the cryptoSuite for the user
+
+Returns **CryptoSuite** 
+
+### getStore
+
+Gets the store for the user
+
+Returns **KeyValueStore** 
 
 ### getUsername
 
@@ -492,7 +511,7 @@ Creates an EventHubPeer object
 
 **Parameters**
 
--   `opts` **{requestUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), eventUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), connectionOpts: ConnectionOpts, role: ([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | void)}** 
+-   `opts` **{requestUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), eventUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), peerOpts: ConnectionOpts, eventHubOpts: ConnectionOpts, role: ([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | void)}** 
 -   `requestUrl`  the peer url to make requests to
 -   `eventUrl`  the peer url to listen to for events
 -   `connectionOpts` **ReducedConnectionOpts** The options for connecting to the peers request url
@@ -501,7 +520,7 @@ Creates an EventHubPeer object
     -   `connectionOpts.ssl-target-name-override` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Used in test environment only, when the server certificate's hostname (in the 'CN' field) does not match the actual host endpoint that the server process runs at, the application can work around the client TLS verify failure by setting this property to the value of the server certificate's hostname
     -   `connectionOpts.null` **any** <any> - ANY OTHER PROPERTY. Any other standard grpc call options will be passed to the grpc service calls directly
 
-Returns **[EventHubPeer](#eventhubpeer)** a new EventHubPeer instance
+Returns **Peer** a new EventHubPeer instance
 
 ### registerUserInCA
 
@@ -1124,67 +1143,65 @@ Sends a Transaction Proposal to peers in a channel and formats the response
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** An object holding the transaction response, transaction proposal response, and transaction ID
 
-## FcwPeer
-
-**Extends Peer**
+## upgradePeerToFcwPeer
 
 An extended version of the fabric-client Peer which adds additional information
 
 **Parameters**
 
+-   `peer` **Peer** 
+-   `$1` **any** 
+    -   `$1.mspId`  
+    -   `$1.adminMspIds`  
+    -   `$1.role`  
 -   `opts` **EventHubPeerOpts** The options for creating the Peer
     -   `opts.requestUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to issue requests to the Peer with
     -   `opts.connectionOpts` **ConnectionOpts** The options for connecting to the peers request url
-    -   `opts.organizationConfig` **[OrganizationConfig](#organizationconfig)?** The configuration of the organization that the Peer belongs to. Required if mspId is not specified.
+    -   `opts.organizationConfig` **OrganizationConfig?** The configuration of the organization that the Peer belongs to. Required if mspId is not specified.
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The MSP ID of the organization the peer belongs to
     -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
     -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the Peer. Defaults to member (optional, default `'member'`)
 
-### getRole
+## getRole
 
 Gets the role of the peer
 
-Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
-
-### setRole
+## setRole
 
 Sets the role of the peer
 
 **Parameters**
 
--   `role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `_role`  
 
-### getMspId
+## getMspId
 
 Gets the Peer's organization's MSP ID
 
-### getAdminMspIds
+## getAdminMspIds
 
 Gets an array of MSP ID's for organizations that have admin priviledges over the peer
 
-## EventHubPeer
-
-**Extends FcwPeer**
+## upgradeFcwPeerToEventHubPeer
 
 A Peer that contains an EventHub and other additional information
 
 **Parameters**
 
+-   `fcwPeer` **Peer** 
+-   `$1` **any** 
+    -   `$1.client`  
+    -   `$1.eventUrl`  
+    -   `$1.eventHubOpts`  
 -   `opts` **EventHubPeerOpts** The options for creating the Peer and EventHub
     -   `opts.client` **(FabricClient | [UserClient](#userclient))** The FabricClient/UserClient tied to the user that creates the EventHub
     -   `opts.requestUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to issue requests to the Peer with
     -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Peer with
     -   `opts.connectionOpts` **ConnectionOpts** The options for connecting to the peers request url
-    -   `opts.organizationConfig` **[OrganizationConfig](#organizationconfig)?** The configuration of the organization that the Peer belongs to. Required if mspId is not specified.
+    -   `opts.organizationConfig` **OrganizationConfig?** The configuration of the organization that the Peer belongs to. Required if mspId is not specified.
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The MSP ID of the organization the peer belongs to
     -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
     -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The role of the Peer. Defaults to member
-
-### getEventHubManager
-
-Gets the underlying EventHubManager instance
-
-Returns **[EventHubManager](#eventhubmanager)** 
 
 ## EventHubManager
 
@@ -1270,26 +1287,24 @@ Unregister transaction event listener for the transaction id. If there are no mo
 
 -   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID
 
-## FcwChannel
-
-**Extends Channel**
+## upgradeChannelToFcwChannel
 
 A fabric-client Channel with a more flexible constructor that keeps track of transactionIds
 
 **Parameters**
 
--   `opts` **any** The options for creating the Channel
+-   `channel` **Channel** 
+-   `$1` **any** 
+    -   `$1.transactionTimeMapLifetime`  
+-   `opts`  The options for creating the Channel
     -   `opts.channelName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the channel
     -   `opts.client` **(FabricClient | [UserClient](#userclient))?** The client context to use for operations
-    -   `opts.peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of peers to use for channel operations (optional, default `[]`)
+    -   `opts.peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of peers to use for channel operations
     -   `opts.orderer` **Orderer** The orderer to use for the channel
-    -   `opts.transactionTimeMapLifetime`  
 
-### getTransactionIdTimeMap
+## getTransactionIdTimeMap
 
 Gets the TransactionIdTimeMap instance
-
-Returns **[TransactionIdTimeMap](#transactionidtimemap)** 
 
 ## TransactionIdTimeMap
 
@@ -1321,21 +1336,17 @@ Sets the transaction ID in the map. If the transaction ID has been previously se
 
 Clears all timers and transaction IDs
 
-## createFabricCAClient
+## createFileKeyValueStoreAndCryptoSuite
 
-Creates a new FabricCaClient
+Creates a new OrganizationConfig that's based on a file based key value store
 
 **Parameters**
 
--   `url` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the url of the FabricCAClient
--   `organizationConfig` **any** the config of the organization using the CA
-    -   `organizationConfig.cryptoSuite`  
--   `tlsOptions` **(TLSOptions | null)** the tls options for connecting to the CA
--   `caName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the name of the CA
+-   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
 
-Returns **FabricCaClient** A new FabricCAClient instance
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[CryptoStore](#cryptostore)>** an object holding information about a organization
 
-## OrganizationConfig
+## CryptoStore
 
 A set of objects and configuration used by/representing the organization
 
@@ -1343,42 +1354,19 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 **Properties**
 
--   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
 -   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
 -   `store` **KeyValueStore** A key value store used to store user credentials
 
-## createOrganizationConfig
-
-Creates a new OrganizationConfig that has no store
-
-**Parameters**
-
--   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
-
-Returns **[OrganizationConfig](#organizationconfig)** an object holding information about a organization
-
-## createFileKeyValueStoreOrganizationConfig
-
-Creates a new OrganizationConfig that's based on a file based key value store
-
-**Parameters**
-
--   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
--   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[OrganizationConfig](#organizationconfig)>** an object holding information about a organization
-
-## createCouchDBKeyValueStoreOrganizationConfig
+## createCouchDBKeyValueStoreAndCryptoSuite
 
 Creates a new OrganizationConfig that's based on a CouchDB key value store
 
 **Parameters**
 
--   `mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID for the organization
 -   `url` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The CouchDB instance url, in the form of http(s)://:@host:port
 -   `dbName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Identifies the name of the database to use. (optional, default `'member_db'`)
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[OrganizationConfig](#organizationconfig)>** an object holding information about a organization
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[CryptoStore](#cryptostore)>** an object holding information about a organization
 
 ## createUserClientFromKeys
 
@@ -1386,9 +1374,15 @@ Creates a new UserClient from a public private key pair
 
 **Parameters**
 
--   `userKeyConfig` **UserKeyConfig** The username of the user + the public private key pair
--   `organizationConfig` **[OrganizationConfig](#organizationconfig)** The config of the organization that the user belongs to
--   `roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array containing the roles that the user has
+-   `$0` **any** 
+    -   `$0.userKeyConfig`  
+    -   `$0.mspId`  
+    -   `$0.cryptoSuite`  
+    -   `$0.store`  
+    -   `$0.roles`  
+-   `userKeyConfig`  The username of the user + the public private key pair
+-   `organizationConfig`  The config of the organization that the user belongs to
+-   `roles`  An array containing the roles that the user has
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
 
@@ -1398,12 +1392,20 @@ Creates a new UserClient from enrolling in the CA
 
 **Parameters**
 
--   `fabricCAClient` **FabricCAClient** The FabricCAClient to use to interact with the CA
--   `enrollmentConfig` **any** A username+secret pair to enroll with
+-   `$0` **any** 
+    -   `$0.fabricCAClient`  
+    -   `$0.enrollmentConfig.username`  
+    -   `$0.enrollmentConfig.secret`  
+    -   `$0.mspId`  
+    -   `$0.cryptoSuite`  
+    -   `$0.store`  
+    -   `$0.roles`  
+-   `fabricCAClient`  The FabricCAClient to use to interact with the CA
+-   `enrollmentConfig`  A username+secret pair to enroll with
     -   `enrollmentConfig.username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username to enroll with
     -   `enrollmentConfig.secret` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The secret to enroll with
--   `organizationConfig` **[OrganizationConfig](#organizationconfig)** The config of the organization that the user belongs to
--   `roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array containing the roles that the user has
+-   `organizationConfig`  The config of the organization that the user belongs to
+-   `roles`  An array containing the roles that the user has
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
 
@@ -1413,13 +1415,22 @@ Creates a new UserClient from registering and enrolling in the CA
 
 **Parameters**
 
--   `caAdminUserClient` **[UserClient](#userclient)** The UserClient you wish to use to enroll
--   `username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username of the new user
--   `affiliation` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The affiliation of the new user
--   `opts` **CARegisterOpts** The CA register options
--   `roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** An array containing the roles that the user has
+-   `$0` **any** 
+    -   `$0.userClient`  
+    -   `$0.mspId`  
+    -   `$0.cryptoSuite`  
+    -   `$0.store`  
+    -   `$0.roles`  
+    -   `$0.username`  
+    -   `$0.affiliation`  
+    -   `$0.registerOpts`  
+-   `caAdminUserClient`  The UserClient you wish to use to enroll
+-   `username`  The username of the new user
+-   `affiliation`  The affiliation of the new user
+-   `opts`  The CA register options
+-   `roles`  An array containing the roles that the user has
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
+Returns **any** A promise containing a new UserClient instance
 
 ## createUserClientFromStore
 
@@ -1427,10 +1438,17 @@ Creates a new UserClient from the key value store
 
 **Parameters**
 
--   `username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username of the new user
--   `opts` **any** An array containing the roles that the user has (optional, default `{}`)
+-   `$0` **any** 
+    -   `$0.userClient`  
+    -   `$0.username`  
+    -   `$0.mspId`  
+    -   `$0.cryptoSuite`  
+    -   `$0.store`  
+    -   `$0.roles`  
+-   `username`  The username of the new user
+-   `opts`  An array containing the roles that the user has (optional, default `{}`)
     -   `opts.userClient` **[UserClient](#userclient)?** The UserClient to use to retrieve the user from the store
-    -   `opts.organizationConfig` **[OrganizationConfig](#organizationconfig)?** The OrganizationConfig to use, Note required if UserClient is not specfied
+    -   `opts.organizationConfig` **OrganizationConfig?** The OrganizationConfig to use, Note required if UserClient is not specfied
     -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
@@ -1441,7 +1459,7 @@ Picks peers from a larger set that satisfy an endorsement policy
 
 **Parameters**
 
--   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[FcwPeer](#fcwpeer)>** the larger set of peers to pick from
+-   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** the larger set of peers to pick from
 -   `policy` **Policy** the endorsment policy to satisfy
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[FcwPeer](#fcwpeer)>** An array of Peers that satisfy the policy
+Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** An array of Peers that satisfy the policy

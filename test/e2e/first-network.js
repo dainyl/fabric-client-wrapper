@@ -15,6 +15,7 @@
  */
 import uuidv4 from 'uuid/v4'
 import path from 'path'
+import FabricCAClient from 'fabric-ca-client'
 import { expect } from 'chai'
 import networkBootstrap from '../setup/networkBootstrap'
 import fcw from '../../lib'
@@ -105,7 +106,7 @@ describe('first-network', function() {
 
     it('should try load the admin from the store', async function() {
         await fcw.createUserClientFromStore('greg', {
-            organizationConfig: network.organizations.Org1MSP.config,
+            ...network.organizations.Org1MSP.config,
         })
         await fcw.createUserClientFromStore('greg', {
             userClient: network.organizations.Org1MSP.admins.greg,
@@ -114,7 +115,13 @@ describe('first-network', function() {
 
     it('should register+enroll a new user and try load it from the store', async function() {
         this.timeout(60000)
-        const fabricCAClient = fcw.createFabricCAClient('https://localhost:7054', network.organizations.Org1MSP.config)
+        const fabricCAClient = new FabricCAClient(
+            'https://localhost:7054',
+            null,
+            '',
+            network.organizations.Org1MSP.getCryptoSuite()
+        )
+
         const caAdmin = await fcw.createUserClientFromCAEnroll(
             fabricCAClient,
             {
@@ -134,7 +141,7 @@ describe('first-network', function() {
             userClient: caAdmin,
         })
         await fcw.createUserClientFromStore(username, {
-            organizationConfig: network.organizations.Org1MSP.config,
+            ...network.organizations.Org1MSP.config,
         })
     })
 })
