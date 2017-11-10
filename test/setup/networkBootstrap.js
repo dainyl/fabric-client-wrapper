@@ -160,7 +160,7 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
     })
 
     await fcw
-        .setupChannel(new MultiUserClient(channelAdmins), channel, true)
+        .setupChannel(new MultiUserClient(channelAdmins), channel, { swallowAlreadyCreatedErrors: true })
         .withCreateChannel(createChannelOpts)
         .withInstallChaincode(
             {
