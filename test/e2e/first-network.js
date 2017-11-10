@@ -15,10 +15,11 @@
  */
 import uuidv4 from 'uuid/v4'
 import path from 'path'
-import FabricCAClient from 'fabric-ca-client'
 import { expect } from 'chai'
 import networkBootstrap from '../setup/networkBootstrap'
 import fcw from '../../lib'
+// TODO move above relative imports once https://jira.hyperledger.org/browse/FAB-6957 is fixed
+import FabricCAClient from 'fabric-ca-client' // eslint-disable-line import/first
 
 describe('first-network', function() {
     let network
@@ -105,11 +106,13 @@ describe('first-network', function() {
     })
 
     it('should try load the admin from the store', async function() {
-        await fcw.createUserClientFromStore('greg', {
+        await fcw.createUserClientFromStore({
             ...network.organizations.Org1MSP.config,
+            username: 'greg',
         })
-        await fcw.createUserClientFromStore('greg', {
+        await fcw.createUserClientFromStore({
             userClient: network.organizations.Org1MSP.admins.greg,
+            username: 'greg',
         })
     })
 
@@ -119,29 +122,36 @@ describe('first-network', function() {
             'https://localhost:7054',
             null,
             '',
-            network.organizations.Org1MSP.getCryptoSuite()
+            network.organizations.Org1MSP.config.cryptoSuite
         )
 
-        const caAdmin = await fcw.createUserClientFromCAEnroll(
+        const caAdmin = await fcw.createUserClientFromCAEnroll({
             fabricCAClient,
-            {
+            enrollmentConfig: {
                 username: 'admin',
                 secret: 'adminpw',
             },
-            network.organizations.Org1MSP.config
-        )
+            ...network.organizations.Org1MSP.config,
+        })
 
         const username = uuidv4()
-        await fcw.createUserClientFromCARegisterAndEnroll(caAdmin, username, 'org1.department1')
-
-        await fcw.createUserClientFromStore(username, {
-            userClient: network.organizations.Org1MSP.admins.greg,
-        })
-        await fcw.createUserClientFromStore(username, {
+        await fcw.createUserClientFromCARegisterAndEnroll({
             userClient: caAdmin,
+            username,
+            affiliation: 'org1.department1',
         })
-        await fcw.createUserClientFromStore(username, {
+
+        await fcw.createUserClientFromStore({
+            userClient: network.organizations.Org1MSP.admins.greg,
+            username,
+        })
+        await fcw.createUserClientFromStore({
+            userClient: caAdmin,
+            username,
+        })
+        await fcw.createUserClientFromStore({
             ...network.organizations.Org1MSP.config,
+            username,
         })
     })
 })
