@@ -200,7 +200,6 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                 .run()
         )
     )
-    console.log('setupFinished')
 
     return {
         channel,
