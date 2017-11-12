@@ -22,7 +22,6 @@ import path from 'path'
 import Orderer from 'fabric-client/lib/Orderer'
 import fcw, {
     createFcwChannel,
-    MultiUserClient,
     createUserClientFromKeys,
     createFileKeyValueStoreAndCryptoSuite,
     ADMIN_ROLE,
@@ -159,37 +158,48 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
         orderers: [orderer],
     })
 
-    await fcw
-        .setupChannel(new MultiUserClient(channelAdmins), channel, { swallowAlreadyCreatedErrors: true })
-        .withCreateChannel(createChannelOpts)
-        .withInstallChaincode(
-            {
-                chaincodeId: chaincodeJSON.id,
-                chaincodePath: chaincodeJSON.path,
-                chaincodeVersion: chaincodeJSON.version,
-            },
-            {
-                timeout: 10 * 60000,
-            }
+    await Promise.all(
+        channelAdmins.map((admin, index) =>
+            fcw
+                .setupChannel(admin, channel, {
+                    distributed: {
+                        leader: index === 0,
+                        host: 'localhost',
+                        timeout: 10 * 60000,
+                    },
+                    swallowAlreadyCreatedErrors: true,
+                })
+                .withCreateChannel(createChannelOpts)
+                .withInstallChaincode(
+                    {
+                        chaincodeId: chaincodeJSON.id,
+                        chaincodePath: chaincodeJSON.path,
+                        chaincodeVersion: chaincodeJSON.version,
+                    },
+                    {
+                        timeout: 10 * 60000,
+                    }
+                )
+                .withJoinChannel()
+                .withInstantiateChaincode(
+                    {
+                        chaincodeId: chaincodeJSON.id,
+                        chaincodeVersion: chaincodeJSON.version,
+                        fcn: chaincodeJSON.instantiate.fcn,
+                        args: chaincodeJSON.instantiate.args,
+                        targetsPolicy: chaincodeJSON['instantiation-policy'],
+                        'endorsement-policy': chaincodeJSON['endorsement-policy'],
+                    },
+                    {
+                        timeout: 10 * 60000,
+                        waitOpts: {
+                            timeout: 10 * 60000,
+                        },
+                    }
+                )
+                .run()
         )
-        .withJoinChannel()
-        .withInstantiateChaincode(
-            {
-                chaincodeId: chaincodeJSON.id,
-                chaincodeVersion: chaincodeJSON.version,
-                fcn: chaincodeJSON.instantiate.fcn,
-                args: chaincodeJSON.instantiate.args,
-                targetsPolicy: chaincodeJSON['instantiation-policy'],
-                'endorsement-policy': chaincodeJSON['endorsement-policy'],
-            },
-            {
-                timeout: 10 * 60000,
-                waitOpts: {
-                    timeout: 10 * 60000,
-                },
-            }
-        )
-        .run()
+    )
 
     return {
         channel,
