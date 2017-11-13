@@ -162,7 +162,7 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
         channelAdmins.map((admin, index) =>
             fcw
                 .setupChannel(admin, channel, {
-                    distributed: {
+                    network: {
                         leader: index === 0,
                         host: 'localhost',
                         timeout: 10 * 60000,
