@@ -1,12 +1,12 @@
 {
   "name": "@blockchain/fabric-client-wrapper",
-  "version": "1.1.0-preview-alpha.0",
+  "version": "1.1.0-preview-alpha.1",
   "description": "A wrapper around the Fabric Node SDK",
   "main": "dist/index.js",
   "author": "",
   "license": "ISC",
   "scripts": {
-    "build": "BABEL_ENV=production babel lib -d dist --source-maps inline",
+    "build": "BABEL_ENV=production babel lib -d dist",
     "build-publish": "rm -rf ./dist && npm run build-doc && npm run build && npm publish",
     "lint": "eslint \"**/*.js\"",
     "format": "eslint --fix \"**/*.js\"",
