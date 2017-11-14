@@ -84,8 +84,8 @@
     -   [has](#has)
     -   [set](#set)
     -   [clear](#clear)
--   [CryptoStore](#cryptostore)
 -   [createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)
+-   [CryptoStore](#cryptostore)
 -   [createCouchDBKeyValueStoreAndCryptoSuite](#createcouchdbkeyvaluestoreandcryptosuite)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
 -   [createUserClientFromCAEnroll](#createuserclientfromcaenroll)
@@ -1019,6 +1019,16 @@ Sets the transaction ID in the map. If the transaction ID has been previously se
 
 Clears all timers and transaction IDs
 
+## createFileKeyValueStoreAndCryptoSuite
+
+Creates a new OrganizationConfig that's based on a file based key value store
+
+**Parameters**
+
+-   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[CryptoStore](#cryptostore)>** an object holding information about a organization
+
 ## CryptoStore
 
 A set of objects and configuration used by/representing the organization
@@ -1029,16 +1039,6 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 -   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
 -   `store` **KeyValueStore** A key value store used to store user credentials
-
-## createFileKeyValueStoreAndCryptoSuite
-
-Creates a new OrganizationConfig that's based on a file based key value store
-
-**Parameters**
-
--   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[CryptoStore](#cryptostore)>** an object holding information about a organization
 
 ## createCouchDBKeyValueStoreAndCryptoSuite
 
