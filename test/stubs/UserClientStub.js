@@ -15,13 +15,13 @@
  *  limitations under the License.
  */
 
-import { MEMBER_ROLE } from '../../lib/shared'
-import ChannelStub from './ChannelStub'
+import { MEMBER_ROLE } from "../../lib/shared"
+import ChannelStub from "./ChannelStub"
 
 function createResponse() {
     return Promise.resolve({
         data: {},
-        wait: () => Promise.resolve({}),
+        wait: () => Promise.resolve({})
     })
 }
 

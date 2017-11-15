@@ -1,4 +1,4 @@
-import ChannelStub from './ChannelStub'
+import ChannelStub from "./ChannelStub"
 
 export default class FcwChannelStub extends ChannelStub {
     constructor({ channelName, client, peers = [], orderer }) {

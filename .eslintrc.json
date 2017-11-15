@@ -13,7 +13,7 @@
         "prettier"
     ],
     "rules": {
-        "no-console": "off",
+        "no-console": "warn",
         "no-param-reassign": ["error", {
             "props": false
         }],
@@ -30,7 +30,7 @@
         "no-plusplus": ["error", {
             "allowForLoopAfterthoughts": true
         }],
-        "no-duplicate-imports": 0,
+        "no-duplicate-imports": "off",
         "handle-callback-err": "error",
         "import/no-unresolved": "off",
         "import/extensions": "off",
@@ -43,13 +43,10 @@
         "prettier/prettier": [
             "error", {
                 "tabWidth": 4,
-                "semi": false,
-                "singleQuote": true,
-                "trailingComma": "es5",
-                "printWidth": 120
+                "semi": false
             }
         ],
-        "flowtype-errors/show-errors": 2
+        "flowtype-errors/show-errors": "error"
     },
     "env": {
         "node": true
@@ -57,9 +54,9 @@
     "overrides": [{
         "files": ["lib/**/*.spec.js", "test/e2e/**/*.js"],
         "rules": {
-            "func-names": 0,
-            "no-unused-expressions": 0,
-            "prefer-arrow-callback": 0
+            "func-names": "off",
+            "no-unused-expressions": "off",
+            "prefer-arrow-callback": "off"
         },
         "env": {
             "mocha": true

@@ -15,17 +15,17 @@
 //  *  limitations under the License.
 //  */
 
-import _ from 'lodash/fp'
-import { mapValues } from 'lodash'
-import fs from 'fs'
-import path from 'path'
-import Orderer from 'fabric-client/lib/Orderer'
+import _ from "lodash/fp"
+import { mapValues } from "lodash"
+import fs from "fs"
+import path from "path"
+import Orderer from "fabric-client/lib/Orderer"
 import fcw, {
     createFcwChannel,
     createUserClientFromKeys,
     createFileKeyValueStoreAndCryptoSuite,
-    ADMIN_ROLE,
-} from '../../lib'
+    ADMIN_ROLE
+} from "../../lib"
 
 /**
  * Utility function to replace all the values in a JSON object that look like
@@ -36,8 +36,18 @@ import fcw, {
  * relative from .
  * @returns {JSON} - Returns the configuration with the relative paths.
  */
-export function makeNetworkConfigRelativePathsAbsolute(config: any, refPath: string, key?: string): any {
-    const makeAbsoluteFilePathKeys = ['genesisBlock', 'tx', 'tlsca', 'keystore', 'signcerts']
+export function makeNetworkConfigRelativePathsAbsolute(
+    config: any,
+    refPath: string,
+    key?: string
+): any {
+    const makeAbsoluteFilePathKeys = [
+        "genesisBlock",
+        "tx",
+        "tlsca",
+        "keystore",
+        "signcerts"
+    ]
     if (makeAbsoluteFilePathKeys.includes(key)) {
         if (_.isArray(config)) {
             return config.map(string => path.resolve(refPath, string))
@@ -48,114 +58,177 @@ export function makeNetworkConfigRelativePathsAbsolute(config: any, refPath: str
         return config
     }
     if (_.isArray(config)) {
-        return config.map(elem => makeNetworkConfigRelativePathsAbsolute(elem, refPath))
+        return config.map(elem =>
+            makeNetworkConfigRelativePathsAbsolute(elem, refPath)
+        )
     }
-    return mapValues(config, (v, k) => makeNetworkConfigRelativePathsAbsolute(v, refPath, k))
+    return mapValues(config, (v, k) =>
+        makeNetworkConfigRelativePathsAbsolute(v, refPath, k)
+    )
 }
 
 function parseOrganizationsJSON(organizationsJSON) {
     return Promise.all(
-        organizationsJSON.map(async ({ mspId, tlsca: tlscaPath, users: usersJSON, peers: peersJSON }) => {
-            const organization = {
-                peers: [],
-                config: null,
-                admins: {},
-                members: {},
-            }
-            organization.config = {
-                ...(await createFileKeyValueStoreAndCryptoSuite(path.join(__dirname, `../keystores/${mspId}`))),
+        organizationsJSON.map(
+            async ({
                 mspId,
-            }
-            await Promise.all(
-                usersJSON.map(async userJSON => {
-                    const keystoreFileName = fs.readdirSync(userJSON.keystore)[0]
-                    const signCertFileName = fs.readdirSync(userJSON.signcerts)[0]
-                    const privateKeyPEM = fs.readFileSync(path.join(userJSON.keystore, keystoreFileName)).toString()
-                    const signedCertPEM = fs.readFileSync(path.join(userJSON.signcerts, signCertFileName)).toString()
-                    const user = await createUserClientFromKeys({
-                        ...organization.config,
-                        userKeyConfig: {
-                            username: userJSON.username,
-                            cryptoContent: {
-                                privateKeyPEM,
-                                signedCertPEM,
+                tlsca: tlscaPath,
+                users: usersJSON,
+                peers: peersJSON
+            }) => {
+                const organization = {
+                    peers: [],
+                    config: null,
+                    admins: {},
+                    members: {}
+                }
+                organization.config = {
+                    ...(await createFileKeyValueStoreAndCryptoSuite(
+                        path.join(__dirname, `../keystores/${mspId}`)
+                    )),
+                    mspId
+                }
+                await Promise.all(
+                    usersJSON.map(async userJSON => {
+                        const keystoreFileName = fs.readdirSync(
+                            userJSON.keystore
+                        )[0]
+                        const signCertFileName = fs.readdirSync(
+                            userJSON.signcerts
+                        )[0]
+                        const privateKeyPEM = fs
+                            .readFileSync(
+                                path.join(userJSON.keystore, keystoreFileName)
+                            )
+                            .toString()
+                        const signedCertPEM = fs
+                            .readFileSync(
+                                path.join(userJSON.signcerts, signCertFileName)
+                            )
+                            .toString()
+                        const user = await createUserClientFromKeys({
+                            ...organization.config,
+                            userKeyConfig: {
+                                username: userJSON.username,
+                                cryptoContent: {
+                                    privateKeyPEM,
+                                    signedCertPEM
+                                }
                             },
-                        },
-                        roles: [userJSON.role],
-                    })
-                    if (userJSON.role === ADMIN_ROLE) {
-                        organization.admins[userJSON.username] = user
-                    } else {
-                        organization.members[userJSON.username] = user
-                    }
-                })
-            )
-            const endorserFilterLambda = peerJSON => peerJSON.type === 'endorserValidator'
-            if (peersJSON.find(endorserFilterLambda)) {
-                const admin: any = Object.values(organization.admins)[0]
-                const tlscaPem = Buffer.from(fs.readFileSync(tlscaPath)).toString()
-                peersJSON.filter(endorserFilterLambda).forEach(peerJSON => {
-                    organization.peers.push(
-                        admin.createEventHubPeer({
-                            requestUrl: peerJSON.requests,
-                            eventUrl: peerJSON.events,
-                            peerOpts: {
-                                pem: tlscaPem,
-                                'ssl-target-name-override': peerJSON['server-hostname'],
-                            },
-                            eventHubOpts: {
-                                pem: tlscaPem,
-                                'ssl-target-name-override': peerJSON['server-hostname'],
-                            },
+                            roles: [userJSON.role]
                         })
-                    )
-                })
+                        if (userJSON.role === ADMIN_ROLE) {
+                            organization.admins[userJSON.username] = user
+                        } else {
+                            organization.members[userJSON.username] = user
+                        }
+                    })
+                )
+                const endorserFilterLambda = peerJSON =>
+                    peerJSON.type === "endorserValidator"
+                if (peersJSON.find(endorserFilterLambda)) {
+                    const admin: any = Object.values(organization.admins)[0]
+                    const tlscaPem = Buffer.from(
+                        fs.readFileSync(tlscaPath)
+                    ).toString()
+                    peersJSON.filter(endorserFilterLambda).forEach(peerJSON => {
+                        organization.peers.push(
+                            admin.createEventHubPeer({
+                                requestUrl: peerJSON.requests,
+                                eventUrl: peerJSON.events,
+                                peerOpts: {
+                                    pem: tlscaPem,
+                                    "ssl-target-name-override":
+                                        peerJSON["server-hostname"]
+                                },
+                                eventHubOpts: {
+                                    pem: tlscaPem,
+                                    "ssl-target-name-override":
+                                        peerJSON["server-hostname"]
+                                }
+                            })
+                        )
+                    })
+                }
+                return organization
             }
-            return organization
-        })
+        )
     )
 }
 
 function parseOrganizationsJSONForOrderer(organizationsJSON, ordererId) {
-    const ordererFilterLambda = peerJSON => peerJSON.type === 'orderer' && peerJSON.url.includes(ordererId)
+    const ordererFilterLambda = peerJSON =>
+        peerJSON.type === "orderer" && peerJSON.url.includes(ordererId)
     const ordererOrganizationJSON = organizationsJSON.find(organizationJSON =>
         organizationJSON.peers.find(ordererFilterLambda)
     )
-    const ordererPeerJSON = ordererOrganizationJSON.peers.find(ordererFilterLambda)
-    const tlscaPem = Buffer.from(fs.readFileSync(ordererOrganizationJSON.tlsca)).toString()
+    const ordererPeerJSON = ordererOrganizationJSON.peers.find(
+        ordererFilterLambda
+    )
+    const tlscaPem = Buffer.from(
+        fs.readFileSync(ordererOrganizationJSON.tlsca)
+    ).toString()
     return new Orderer(ordererPeerJSON.url, {
-        'ssl-target-name-override': ordererPeerJSON['server-hostname'],
-        pem: tlscaPem,
+        "ssl-target-name-override": ordererPeerJSON["server-hostname"],
+        pem: tlscaPem
     })
 }
 
 function parseOrganizationsContainingPeers(organizations, peerIds) {
-    return organizations.filter(org => org.peers.some(peer => peerIds.some(peerId => peer.getUrl().includes(peerId))))
+    return organizations.filter(org =>
+        org.peers.some(peer =>
+            peerIds.some(peerId => peer.getUrl().includes(peerId))
+        )
+    )
 }
 
 function createCreateChannelOpts(organizations, channelConfigEnvelope) {
-    const admins = _.flatten(organizations.map(organization => Object.values(organization.admins)))
+    const admins = _.flatten(
+        organizations.map(organization => Object.values(organization.admins))
+    )
     const channelConfig = admins[0].extractChannelConfig(channelConfigEnvelope)
-    const signatures = admins.map(admin => admin.signChannelConfig(channelConfig))
+    const signatures = admins.map(admin =>
+        admin.signChannelConfig(channelConfig)
+    )
 
     return {
         channelConfig,
-        signatures,
+        signatures
     }
 }
 
-async function parseChannelChaincodeJSON(organizations, channelJSON, organizationsJSON) {
-    const { chaincode: chaincodeJSON, orderer: ordererId, peers: peerIds } = channelJSON
-    const orderer = parseOrganizationsJSONForOrderer(organizationsJSON, ordererId)
-    const channelOrgs = parseOrganizationsContainingPeers(organizations, peerIds)
+async function parseChannelChaincodeJSON(
+    organizations,
+    channelJSON,
+    organizationsJSON
+) {
+    const {
+        chaincode: chaincodeJSON,
+        orderer: ordererId,
+        peers: peerIds
+    } = channelJSON
+    const orderer = parseOrganizationsJSONForOrderer(
+        organizationsJSON,
+        ordererId
+    )
+    const channelOrgs = parseOrganizationsContainingPeers(
+        organizations,
+        peerIds
+    )
     const channelAdmins = channelOrgs.map(org => Object.values(org.admins)[0])
-    const createChannelOpts = createCreateChannelOpts(organizations, fs.readFileSync(channelJSON.tx))
-    const channelPeerFilterLambda = peer => peerIds.some(peerId => peer.getUrl().includes(peerId))
-    const peers = _.flatten(organizations.map(organization => organization.peers)).filter(channelPeerFilterLambda)
+    const createChannelOpts = createCreateChannelOpts(
+        organizations,
+        fs.readFileSync(channelJSON.tx)
+    )
+    const channelPeerFilterLambda = peer =>
+        peerIds.some(peerId => peer.getUrl().includes(peerId))
+    const peers = _.flatten(
+        organizations.map(organization => organization.peers)
+    ).filter(channelPeerFilterLambda)
     const channel = createFcwChannel({
         channelName: channelJSON.name,
         peers,
-        orderers: [orderer],
+        orderers: [orderer]
     })
 
     await Promise.all(
@@ -164,20 +237,20 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                 .setupChannel(admin, channel, {
                     network: {
                         leader: index === 0,
-                        host: 'localhost',
-                        timeout: 10 * 60000,
+                        host: "localhost",
+                        timeout: 10 * 60000
                     },
-                    swallowAlreadyCreatedErrors: true,
+                    swallowAlreadyCreatedErrors: true
                 })
                 .withCreateChannel(createChannelOpts)
                 .withInstallChaincode(
                     {
                         chaincodeId: chaincodeJSON.id,
                         chaincodePath: chaincodeJSON.path,
-                        chaincodeVersion: chaincodeJSON.version,
+                        chaincodeVersion: chaincodeJSON.version
                     },
                     {
-                        timeout: 10 * 60000,
+                        timeout: 10 * 60000
                     }
                 )
                 .withJoinChannel()
@@ -187,14 +260,15 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
                         chaincodeVersion: chaincodeJSON.version,
                         fcn: chaincodeJSON.instantiate.fcn,
                         args: chaincodeJSON.instantiate.args,
-                        targetsPolicy: chaincodeJSON['instantiation-policy'],
-                        'endorsement-policy': chaincodeJSON['endorsement-policy'],
+                        targetsPolicy: chaincodeJSON["instantiation-policy"],
+                        "endorsement-policy":
+                            chaincodeJSON["endorsement-policy"]
                     },
                     {
                         timeout: 10 * 60000,
                         waitOpts: {
-                            timeout: 10 * 60000,
-                        },
+                            timeout: 10 * 60000
+                        }
                     }
                 )
                 .run()
@@ -206,26 +280,41 @@ async function parseChannelChaincodeJSON(organizations, channelJSON, organizatio
         chaincode: {
             id: chaincodeJSON.id,
             version: chaincodeJSON.version,
-            instantiationPolicy: chaincodeJSON['instantiation-policy'],
-            endorsementPolicy: chaincodeJSON['endorsement-policy'],
-        },
+            instantiationPolicy: chaincodeJSON["instantiation-policy"],
+            endorsementPolicy: chaincodeJSON["endorsement-policy"]
+        }
     }
 }
 
 export default async function networkBootstrap(networkConfigPath: string) {
     const networkConfigDir = networkConfigPath.substring(
         0,
-        Math.max(networkConfigPath.lastIndexOf('/'), networkConfigPath.lastIndexOf('\\'))
+        Math.max(
+            networkConfigPath.lastIndexOf("/"),
+            networkConfigPath.lastIndexOf("\\")
+        )
     )
-    const networkConfigJSON = JSON.parse(fs.readFileSync(networkConfigPath).toString())
-    const absolutePathNetworkConfigJSON = makeNetworkConfigRelativePathsAbsolute(networkConfigJSON, networkConfigDir)
-    const { channel: channelJSON, organizations: organizationsJSON } = absolutePathNetworkConfigJSON.network
+    const networkConfigJSON = JSON.parse(
+        fs.readFileSync(networkConfigPath).toString()
+    )
+    const absolutePathNetworkConfigJSON = makeNetworkConfigRelativePathsAbsolute(
+        networkConfigJSON,
+        networkConfigDir
+    )
+    const {
+        channel: channelJSON,
+        organizations: organizationsJSON
+    } = absolutePathNetworkConfigJSON.network
     const organizations = await parseOrganizationsJSON(organizationsJSON)
-    const { channel, chaincode } = await parseChannelChaincodeJSON(organizations, channelJSON, organizationsJSON)
+    const { channel, chaincode } = await parseChannelChaincodeJSON(
+        organizations,
+        channelJSON,
+        organizationsJSON
+    )
     const organizationsByMspId = _.keyBy(org => org.config.mspId)(organizations)
     return {
         organizations: organizationsByMspId,
         channel,
-        chaincode,
+        chaincode
     }
 }
