@@ -7,9 +7,9 @@ toc:
   - EventHubManager
   - FcwPeer
   - EventHubPeer
-  - FcwChannel
   - TransactionIdTimeMap
   - CryptoStore
+  - CreateFcwChannelOpts
   - upgradePeerToFcwPeer
   - createFcwPeer
   - isFcwPeer
@@ -18,6 +18,7 @@ toc:
   - createEventHubPeer
   - isEventHubPeer
   - upgradeChannelToFcwChannel
+  - FcwChannel
   - createFcwChannel
   - isFcwChannel
   - createFileKeyValueStoreAndCryptoSuite
@@ -34,3 +35,4 @@ toc:
   - Orderer
   - ConnectionOpts
   - Policy
+  - TransactionRequest
