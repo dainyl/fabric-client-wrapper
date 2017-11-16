@@ -33,6 +33,10 @@ toc:
   - Peer
   - Channel
   - Orderer
+  - EventHub
+  - FabricCAClient
+  - KeyValueStore
+  - CryptoSuite
   - ConnectionOpts
   - Policy
   - TransactionRequest
