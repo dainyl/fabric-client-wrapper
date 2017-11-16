@@ -2,6 +2,7 @@
 
 ### Table of Contents
 
+-   [Channel](#channel)
 -   [fcw](#fcw)
     -   [setupChannel](#setupchannel)
 -   [ChannelSetup](#channelsetup)
@@ -14,7 +15,6 @@
     -   [standardRun](#standardrun)
     -   [run](#run)
 -   [Transactor](#transactor)
-    -   [constructor](#constructor)
     -   [getUserClient](#getuserclient)
     -   [getChannel](#getchannel)
     -   [getChaincodeId](#getchaincodeid)
@@ -84,14 +84,20 @@
     -   [has](#has)
     -   [set](#set)
     -   [clear](#clear)
--   [createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)
 -   [CryptoStore](#cryptostore)
+-   [createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)
 -   [createCouchDBKeyValueStoreAndCryptoSuite](#createcouchdbkeyvaluestoreandcryptosuite)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
 -   [createUserClientFromCAEnroll](#createuserclientfromcaenroll)
 -   [createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)
 -   [createUserClientFromStore](#createuserclientfromstore)
 -   [pickPeersForPolicy](#pickpeersforpolicy)
+
+## Channel
+
+-   **See: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
+
+The fabric-client Channel.
 
 ## fcw
 
@@ -100,7 +106,7 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 **Parameters**
 
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user performing chaincode transactions
--   `channel` **Channel** The Channel object representing the channel to transact on
+-   `channel` **[Channel](#channel)** The Channel object representing the channel to transact on
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The ID of the chaincode being transacted on
 -   `endorsingPeers`  
 -   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)?** An array of peers to transact with or the endorsement policy to select peers with
@@ -108,19 +114,23 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 **Properties**
 
 -   `UserClient` **[UserClient](#userclient)** Class representing a user and also a wrapper over FabricClient
--   `MultiUserClient` **MultiUserClient** Class representing multiple UserClient instances, can be used for making channel/chaincode operations
--   `FcwPeer` **FcwPeer** An extended version of the fabric-client Peer which adds additional information
--   `EventHubPeer` **EventHubPeer** A Peer that contains an EventHub and other additional information
--   `FcwChannel` **FcwChannel** A fabric-client Channel with a more flexible constructor
--   `createFabricCAClient` **createFabricCAClient** Creates a new FabricCaClient
--   `createFileKeyValueStoreOrganizationConfig` **createFileKeyValueStoreOrganizationConfig** Creates a new OrganizationConfig that's based on a file based key value store
--   `createCouchDBKeyValueStoreOrganizationConfig` **createCouchDBKeyValueStoreOrganizationConfig** Creates a new OrganizationConfig that's based on a CouchDB key value store
+-   `upgradePeerToFcwPeer` **[upgradePeerToFcwPeer](#upgradepeertofcwpeer)** Upgrades a fabric-client Peer with additional MSP information
+-   `createFcwPeer` **createFcwPeer** Creates a fabric-clietn Peer with additional MSP information
+-   `isFcwPeer` **isFcwPeer** Checks whether an object is a FcwPeer
+-   `upgradeFcwPeerToEventHubPeer` **[upgradeFcwPeerToEventHubPeer](#upgradefcwpeertoeventhubpeer)** Upgrades a FcwPeer an EventHubManager
+-   `upgradePeerToEventHubPeer` **upgradePeerToEventHubPeer** Upgrades a fabric-client Peer with additional MSP information and an EventHubManager
+-   `createEventHubPeer` **createEventHubPeer** Creates a fabric-client Peer with additional MSP information and an EventHubManager
+-   `isEventHubPeer` **isEventHubPeer** Checks whether an object is an EventHubPeer
+-   `upgradeChannelToFcwChannel` **[upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)** Upgrades a fabric-client Channel to keep track of recent transactions
+-   `createFcwChannel` **createFcwChannel** Creates a fabric-client Channel that keeps track of recent transactions
+-   `isFcwChannel` **isFcwChannel** Checks whether an object is a FcwChannel
+-   `createFileKeyValueStoreAndCryptoSuite` **[createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)** Creates a new file based key-value store and the associated cryptoSuite
+-   `createCouchDBKeyValueStoreAndCryptoSuite` **[createCouchDBKeyValueStoreAndCryptoSuite](#createcouchdbkeyvaluestoreandcryptosuite)** Creates a new CouchDB based key-value and the associated cryptoSuite
 -   `createUserClientFromKeys` **[createUserClientFromKeys](#createuserclientfromkeys)** Creates a new UserClient from a public private key pair
 -   `createUserClientFromCAEnroll` **[createUserClientFromCAEnroll](#createuserclientfromcaenroll)** Creates a new UserClient from enrolling in the CA
 -   `createUserClientFromCARegisterAndEnroll` **[createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)** Creates a new UserClient from registering and enrolling in the CA
 -   `createUserClientFromStore` **[createUserClientFromStore](#createuserclientfromstore)** Creates a new UserClient from the key value store
 -   `pickPeersForPolicy` **[pickPeersForPolicy](#pickpeersforpolicy)** Picks peers from a larger set that satisfy an endorsement policy
--   `createUserClientFromCARegisterAndEnroll` **[createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)** Creates a new UserClient from registering and enrolling in the CA
 -   `ADMIN_ROLE` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The string 'admin'
 -   `CA_ADMIN_ROLE` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The string 'ca_admin'
 -   `MEMBER_ROLE` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The string 'member'
@@ -145,7 +155,7 @@ Class for building and running channel setup requests
 **Parameters**
 
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user setting up the channel
--   `channelOrChannelOpts` **(Channel | CreateFcwChannelOpts)** Either the channel object you wish to use or the arguments to create a new channel
+-   `channelOrChannelOpts` **([Channel](#channel) | CreateFcwChannelOpts)** Either the channel object you wish to use or the arguments to create a new channel
 -   `swallowAlreadyCreatedErrors` **any** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
     -   `swallowAlreadyCreatedErrors.swallowAlreadyCreatedErrors`  
     -   `swallowAlreadyCreatedErrors.network`  
@@ -276,15 +286,15 @@ Sends the request that has been built
 
 **Parameters**
 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;Channel>** The channel instance that has been setup
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Channel](#channel)>** The channel instance that has been setup
 
 ### run
 
 Sends the request that has been built
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;Channel>** The channel instance that has been setup
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Channel](#channel)>** The channel instance that has been setup
 
 ## Transactor
 
@@ -293,20 +303,9 @@ Class for issuing chaincode transactions
 **Parameters**
 
 -   `userClient` **[UserClient](#userclient)** 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 -   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)** 
-
-### constructor
-
-Creates a new object for issuing chaincode transactions or listening for chaincode events
-
-**Parameters**
-
--   `userClient` **[UserClient](#userclient)** The UserClient representing the user performing chaincode transactions
--   `channel` **Channel** The Channel object representing the channel to transact on
--   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The ID of the chaincode being transacted on
--   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)** An array of peers to transact with or the endorsement policy to select peers with
 
 ### getUserClient
 
@@ -318,7 +317,7 @@ Returns **[UserClient](#userclient)**
 
 Gets the channel
 
-Returns **Channel** 
+Returns **[Channel](#channel)** 
 
 ### getChaincodeId
 
@@ -572,7 +571,7 @@ Queries for various useful information on the state of the Channel (height, know
 
 **Parameters**
 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 -   `target` **Peer** 
 
 ### queryInstantiatedChaincodes
@@ -581,7 +580,7 @@ Queries the ledger on the target peer for instantiated chaincodes on this channe
 
 **Parameters**
 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 -   `target` **Peer** 
 
 ### queryTransaction
@@ -590,7 +589,7 @@ Queries the ledger on the target peer for Transaction by id.
 
 **Parameters**
 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 -   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 -   `target` **Peer** 
 
@@ -600,7 +599,7 @@ Returns whether a chaincode has been installed on all supplied peers owned by th
 
 **Parameters**
 
--   `channelOrPeers` **(Channel | [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>)** 
+-   `channelOrPeers` **([Channel](#channel) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>)** 
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 -   `chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
@@ -610,7 +609,7 @@ Returns whether a channel has been created
 
 **Parameters**
 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
 
@@ -620,7 +619,7 @@ Returns whether a channel has been joined by all peers owned by the clients orga
 
 **Parameters**
 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
 
@@ -630,7 +629,7 @@ Returns whether a chaincode has been instantiated on a channel
 
 **Parameters**
 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 -   `chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
@@ -642,9 +641,9 @@ Creates a channel instance bound to the user
 
 **Parameters**
 
--   `channel` **Channel** the channel object to use
+-   `channel` **[Channel](#channel)** the channel object to use
 
-Returns **Channel** The new bound channel instance
+Returns **[Channel](#channel)** The new bound channel instance
 
 ### getChannelGenesisBlock
 
@@ -652,7 +651,7 @@ Gets the genesis block for the channel
 
 **Parameters**
 
--   `channel` **Channel** The channel object to use
+-   `channel` **[Channel](#channel)** The channel object to use
 
 ### initializeChannel
 
@@ -660,7 +659,7 @@ Initializes a channel
 
 **Parameters**
 
--   `channel` **Channel** The channel object to use
+-   `channel` **[Channel](#channel)** The channel object to use
 
 ### createChannel
 
@@ -668,7 +667,7 @@ Calls the orderer to start building the new channel. A channel typically has mor
 
 **Parameters**
 
--   `channel` **Channel** The channel object to users
+-   `channel` **[Channel](#channel)** The channel object to users
 -   `createChannelRequest` **any** The options for building a new channel on the network
     -   `createChannelRequest.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
     -   `createChannelRequest.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
@@ -682,7 +681,7 @@ Calls the orderer to update an existing channel. After the channel updates are s
 
 **Parameters**
 
--   `channel` **Channel** The channel object to users
+-   `channel` **[Channel](#channel)** The channel object to users
 -   `updateChannelRequest` **any** The options for updating a channel on the network
     -   `updateChannelRequest.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the updated channel, required if no config is specified
     -   `updateChannelRequest.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the updated channel, required if no envelope is specified
@@ -696,7 +695,7 @@ This method sends a join channel proposal to one or more endorsing peers.
 
 **Parameters**
 
--   `channel` **Channel** The channel object to use
+-   `channel` **[Channel](#channel)** The channel object to use
 -   `joinChannelRequest` **any** The options for joining the channel
     -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects or Peer names that will be asked to join this channel.
     -   `joinChannelRequest.genesisBlock` **GenesisBlock?** The genesis block for the channel
@@ -727,7 +726,7 @@ Sends a chaincode instantiate proposal to one or more endorsing peers. A chainco
 
 **Parameters**
 
--   `channel` **Channel** The channel to use
+-   `channel` **[Channel](#channel)** The channel to use
 -   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode instantiation request to be made
     -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
     -   `chaincodeInstantiateRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
@@ -748,7 +747,7 @@ Sends a chaincode upgrade proposal to one or more endorsing peers. A chaincode m
 
 **Parameters**
 
--   `channel` **Channel** The channel to use
+-   `channel` **[Channel](#channel)** The channel to use
 -   `chaincodeUpgradeRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode upgrade request to be made
     -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
     -   `chaincodeUpgradeRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
@@ -769,7 +768,7 @@ Sends a Transaction Proposal to peers in a channel
 
 **Parameters**
 
--   `channel` **Channel** The channel object to use
+-   `channel` **[Channel](#channel)** The channel object to use
 -   `transactionProposalRequest` **TransactionProposalRequest** The arguments for the transaction proposal request
     -   `transactionProposalRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
     -   `transactionProposalRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
@@ -786,7 +785,7 @@ Sends a Transaction to peers in a channel
 
 **Parameters**
 
--   `channel` **Channel** The channel object to use
+-   `channel` **[Channel](#channel)** The channel object to use
 -   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to wait on
 -   `transactionRequest` **TransactionRequest** An object containing the proposal responses from the peers and the proposal
 
@@ -798,7 +797,7 @@ Sends a Transaction Proposal to a peer in the channel and formats the response
 
 **Parameters**
 
--   `channel` **Channel** The channel object to use
+-   `channel` **[Channel](#channel)** The channel object to use
 -   `queryChaincodeRequest` **QueryChaincodeRequest** The arguments for the transaction proposal request
     -   `queryChaincodeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
     -   `queryChaincodeRequest.target` **Peer?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
@@ -815,7 +814,7 @@ Sends a Transaction Proposal to peers in a channel and formats the response
 
 **Parameters**
 
--   `channel` **Channel** The channel object to use
+-   `channel` **[Channel](#channel)** The channel object to use
 -   `transactionProposalRequest` **TransactionProposalRequest** The arguments for the transaction proposal request
     -   `transactionProposalRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
     -   `transactionProposalRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
@@ -976,7 +975,7 @@ A fabric-client Channel with a more flexible constructor that keeps track of tra
 
 **Parameters**
 
--   `channel` **Channel** 
+-   `channel` **[Channel](#channel)** 
 -   `$1` **any** 
     -   `$1.transactionTimeMapLifetime`  
 -   `opts`  The options for creating the Channel
@@ -1019,16 +1018,6 @@ Sets the transaction ID in the map. If the transaction ID has been previously se
 
 Clears all timers and transaction IDs
 
-## createFileKeyValueStoreAndCryptoSuite
-
-Creates a new OrganizationConfig that's based on a file based key value store
-
-**Parameters**
-
--   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[CryptoStore](#cryptostore)>** an object holding information about a organization
-
 ## CryptoStore
 
 A set of objects and configuration used by/representing the organization
@@ -1039,6 +1028,16 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 -   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
 -   `store` **KeyValueStore** A key value store used to store user credentials
+
+## createFileKeyValueStoreAndCryptoSuite
+
+Creates a new OrganizationConfig that's based on a file based key value store
+
+**Parameters**
+
+-   `keyValueStorePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** a path that will be used for the key value store
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[CryptoStore](#cryptostore)>** an object holding information about a organization
 
 ## createCouchDBKeyValueStoreAndCryptoSuite
 

@@ -14,8 +14,8 @@
     "e2e": "GOPATH=./test/fixtures/chaincode HFC_LOGGING={} mocha --compilers js:babel-core/register --require babel-polyfill test/e2e/**/*.js",
     "precommit": "lint-staged",
     "flow": "flow",
-    "build-doc": "documentation build lib/index.js -f md -o DOCUMENTATION.md",
-    "serve-doc": "documentation serve --watch lib/index.js"
+    "build-doc": "documentation --config documentation.yml build lib/index.js -f md -o DOCUMENTATION.md",
+    "serve-doc": "documentation --config documentation.yml serve --watch lib/index.js"
   },
   "lint-staged": {
     "**/*.js": "eslint"
@@ -36,6 +36,7 @@
     "babel-preset-stage-3": "^6.24.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "documentation": "^5.3.3",
     "eslint": "^4.11.0",
     "eslint-config-airbnb-base": "11.3.2",
     "eslint-config-prettier": "1.6.0",
