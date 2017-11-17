@@ -4,7 +4,7 @@ This is a wrapper over the [Hyperledger Fabric Node SDK](https://github.com/hype
 
 ## Node Versions
 
-This has been tested on the following versions of Node: 6.11.3, 8.4.0
+Node runtime version 6.9.x or higher, and 8.4.0 or higher ( Node v7+ is not supported )
 
 ## Trying out `fabric-client-wrapper` with `fabric-samples`
 [See Here](./E2E_TESTS.md)
@@ -14,34 +14,23 @@ This has been tested on the following versions of Node: 6.11.3, 8.4.0
 
 ## Examples
 
-### Create a configuration object for an organization
-```JavaScript
-import fs from 'fs'
-import path from 'path'
-import fcw from '@blockchain/fabric-client-wrapper'
-
-async function init() {
-    const mspId = 'Org1MSP'
-    const keystorePath = path.join(__dirname, 'keystore')
-    const organizationConfig = await fcw.createFileKeyValueStoreOrganizationConfig(
-        mspId,
-        keystorePath
-    )
-}
-
-init()
-```
+### Example project
+[Node Blockchain Boilerplate](https://github.ibm.com/aur/node-blockchain-boilerplate)
 
 ### Load a user from a public/private key pair
 ```JavaScript
-import fs from 'fs'
-import path from 'path'
-import fcw from '@blockchain/fabric-client-wrapper'
+import fs from "fs"
+import path from "path"
+import fcw from "@blockchain/fabric-client-wrapper"
 
-async function init() {
-    const organizationConfig = ...
-    const privateKeyPath = path.join(__dirname, './123_sk')
-    const publicKeyPath = path.join(__dirname, './123.pem')
+async function foo() {
+    const mspId = "Org1MSP"
+    const keystorePath = path.join(__dirname, "keystore")
+    const { cryptoSuite, store } = await fcw.createFileKeyValueStoreAndCryptoSuite(
+        keystorePath
+    )
+    const privateKeyPath = path.join(__dirname, "./123_sk")
+    const publicKeyPath = path.join(__dirname, "./123.pem")
     const privateKeyPEM = fs.readFileSync(privateKeyPath).toString()
     const signedCertPEM = fs.readFileSync(publicKeyPath).toString()
     const gregClient = await createUserClientFromKeys(
@@ -49,39 +38,44 @@ async function init() {
             username,
             cryptoContent: {
                 privateKeyPEM,
-                signedCertPEM,
+                signedCertPEM
             },
-        },
-        organization.config
+            store,
+            cryptoSuite
+        }
     )
 }
 
-init()
+foo()
 ```
 
 ### Load a user from the CA
 ```JavaScript
-import fs from 'fs'
-import path from 'path'
-import fcw from '@blockchain/fabric-client-wrapper'
+import fs from "fs"
+import path from "path"
+import fabricCAClient from "fabric-ca-client"
+import fcw from "@blockchain/fabric-client-wrapper"
 
-async function init() {
-    const organizationConfig = ...
-    const fabricCAClient = fcw.createFabricCAClient(
-        'https://localhost:7054',
-        organizationConfig
+async function foo() {
+    const mspId = "Org1MSP"
+    const keystorePath = path.join(__dirname, "keystore")
+    const { cryptoSuite, store } = await fcw.createFileKeyValueStoreAndCryptoSuite(
+        keystorePath
     )
-    const bobClient = await fcw.createUserClientFromCAEnroll(
+    const fabricCAClient = new FabricCAClient(
+        "https://localhost:7054",
+        null,
+        "",
+        cryptoSuite
+    )
+    const bobClient = await fcw.createUserClientFromCAEnroll({
         fabricCAClient,
-        {
-            username: 'bob',
-            secret: 'password123',
-        },
-        organizationConfig
-    )
+        enrollmentID: "bob",
+        enrollmentSecret: "password123"
+    })
 }
 
-init()
+foo()
 ```
 
 ### Create a new channel object
@@ -91,51 +85,46 @@ import path from 'path'
 import fcw from '@blockchain/fabric-client-wrapper'
 import Orderer from 'fabric-client/lib/Orderer'
 
-async function init() {
+async function foo() {
     const gregClient = ...
+    const peerPem = fs.readFileSync(path.join(__dirname, "./peer1.pem")).toString()
+    const connectionOpts = { pem: peerPem }
     const peers = [
-      gregClient.createEventHubPeer(
-          'grpcs://localhost:7051',
-          'grpcs://localhost:7053',
-          {
-              pem: fs.readFileSync(path.join(__dirname, './peer1.pem')).toString(),
-              ssl-target-name-override: 'peer0.org1.example.com'
-          }
-      )
+      gregClient.createEventHubPeer({
+          requestUrl: "grpcs://peer0.org1.example.com:7051",
+          eventUrl: "grpcs://peer0.org1.example.com:7053",
+          peerOpts: connectionOpts,
+          eventHubOpts: connectionOpts
+      })
     ]
     await Promise.all(peers.map(peer => peer.waitEventHubConnected()))
 
     const orderer = new Orderer(
-        'grpcs://localhost:7050',
+        "grpcs://orderer.example.com:7050",
         {
-            pem: fs.readFileSync(path.join(__dirname, './orderer.pem')).toString(),
-            ssl-target-name-override: 'orderer.example.com'
+            pem: fs.readFileSync(path.join(__dirname, "./orderer.pem")).toString()
         }
     )
 
-    const channelName = 'mychannel'
     const channel = new fcw.FcwChannel({
         client: gregClient,
-        channelName,
+        channelName: "mychannel",
         peers,
         orderer
     })
     await channel.initialize()
-    // OR
-    // const channel = await fcw.setupChannel(gregClient, { channelName, peers, orderer }).run()
 }
 
-init()
+foo()
 ```
 
 ### Setup a channel+chaincode on the network
-#### With optional timeouts for chaincode installation and instantiation: default 1 minute, here 5 minutes
 ```JavaScript
 import fs from 'fs'
 import path from 'path'
 import fcw from '@blockchain/fabric-client-wrapper'
 
-async function init() {
+async function foo() {
     const gregClient = ...
     const channel = ...
     const channelTxPath = path.join(__dirname, './channel.tx')
@@ -146,7 +135,7 @@ async function init() {
     await fcw.setupChannel(gregClient, channel)
       .withCreateChannel({ channelEnvelope })
       .withJoinChannel()
-      .withInstallChaincode({ chaincodeId, chaincodePath, chaincodeVersion }, 5 * 60000)
+      .withInstallChaincode({ chaincodeId, chaincodePath, chaincodeVersion })
       .withInstantiateChaincode({
           {
               chaincodeId,
@@ -159,20 +148,23 @@ async function init() {
       .run()
 }
 
-init()
+foo()
 ```
 
 ### Perform an invoke+query
 ```JavaScript
 import fcw from '@blockchain/fabric-client-wrapper'
 
-async function init() {
+async function foo() {
     const gregClient = ...
     const channel = ...
     const transactor = fcw(gregClient, channel, 'awesomecc')
     const invokeResponse = await transactor.invoke('move', ['a', 'b', '10'])
+    console.log("Invoke payload", invokeResponse.data.proposalResponse.payload.toString())
+    await invokeResponse.wait() // wait for peers to write transaction to state
     const queryResponse = await transactor.query('query', ['a'])
+    console.log("Query payload", queryResponse.data.payload.toString())
 }
 
-init()
+foo()
 ```
