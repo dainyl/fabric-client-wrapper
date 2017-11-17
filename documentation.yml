@@ -40,3 +40,4 @@ toc:
   - ConnectionOpts
   - Policy
   - TransactionRequest
+  - RegisterRequest

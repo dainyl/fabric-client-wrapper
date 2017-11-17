@@ -146,18 +146,18 @@ describe("first-network", function() {
 
         const caAdmin = await fcw.createUserClientFromCAEnroll({
             fabricCAClient,
-            enrollmentConfig: {
-                username: "admin",
-                secret: "adminpw"
-            },
+            enrollmentID: "admin",
+            enrollmentSecret: "adminpw",
             ...network.organizations.Org1MSP.config
         })
 
         const username = uuidv4()
         await fcw.createUserClientFromCARegisterAndEnroll({
             userClient: caAdmin,
-            username,
-            affiliation: "org1.department1"
+            registerRequest: {
+                enrollmentID: username,
+                affiliation: "org1.department1"
+            }
         })
 
         await fcw.createUserClientFromStore({

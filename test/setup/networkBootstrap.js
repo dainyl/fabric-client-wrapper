@@ -108,12 +108,10 @@ function parseOrganizationsJSON(organizationsJSON) {
                             .toString()
                         const user = await createUserClientFromKeys({
                             ...organization.config,
-                            userKeyConfig: {
-                                username: userJSON.username,
-                                cryptoContent: {
-                                    privateKeyPEM,
-                                    signedCertPEM
-                                }
+                            username: userJSON.username,
+                            cryptoContent: {
+                                privateKeyPEM,
+                                signedCertPEM
                             },
                             roles: [userJSON.role]
                         })

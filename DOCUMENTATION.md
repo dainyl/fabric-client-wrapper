@@ -2,7 +2,7 @@
 
 ### Table of Contents
 
--   [Channel](#channel)
+-   [fabric-client-wrapper](#fabric-client-wrapper)
 -   [fcw](#fcw)
     -   [setupChannel](#setupchannel)
 -   [ChannelSetup](#channelsetup)
@@ -12,7 +12,6 @@
     -   [withInstallChaincode](#withinstallchaincode)
     -   [withInstantiateChaincode](#withinstantiatechaincode)
     -   [withUpgradeChaincode](#withupgradechaincode)
-    -   [standardRun](#standardrun)
     -   [run](#run)
 -   [Transactor](#transactor)
     -   [getUserClient](#getuserclient)
@@ -63,12 +62,6 @@
     -   [sendTransaction](#sendtransaction-1)
     -   [queryChaincode](#querychaincode)
     -   [invokeChaincode](#invokechaincode)
--   [upgradePeerToFcwPeer](#upgradepeertofcwpeer)
--   [getRole](#getrole)
--   [setRole](#setrole)
--   [getMspId](#getmspid-1)
--   [getAdminMspIds](#getadminmspids)
--   [upgradeFcwPeerToEventHubPeer](#upgradefcwpeertoeventhubpeer)
 -   [EventHubManager](#eventhubmanager)
     -   [getEventHubManager](#geteventhubmanager)
     -   [waitEventHubConnected](#waiteventhubconnected)
@@ -78,13 +71,32 @@
     -   [unregisterBlockEvent](#unregisterblockevent)
     -   [unregisterChaincodeEvent](#unregisterchaincodeevent)
     -   [unregisterTxEvent](#unregistertxevent)
--   [upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)
--   [getTransactionIdTimeMap](#gettransactionidtimemap)
+-   [FcwPeer](#fcwpeer)
+    -   [getRole](#getrole)
+    -   [setRole](#setrole)
+    -   [getMspId](#getmspid-1)
+    -   [getAdminMspIds](#getadminmspids)
+-   [EventHubPeer](#eventhubpeer)
+    -   [getEventHubManager](#geteventhubmanager-1)
+    -   [canConnect](#canconnect)
 -   [TransactionIdTimeMap](#transactionidtimemap)
     -   [has](#has)
     -   [set](#set)
     -   [clear](#clear)
 -   [CryptoStore](#cryptostore)
+-   [CreateFcwChannelOpts](#createfcwchannelopts)
+-   [upgradePeerToFcwPeer](#upgradepeertofcwpeer)
+-   [createFcwPeer](#createfcwpeer)
+-   [isFcwPeer](#isfcwpeer)
+-   [upgradeFcwPeerToEventHubPeer](#upgradefcwpeertoeventhubpeer)
+-   [upgradePeerToEventHubPeer](#upgradepeertoeventhubpeer)
+-   [createEventHubPeer](#createeventhubpeer-1)
+-   [isEventHubPeer](#iseventhubpeer)
+-   [upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)
+-   [FcwChannel](#fcwchannel)
+    -   [getTransactionIdTimeMap](#gettransactionidtimemap)
+-   [createFcwChannel](#createfcwchannel)
+-   [isFcwChannel](#isfcwchannel)
 -   [createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)
 -   [createCouchDBKeyValueStoreAndCryptoSuite](#createcouchdbkeyvaluestoreandcryptosuite)
 -   [createUserClientFromKeys](#createuserclientfromkeys)
@@ -92,12 +104,24 @@
 -   [createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)
 -   [createUserClientFromStore](#createuserclientfromstore)
 -   [pickPeersForPolicy](#pickpeersforpolicy)
+-   [fabric-client (external)](#fabric-client-external)
+-   [Client](#client)
+-   [Peer](#peer)
+-   [Channel](#channel)
+-   [Orderer](#orderer)
+-   [EventHub](#eventhub)
+-   [FabricCAClient](#fabriccaclient)
+-   [KeyValueStore](#keyvaluestore)
+-   [CryptoSuite](#cryptosuite)
+-   [ConnectionOpts](#connectionopts)
+-   [Policy](#policy)
+-   [TransactionRequest](#transactionrequest)
+-   [RegisterRequest](#registerrequest)
 
-## Channel
+## fabric-client-wrapper
 
--   **See: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**
 
-The fabric-client Channel.
+
 
 ## fcw
 
@@ -108,22 +132,21 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user performing chaincode transactions
 -   `channel` **[Channel](#channel)** The Channel object representing the channel to transact on
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The ID of the chaincode being transacted on
--   `endorsingPeers`  
--   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)?** An array of peers to transact with or the endorsement policy to select peers with
+-   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))?** An array of peers to transact with or the endorsement policy to select peers with
 
 **Properties**
 
 -   `UserClient` **[UserClient](#userclient)** Class representing a user and also a wrapper over FabricClient
 -   `upgradePeerToFcwPeer` **[upgradePeerToFcwPeer](#upgradepeertofcwpeer)** Upgrades a fabric-client Peer with additional MSP information
--   `createFcwPeer` **createFcwPeer** Creates a fabric-clietn Peer with additional MSP information
--   `isFcwPeer` **isFcwPeer** Checks whether an object is a FcwPeer
--   `upgradeFcwPeerToEventHubPeer` **[upgradeFcwPeerToEventHubPeer](#upgradefcwpeertoeventhubpeer)** Upgrades a FcwPeer an EventHubManager
--   `upgradePeerToEventHubPeer` **upgradePeerToEventHubPeer** Upgrades a fabric-client Peer with additional MSP information and an EventHubManager
--   `createEventHubPeer` **createEventHubPeer** Creates a fabric-client Peer with additional MSP information and an EventHubManager
--   `isEventHubPeer` **isEventHubPeer** Checks whether an object is an EventHubPeer
+-   `createFcwPeer` **[createFcwPeer](#createfcwpeer)** Creates a fabric-clietn Peer with additional MSP information
+-   `isFcwPeer` **[isFcwPeer](#isfcwpeer)** Checks whether an object is a FcwPeer
+-   `upgradeFcwPeerToEventHubPeer` **[upgradeFcwPeerToEventHubPeer](#upgradefcwpeertoeventhubpeer)** Upgrades a FcwPeer with an EventHubManager
+-   `upgradePeerToEventHubPeer` **[upgradePeerToEventHubPeer](#upgradepeertoeventhubpeer)** Upgrades a fabric-client Peer with additional MSP information and an EventHubManager
+-   `createEventHubPeer` **[createEventHubPeer](#createeventhubpeer)** Creates a fabric-client Peer with additional MSP information and an EventHubManager
+-   `isEventHubPeer` **[isEventHubPeer](#iseventhubpeer)** Checks whether an object is an EventHubPeer
 -   `upgradeChannelToFcwChannel` **[upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)** Upgrades a fabric-client Channel to keep track of recent transactions
--   `createFcwChannel` **createFcwChannel** Creates a fabric-client Channel that keeps track of recent transactions
--   `isFcwChannel` **isFcwChannel** Checks whether an object is a FcwChannel
+-   `createFcwChannel` **[createFcwChannel](#createfcwchannel)** Creates a fabric-client Channel that keeps track of recent transactions
+-   `isFcwChannel` **[isFcwChannel](#isfcwchannel)** Checks whether an object is a FcwChannel
 -   `createFileKeyValueStoreAndCryptoSuite` **[createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)** Creates a new file based key-value store and the associated cryptoSuite
 -   `createCouchDBKeyValueStoreAndCryptoSuite` **[createCouchDBKeyValueStoreAndCryptoSuite](#createcouchdbkeyvaluestoreandcryptosuite)** Creates a new CouchDB based key-value and the associated cryptoSuite
 -   `createUserClientFromKeys` **[createUserClientFromKeys](#createuserclientfromkeys)** Creates a new UserClient from a public private key pair
@@ -155,10 +178,17 @@ Class for building and running channel setup requests
 **Parameters**
 
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user setting up the channel
--   `channelOrChannelOpts` **([Channel](#channel) | CreateFcwChannelOpts)** Either the channel object you wish to use or the arguments to create a new channel
--   `swallowAlreadyCreatedErrors` **any** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
-    -   `swallowAlreadyCreatedErrors.swallowAlreadyCreatedErrors`  
-    -   `swallowAlreadyCreatedErrors.network`  
+-   `channelOrChannelOpts` **([Channel](#channel) \| [CreateFcwChannelOpts](#createfcwchannelopts))** Either the channel object you wish to use or the arguments to create a new channel
+-   `opts` **any** Additional options[swallowAlreadyCreatedErrors]
+    -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
+    -   `opts.network`  Network options
+        -   `opts.network.leader` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Whether to be the network leader (the server)
+        -   `opts.network.mspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The MSP IDs that the org represents, only required for non-leaders
+        -   `opts.network.externalMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The MSP IDs of external organisations. Is optional and is only used by leader
+        -   `opts.network.host` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The host of the server. Is optional and is only used by non-leaders.
+        -   `opts.network.port` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The port to communicate on. (optional, default `45207`)
+        -   `opts.network.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The maximum amount of time to wait between various stages of the network setup phase
+        -   `opts.network.onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** Callback function for socket errors
 
 ### withCreateChannel
 
@@ -170,9 +200,11 @@ Adds a createChannel operation to the builder
     -   `createChannelRequest.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
     -   `createChannelRequest.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
     -   `createChannelRequest.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
--   `swallowAlreadyCreatedErrors` **any** Option to swallow errors about channel being already created. Overrides class level option
-    -   `swallowAlreadyCreatedErrors.waitOpts`  
-    -   `swallowAlreadyCreatedErrors.swallowAlreadyCreatedErrors`  
+-   `opts` **any** Additional options
+    -   `opts.waitOpts`  Options for waiting
+        -   `opts.waitOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Max amount of time to wait
+        -   `opts.waitOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Amount of time to wait between retries
+    -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about channel being already created. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -183,15 +215,18 @@ Adds a joinChannel operation to the builder
 **Parameters**
 
 -   `joinChannelRequest` **JoinChannelRequest** The options for joining the channel on the network
-    -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;(Peer | FcwPeer | EventHubPeer)>?** An array of Peer objects or Peer names that will be asked to join this channel.
+    -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;([Peer](#peer) \| [FcwPeer](#fcwpeer) \| [EventHubPeer](#eventhubpeer))>?** An array of Peer objects or Peer names that will be asked to join this channel.
     -   `joinChannelRequest.genesisBlock` **GenesisBlock?** The genesis block for the channel
 -   `$1` **any**  (optional, default `{}`)
     -   `$1.timeout`  
     -   `$1.waitOpts`  
     -   `$1.swallowAlreadyCreatedErrors`  
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for the channel to be joined (optional, default `60000`)
--   `waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for confirmation that the channel has been joined (optional, default `60000`)
--   `swallowAlreadyCreatedErrors`  Option to swallow errors about channel being already joined. Overrides class level option
+-   `opts`  Additional options
+    -   `opts.waitOpts`  Options for waiting
+        -   `opts.waitOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Max amount of time to wait
+        -   `opts.waitOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Amount of time to wait between retries
+    -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about channel being already joined. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -205,8 +240,10 @@ Adds an updateChannel operation to the builder
     -   `updateChannelRequest.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
     -   `updateChannelRequest.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
     -   `updateChannelRequest.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
--   `waitTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for confirmation that the channel has been updated (optional, default `60000`)
-    -   `waitTimeout.waitOpts`  
+-   `opts` **any** Additional options
+    -   `opts.waitOpts`  Options for waiting
+        -   `opts.waitOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Max amount of time to wait
+        -   `opts.waitOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Amount of time to wait between retries
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -217,7 +254,7 @@ Adds an installChaincode operation to the builder
 **Parameters**
 
 -   `chaincodeInstallRequest` **ReducedChaincodeInstallRequest** The options for installing chaincode on peers.
-    -   `chaincodeInstallRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that the chaincode will be installed on. Uses peers from channel if none are supplied
+    -   `chaincodeInstallRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that the chaincode will be installed on. Uses peers from channel if none are supplied
     -   `chaincodeInstallRequest.chaincodePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The path to the location of the source code of the chaincode. If the chaincode type is golang, then this path is the fully qualified package name, such as 'mycompany.com/myproject/mypackage/mychaincode'
     -   `chaincodeInstallRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeInstallRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
@@ -226,8 +263,9 @@ Adds an installChaincode operation to the builder
 -   `$1` **any**  (optional, default `{}`)
     -   `$1.timeout`  
     -   `$1.swallowAlreadyCreatedErrors`  
--   `timeout`  The max amount of time the chaincode installing can take
--   `swallowAlreadyCreatedErrors`  Option to swallow errors about chaincode being already installed. Overrides class level option
+-   `opts`  Additional options
+-   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The max amount of time the chaincode installing can take
+-   `swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about chaincode being already installed. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -238,21 +276,25 @@ Adds an instantiateChaincode operation to the builder
 **Parameters**
 
 -   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode instantiation request to be made
-    -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeInstantiateRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
+    -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
+    -   `chaincodeInstantiateRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeInstantiateRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeInstantiateRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
     -   `chaincodeInstantiateRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
     -   `chaincodeInstantiateRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
     -   `chaincodeInstantiateRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
     -   `chaincodeInstantiateRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
-    -   `chaincodeInstantiateRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
+    -   `chaincodeInstantiateRequest.endorsement-policy` **[Policy](#policy)?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `$1` **any**  (optional, default `{}`)
     -   `$1.timeout`  
     -   `$1.waitOpts`  
     -   `$1.swallowAlreadyCreatedErrors`  
+-   `opts`  Additional options
+    -   `opts.waitOpts`  Options for waiting
+        -   `opts.waitOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Max amount of time to wait
+        -   `opts.waitOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Amount of time to wait between retries
+    -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about chaincode being already instantiated. Overrides class level option
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
--   `swallowAlreadyCreatedErrors`  Option to swallow errors about chaincode being already instantiated. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
 
@@ -263,32 +305,25 @@ Adds an upgradeChaincode operation to the builder
 **Parameters**
 
 -   `chaincodeUpgradeRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode upgrade request to be made
-    -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeUpgradeRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
+    -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
+    -   `chaincodeUpgradeRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeUpgradeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeUpgradeRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
     -   `chaincodeUpgradeRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
     -   `chaincodeUpgradeRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
     -   `chaincodeUpgradeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
     -   `chaincodeUpgradeRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
-    -   `chaincodeUpgradeRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
+    -   `chaincodeUpgradeRequest.endorsement-policy` **[Policy](#policy)?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `$1` **any**  (optional, default `{}`)
     -   `$1.timeout`  
     -   `$1.waitOpts`  
+-   `opts`  Additional options
+    -   `opts.waitOpts`  Options for waiting
+        -   `opts.waitOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Max amount of time to wait
+        -   `opts.waitOpts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Amount of time to wait between retries
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
--   `swallowAlreadyCreatedErrors`  Option to swallow errors about chaincode being already instantiated. Overrides class level option
 
 Returns **[ChannelSetup](#channelsetup)** The ChannelSetup instance
-
-### standardRun
-
-Sends the request that has been built
-
-**Parameters**
-
--   `channel` **[Channel](#channel)** 
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Channel](#channel)>** The channel instance that has been setup
 
 ### run
 
@@ -299,13 +334,14 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 ## Transactor
 
 Class for issuing chaincode transactions
+Creates a new object for issuing chaincode transactions or listening for chaincode events
 
 **Parameters**
 
--   `userClient` **[UserClient](#userclient)** 
--   `channel` **[Channel](#channel)** 
--   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer> | Policy)** 
+-   `userClient` **[UserClient](#userclient)** The UserClient representing the user performing chaincode transactions
+-   `channel` **[Channel](#channel)** The Channel object representing the channel to transact on
+-   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The ID of the chaincode being transacted on
+-   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))** An array of peers to transact with or the endorsement policy to select peers with
 
 ### getUserClient
 
@@ -329,7 +365,7 @@ Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 Gets the endorsingPeers
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** 
+Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** 
 
 ### query
 
@@ -341,7 +377,7 @@ Performs a chaincode transaction proposal and formats the response
 -   `argsOrArgBytes` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)> | [Buffer](https://nodejs.org/api/buffer.html))** 
 -   `opts` **any** The options for the query
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
-    -   `opts.target` **Peer?** The peer to use for the transaction proposal, falls back to the first peer in the channel if unspecified
+    -   `opts.target` **[Peer](#peer)?** The peer to use for the transaction proposal, falls back to the first peer in the channel if unspecified
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 -   `args`  An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 
@@ -357,7 +393,7 @@ Performs a chaincode invoke
 -   `argsOrArgBytes` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)> | [Buffer](https://nodejs.org/api/buffer.html))** 
 -   `opts` **any** The options for the invoke
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
-    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to use for the transaction proposal, falls back to the first peer in the channel if unspecified
+    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use for the transaction proposal, falls back to the first peer in the channel if unspecified
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 -   `args`  An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 
@@ -373,7 +409,7 @@ Performs a chaincode transaction proposal
 -   `argsOrArgBytes` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)> | [Buffer](https://nodejs.org/api/buffer.html))** An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 -   `opts` **any** The options for the transaction proposal
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
-    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to use for the transaction proposal, falls back to the first peer in the channel if unspecified
+    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use for the transaction proposal, falls back to the first peer in the channel if unspecified
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;TransactionProposalResponse>** A promise containing a transactionProposal response from all the peers
@@ -385,7 +421,7 @@ Performs a chaincode transaction
 **Parameters**
 
 -   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the transaction
--   `transactionRequest` **TransactionRequest** an object representing an transaction request
+-   `transactionRequest` **[TransactionRequest](#transactionrequest)** an object representing an transaction request
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;TransactionResponse>** A promise containing an object that contains information about the transaction
 
@@ -407,17 +443,14 @@ Class representing a user and also a wrapper over FabricClient
 
 **Parameters**
 
--   `$0` **any** 
-    -   `$0.client`  
-    -   `$0.mspId`  
-    -   `$0.cryptoSuite`  
-    -   `$0.store`  
-    -   `$0.fabricCAClient`  
-    -   `$0.enrollmentSecret`  
-    -   `$0.roles`  
--   `client`  The FabricClient object to wrap
--   `organizationConfig`  The config of the organization the user is associated with
--   `roles`  The set of roles for the user
+-   `opts` **any** The options for creating a UserClient
+    -   `opts.client` **[Client](#client)** The FabricClient object to wrap
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID of the organisation the user is attached to
+    -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)** The cryptoSuite for the user
+    -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store which the user's credentials are stored in
+    -   `opts.fabricCAClient` **[FabricCAClient](#fabriccaclient)?** The FabricCAClient to use for registering users
+    -   `opts.enrollmentSecret` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The enrollment secret for the user
+    -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The set of roles for the user
 
 ### getClient
 
@@ -435,13 +468,13 @@ Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 Gets the cryptoSuite for the user
 
-Returns **CryptoSuite** 
+Returns **[CryptoSuite](#cryptosuite)** 
 
 ### getStore
 
 Gets the store for the user
 
-Returns **KeyValueStore** 
+Returns **[KeyValueStore](#keyvaluestore)** 
 
 ### getUsername
 
@@ -467,7 +500,7 @@ Sets the roles of the user, also saves user to store
 
 Gets the FabricCAClient for the user
 
-Returns **FabricCAClient** 
+Returns **[FabricCAClient](#fabriccaclient)** 
 
 ### setFabricCAClient
 
@@ -475,11 +508,11 @@ Sets the FabricCAClient for the user
 
 **Parameters**
 
--   `fabricCAClient` **FabricCAClient** The FabricCAClient for the CA the user is associated with
+-   `fabricCAClient` **[FabricCAClient](#fabriccaclient)** The FabricCAClient for the CA the user is associated with
 
 ### getEnrollmentSecret
 
-gets the FabricCAClient for the user
+Gets the enrollment secret for the user
 
 Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** 
 
@@ -497,7 +530,7 @@ Creates an EventHubPeer object
 
 **Parameters**
 
--   `opts` **{requestUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), eventUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), peerOpts: ConnectionOpts, eventHubOpts: ConnectionOpts, role: ([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | void)}** 
+-   `opts` **{requestUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), eventUrl: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), peerOpts: [ConnectionOpts](#connectionopts), eventHubOpts: [ConnectionOpts](#connectionopts), role: ([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) | void)}** 
 -   `requestUrl`  the peer url to make requests to
 -   `eventUrl`  the peer url to listen to for events
 -   `connectionOpts` **ReducedConnectionOpts** The options for connecting to the peers request url
@@ -506,7 +539,7 @@ Creates an EventHubPeer object
     -   `connectionOpts.ssl-target-name-override` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Used in test environment only, when the server certificate's hostname (in the 'CN' field) does not match the actual host endpoint that the server process runs at, the application can work around the client TLS verify failure by setting this property to the value of the server certificate's hostname
     -   `connectionOpts.null` **any** <any> - ANY OTHER PROPERTY. Any other standard grpc call options will be passed to the grpc service calls directly
 
-Returns **Peer** a new EventHubPeer instance
+Returns **[Peer](#peer)** a new EventHubPeer instance
 
 ### registerUserInCA
 
@@ -514,12 +547,7 @@ This method registers a new user in the CA, requires an admin of the CA
 
 **Parameters**
 
--   `username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username of the new user
--   `affiliation` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The affiliation of the new user
--   `opts` **CARegisterOpts** Options for registering the user
-    -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The role of the new user
-    -   `opts.maxEnrollments` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The maximum number of times a user can enroll
-    -   `opts.attrs` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;KeyValueAttribute>?**  Array of key/value attributes to assign to the user.
+-   `registerRequest` **[RegisterRequest](#registerrequest)** The register request
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** The enrollment secret to use when this user enrolls
 
@@ -555,7 +583,7 @@ Queries the target peer for the names of all the channels that a peer has joined
 
 **Parameters**
 
--   `peer` **Peer** 
+-   `peer` **[Peer](#peer)** 
 
 ### queryInstalledChaincodes
 
@@ -563,7 +591,7 @@ Queries the installed chaincodes on a peer.
 
 **Parameters**
 
--   `peer` **Peer** 
+-   `peer` **[Peer](#peer)** 
 
 ### queryChannelInfo
 
@@ -572,7 +600,7 @@ Queries for various useful information on the state of the Channel (height, know
 **Parameters**
 
 -   `channel` **[Channel](#channel)** 
--   `target` **Peer** 
+-   `target` **[Peer](#peer)** 
 
 ### queryInstantiatedChaincodes
 
@@ -581,7 +609,7 @@ Queries the ledger on the target peer for instantiated chaincodes on this channe
 **Parameters**
 
 -   `channel` **[Channel](#channel)** 
--   `target` **Peer** 
+-   `target` **[Peer](#peer)** 
 
 ### queryTransaction
 
@@ -591,7 +619,7 @@ Queries the ledger on the target peer for Transaction by id.
 
 -   `channel` **[Channel](#channel)** 
 -   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `target` **Peer** 
+-   `target` **[Peer](#peer)** 
 
 ### isChaincodeInstalled
 
@@ -599,7 +627,7 @@ Returns whether a chaincode has been installed on all supplied peers owned by th
 
 **Parameters**
 
--   `channelOrPeers` **([Channel](#channel) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>)** 
+-   `channelOrPeers` **([Channel](#channel) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>)** 
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 -   `chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
@@ -697,7 +725,7 @@ This method sends a join channel proposal to one or more endorsing peers.
 
 -   `channel` **[Channel](#channel)** The channel object to use
 -   `joinChannelRequest` **any** The options for joining the channel
-    -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects or Peer names that will be asked to join this channel.
+    -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects or Peer names that will be asked to join this channel.
     -   `joinChannelRequest.genesisBlock` **GenesisBlock?** The genesis block for the channel
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings.
 
@@ -710,7 +738,7 @@ In fabric v1.0, a chaincode must be installed and instantiated before it can be 
 **Parameters**
 
 -   `chaincodeInstallRequest` **ChaincodeInstallRequest** The chaincode install request to be made
-    -   `chaincodeInstallRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** An array of Peer objects that the chaincode will be installed on
+    -   `chaincodeInstallRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>** An array of Peer objects that the chaincode will be installed on
     -   `chaincodeInstallRequest.chaincodePath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The path to the location of the source code of the chaincode. If the chaincode type is golang, then this path is the fully qualified package name, such as 'mycompany.com/myproject/mypackage/mychaincode'
     -   `chaincodeInstallRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeInstallRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
@@ -728,15 +756,15 @@ Sends a chaincode instantiate proposal to one or more endorsing peers. A chainco
 
 -   `channel` **[Channel](#channel)** The channel to use
 -   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode instantiation request to be made
-    -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeInstantiateRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
+    -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
+    -   `chaincodeInstantiateRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeInstantiateRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeInstantiateRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
     -   `chaincodeInstantiateRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
     -   `chaincodeInstantiateRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
     -   `chaincodeInstantiateRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
     -   `chaincodeInstantiateRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
-    -   `chaincodeInstantiateRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
+    -   `chaincodeInstantiateRequest.endorsement-policy` **[Policy](#policy)?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
@@ -749,15 +777,15 @@ Sends a chaincode upgrade proposal to one or more endorsing peers. A chaincode m
 
 -   `channel` **[Channel](#channel)** The channel to use
 -   `chaincodeUpgradeRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode upgrade request to be made
-    -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeUpgradeRequest.targetsPolicy` **Policy?** A policy used to select peers from the channel if targets is not specified
+    -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
+    -   `chaincodeUpgradeRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeUpgradeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeUpgradeRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
     -   `chaincodeUpgradeRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
     -   `chaincodeUpgradeRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
     -   `chaincodeUpgradeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
     -   `chaincodeUpgradeRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Array of string arguments to pass to the function identified by the fcn value
-    -   `chaincodeUpgradeRequest.endorsement-policy` **Policy?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
+    -   `chaincodeUpgradeRequest.endorsement-policy` **[Policy](#policy)?** EndorsementPolicy object for this chaincode (see examples below). If not specified, a default policy of "a signature by any member from any of the organizations corresponding to the array of member service providers" is used. WARNING: The default policy is NOT recommended for production, because this allows an application to bypass the proposal endorsement and send a manually constructed transaction, with arbitrary output in the write set, to the orderer directly. An application's own signature would allow the transaction to be successfully validated and committed to the ledger.
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** a promise containing a ProposalResponseObject
@@ -771,13 +799,13 @@ Sends a Transaction Proposal to peers in a channel
 -   `channel` **[Channel](#channel)** The channel object to use
 -   `transactionProposalRequest` **TransactionProposalRequest** The arguments for the transaction proposal request
     -   `transactionProposalRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
-    -   `transactionProposalRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+    -   `transactionProposalRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
     -   `transactionProposalRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `transactionProposalRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {txId: TransactionID, transactionRequest: TransactionRequest}}>** A promise containing the transaction ID and transaction request objects
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {txId: TransactionID, transactionRequest: [TransactionRequest](#transactionrequest)}}>** A promise containing the transaction ID and transaction request objects
 
 ### sendTransaction
 
@@ -787,7 +815,7 @@ Sends a Transaction to peers in a channel
 
 -   `channel` **[Channel](#channel)** The channel object to use
 -   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to wait on
--   `transactionRequest` **TransactionRequest** An object containing the proposal responses from the peers and the proposal
+-   `transactionRequest` **[TransactionRequest](#transactionrequest)** An object containing the proposal responses from the peers and the proposal
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** A promise containing the response to the transaction
 
@@ -800,7 +828,7 @@ Sends a Transaction Proposal to a peer in the channel and formats the response
 -   `channel` **[Channel](#channel)** The channel object to use
 -   `queryChaincodeRequest` **QueryChaincodeRequest** The arguments for the transaction proposal request
     -   `queryChaincodeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
-    -   `queryChaincodeRequest.target` **Peer?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+    -   `queryChaincodeRequest.target` **[Peer](#peer)?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
     -   `queryChaincodeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `queryChaincodeRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `queryChaincodeRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
@@ -817,7 +845,7 @@ Sends a Transaction Proposal to peers in a channel and formats the response
 -   `channel` **[Channel](#channel)** The channel object to use
 -   `transactionProposalRequest` **TransactionProposalRequest** The arguments for the transaction proposal request
     -   `transactionProposalRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
-    -   `transactionProposalRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+    -   `transactionProposalRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
     -   `transactionProposalRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `transactionProposalRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
@@ -825,79 +853,19 @@ Sends a Transaction Proposal to peers in a channel and formats the response
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}>** An object holding the transaction response, transaction proposal response, and transaction ID
 
-## upgradePeerToFcwPeer
-
-An extended version of the fabric-client Peer which adds additional information
-
-**Parameters**
-
--   `peer` **Peer** 
--   `$1` **any** 
-    -   `$1.mspId`  
-    -   `$1.adminMspIds`  
-    -   `$1.role`  
--   `opts` **EventHubPeerOpts** The options for creating the Peer
-    -   `opts.requestUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to issue requests to the Peer with
-    -   `opts.connectionOpts` **ConnectionOpts** The options for connecting to the peers request url
-    -   `opts.organizationConfig` **OrganizationConfig?** The configuration of the organization that the Peer belongs to. Required if mspId is not specified.
-    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The MSP ID of the organization the peer belongs to
-    -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
-    -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the Peer. Defaults to member (optional, default `'member'`)
-
-## getRole
-
-Gets the role of the peer
-
-## setRole
-
-Sets the role of the peer
-
-**Parameters**
-
--   `_role`  
-
-## getMspId
-
-Gets the Peer's organization's MSP ID
-
-## getAdminMspIds
-
-Gets an array of MSP ID's for organizations that have admin priviledges over the peer
-
-## upgradeFcwPeerToEventHubPeer
-
-A Peer that contains an EventHub and other additional information
-
-**Parameters**
-
--   `fcwPeer` **Peer** 
--   `$1` **any** 
-    -   `$1.client`  
-    -   `$1.eventUrl`  
-    -   `$1.eventHubOpts`  
--   `opts` **EventHubPeerOpts** The options for creating the Peer and EventHub
-    -   `opts.client` **(FabricClient | [UserClient](#userclient))** The FabricClient/UserClient tied to the user that creates the EventHub
-    -   `opts.requestUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to issue requests to the Peer with
-    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Peer with
-    -   `opts.connectionOpts` **ConnectionOpts** The options for connecting to the peers request url
-    -   `opts.organizationConfig` **OrganizationConfig?** The configuration of the organization that the Peer belongs to. Required if mspId is not specified.
-    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The MSP ID of the organization the peer belongs to
-    -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
-    -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The role of the Peer. Defaults to member
-
 ## EventHubManager
 
 A class that manages an EventHub and when it is connected
 
 **Parameters**
 
--   `eventHub` **EventHub** The EventHub to manage
+-   `eventHub` **[EventHub](#eventhub)** The EventHub to manage
 
 ### getEventHubManager
 
 Gets the underlying EventHub
 
-Returns **EventHub** 
+Returns **[EventHub](#eventhub)** 
 
 ### waitEventHubConnected
 
@@ -969,24 +937,57 @@ Unregister transaction event listener for the transaction id. If there are no mo
 
 -   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID
 
-## upgradeChannelToFcwChannel
+## FcwPeer
 
-A fabric-client Channel with a more flexible constructor that keeps track of transactionIds
+**Extends Peer**
+
+A fabric-client Peer with additional MSP information
+
+Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+### getRole
+
+Gets the role of the peer
+
+### setRole
+
+Sets the role of the peer
 
 **Parameters**
 
--   `channel` **[Channel](#channel)** 
--   `$1` **any** 
-    -   `$1.transactionTimeMapLifetime`  
--   `opts`  The options for creating the Channel
-    -   `opts.channelName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the channel
-    -   `opts.client` **(FabricClient | [UserClient](#userclient))?** The client context to use for operations
-    -   `opts.peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>?** An array of peers to use for channel operations
-    -   `opts.orderer` **Orderer** The orderer to use for the channel
+-   `role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the peer
 
-## getTransactionIdTimeMap
+### getMspId
 
-Gets the TransactionIdTimeMap instance
+Gets the Peer's organization's MSP ID
+
+### getAdminMspIds
+
+Gets an array of MSP ID's for organizations that have admin priviledges over the peer
+
+## EventHubPeer
+
+**Extends FcwPeer**
+
+A fabric-client Peer with additional MSP information and an EventHubManager
+
+Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+### getEventHubManager
+
+Gets the Peer's EventHubManager
+
+Returns **[EventHubManager](#eventhubmanager)** The Peer's EventHubManager
+
+### canConnect
+
+Checks whether the peer can currently correct
+
+**Parameters**
+
+-   `timeout`   (optional, default `60000`)
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** true if the peer can connect, false otherwisek
 
 ## TransactionIdTimeMap
 
@@ -1026,8 +1027,171 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 **Properties**
 
--   `cryptoSuite` **CryptoSuite** An abstraction over crytpographic algorithms
--   `store` **KeyValueStore** A key value store used to store user credentials
+-   `cryptoSuite` **[CryptoSuite](#cryptosuite)** An abstraction over crytpographic algorithms
+-   `store` **[KeyValueStore](#keyvaluestore)** A key value store used to store user credentials
+
+## CreateFcwChannelOpts
+
+Options to create a FcwChannel
+
+Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+**Properties**
+
+-   `channelName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the channel
+-   `client` **([Client](#client) \| [UserClient](#userclient))?** The client context to use for operations
+-   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of peers to use for channel operations
+-   `orderers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Orderer](#orderer)>** The orderers to use for the channel
+-   `transactionTimeMapLifetime` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The amount of time to remember past transaction IDs
+
+## upgradePeerToFcwPeer
+
+Upgrades a fabric-client Peer with additional MSP information
+
+**Parameters**
+
+-   `peer` **[Peer](#peer)** 
+-   `opts` **any** The options for upgrading the Peer
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID of the organization the peer belongs to
+    -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
+    -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the Peer. Defaults to member (optional, default `'member'`)
+
+Returns **[FcwPeer](#fcwpeer)** The FcwPeer
+
+## createFcwPeer
+
+Creates a fabric-client Peer with additional MSP information
+
+**Parameters**
+
+-   `opts` **any** The options for creating the FcwPeer
+    -   `opts.requestUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to issue requests to the Peer with
+    -   `opts.peerOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peer's request url
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID of the organization the peer belongs to
+    -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
+    -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the Peer. Defaults to member (optional, default `'member'`)
+
+Returns **[FcwPeer](#fcwpeer)** The FcwPeer
+
+## isFcwPeer
+
+Checks whether an object is a FcwPeer
+
+**Parameters**
+
+-   `obj` **any** The object to check
+
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if the object is a FcwPeer, false otherwise
+
+## upgradeFcwPeerToEventHubPeer
+
+Upgrades a FcwPeer with an EventHubManager
+
+**Parameters**
+
+-   `fcwPeer` **[Peer](#peer)** 
+-   `opts` **any** The options for upgrading the FcwPeer
+    -   `opts.client` **([Client](#client) \| [UserClient](#userclient))** The Client/UserClient tied to the user that creates the EventHub
+    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Peer with
+    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peers event url
+
+Returns **[EventHubPeer](#eventhubpeer)** The EventHubPeer
+
+## upgradePeerToEventHubPeer
+
+Upgrades a fabric-client Peer with additional MSP information and an EventHubManager
+
+**Parameters**
+
+-   `peer` **[Peer](#peer)** 
+-   `opts` **EventHubPeerOpts** The options for upgrading the Peer
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID of the organization the peer belongs to
+    -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
+    -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the Peer. Defaults to member (optional, default `'member'`)
+    -   `opts.client` **([Client](#client) \| [UserClient](#userclient))** The Client/UserClient tied to the user that creates the EventHub
+    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Peer with
+    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peers event url
+
+Returns **[EventHubPeer](#eventhubpeer)** The EventHubPeer
+
+## createEventHubPeer
+
+Creates a fabric-client Peer with additional MSP information and an EventHubManager
+
+**Parameters**
+
+-   `opts` **CreateEventHubPeerOpts** The options for creating the EventhHubPeer
+    -   `opts.requestUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to issue requests to the Peer with
+    -   `opts.peerOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peer's request url
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID of the organization the peer belongs to
+    -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the Peer. Defaults to member (optional, default `'member'`)
+    -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
+    -   `opts.client` **([Client](#client) \| [UserClient](#userclient))** The Client/UserClient tied to the user that creates the EventHub
+    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Peer with
+    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peers event url
+
+Returns **[EventHubPeer](#eventhubpeer)** The EventHubPeer
+
+## isEventHubPeer
+
+Checks whether an object is a EventHubPeer
+
+**Parameters**
+
+-   `obj` **any** The object to check
+
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if the object is a EventHubPeer, false otherwise
+
+## upgradeChannelToFcwChannel
+
+A fabric-client Channel with a more flexible constructor that keeps track of transactionIds
+
+**Parameters**
+
+-   `channel` **[Channel](#channel)** Upgrades a fabric-client Channel to keep track of recent transactions
+-   `opts` **any** The options for upgrading the channel
+    -   `opts.transactionTimeMapLifetime` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The amount of time to remember past transaction IDs
+
+Returns **[Channel](#channel)** The FcwChannel
+
+## FcwChannel
+
+**Extends Channel**
+
+A fabric-client Channel that keeps track of transactionIds
+
+Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+### getTransactionIdTimeMap
+
+Gets the TransactionIdTimeMap instance
+
+Returns **TransactionIdMap** The TransactionIdMap of the FcwChannel
+
+## createFcwChannel
+
+Creates a fabric-client Channel that keeps track of transactionIds
+
+**Parameters**
+
+-   `opts` **any** The options for creating the Channel
+    -   `opts.channelName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the channel
+    -   `opts.client` **([Client](#client) \| [UserClient](#userclient))?** The client context to use for operations
+    -   `opts.peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of peers to use for channel operations (optional, default `[]`)
+    -   `opts.orderers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Orderer](#orderer)>** The orderers to use for the channel (optional, default `[]`)
+    -   `opts.transactionTimeMapLifetime` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The amount of time to remember past transaction IDs
+
+Returns **[Channel](#channel)** 
+
+## isFcwChannel
+
+Checks whether an object is a FcwChannel
+
+**Parameters**
+
+-   `obj` **any** The object to check
+
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if the object is a FcwChannel, false otherwise
 
 ## createFileKeyValueStoreAndCryptoSuite
 
@@ -1056,15 +1220,13 @@ Creates a new UserClient from a public private key pair
 
 **Parameters**
 
--   `$0` **any** 
-    -   `$0.userKeyConfig`  
-    -   `$0.mspId`  
-    -   `$0.cryptoSuite`  
-    -   `$0.store`  
-    -   `$0.roles`  
--   `userKeyConfig`  The username of the user + the public private key pair
--   `organizationConfig`  The config of the organization that the user belongs to
--   `roles`  An array containing the roles that the user has
+-   `opts` **any** The options to create the user with
+    -   `opts.username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username of the user
+    -   `opts.cryptoContent` **CryptoContent** The public/private key pair for the user
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID that the user belongs to
+    -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)** The CryptoSuite to use to create the user
+    -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in
+    -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
 
@@ -1074,20 +1236,14 @@ Creates a new UserClient from enrolling in the CA
 
 **Parameters**
 
--   `$0` **any** 
-    -   `$0.fabricCAClient`  
-    -   `$0.enrollmentConfig.username`  
-    -   `$0.enrollmentConfig.secret`  
-    -   `$0.mspId`  
-    -   `$0.cryptoSuite`  
-    -   `$0.store`  
-    -   `$0.roles`  
--   `fabricCAClient`  The FabricCAClient to use to interact with the CA
--   `enrollmentConfig`  A username+secret pair to enroll with
-    -   `enrollmentConfig.username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username to enroll with
-    -   `enrollmentConfig.secret` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The secret to enroll with
--   `organizationConfig`  The config of the organization that the user belongs to
--   `roles`  An array containing the roles that the user has
+-   `opts` **any** The options to create the user with
+    -   `opts.fabricCAClient` **[FabricCAClient](#fabriccaclient)** The FabricCAClient to use to interact with the CA
+    -   `opts.enrollmentID` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username to enroll with
+    -   `opts.enrollmentSecret` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The secret to enroll with
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID that the user belongs to
+    -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)** The CryptoSuite to use to create the user
+    -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in
+    -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
 
@@ -1103,14 +1259,14 @@ Creates a new UserClient from registering and enrolling in the CA
     -   `$0.cryptoSuite`  
     -   `$0.store`  
     -   `$0.roles`  
-    -   `$0.username`  
-    -   `$0.affiliation`  
-    -   `$0.registerOpts`  
--   `caAdminUserClient`  The UserClient you wish to use to enroll
--   `username`  The username of the new user
--   `affiliation`  The affiliation of the new user
--   `opts`  The CA register options
--   `roles`  An array containing the roles that the user has
+    -   `$0.registerRequest`  
+-   `opts`  The options to create the user with
+    -   `opts.userClient` **[UserClient](#userclient)** The UserClient to register and enroll with
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The MSP ID that the user belongs to. Fallsback to userClient's MSP ID
+    -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)** The CryptoSuite to use to create the user
+    -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in
+    -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has
+-   `registerRequest` **[RegisterRequest](#registerrequest)** The request arguments to register the user with
 
 Returns **any** A promise containing a new UserClient instance
 
@@ -1120,18 +1276,14 @@ Creates a new UserClient from the key value store
 
 **Parameters**
 
--   `$0` **any** 
-    -   `$0.userClient`  
-    -   `$0.username`  
-    -   `$0.mspId`  
-    -   `$0.cryptoSuite`  
-    -   `$0.store`  
-    -   `$0.roles`  
--   `username`  The username of the new user
--   `opts`  An array containing the roles that the user has (optional, default `{}`)
-    -   `opts.userClient` **[UserClient](#userclient)?** The UserClient to use to retrieve the user from the store
-    -   `opts.organizationConfig` **OrganizationConfig?** The OrganizationConfig to use, Note required if UserClient is not specfied
+-   `opts` **any** The options to create the user with
+    -   `opts.userClient` **[UserClient](#userclient)?** The UserClient to use to retrieve the user.
+    -   `opts.username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username of the user
+    -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID that the user belongs to
+    -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)?** The CryptoSuite to use to create the user. Fallsback to the userClient's CryptoSuite
+    -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in. Fallsback to the userClient's KeyValueStore
     -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has
+    -   `opts.cryptoContent` **CryptoContent** The public/private key pair for the user
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
 
@@ -1141,7 +1293,60 @@ Picks peers from a larger set that satisfy an endorsement policy
 
 **Parameters**
 
--   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** the larger set of peers to pick from
--   `policy` **Policy** the endorsment policy to satisfy
+-   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>** the larger set of peers to pick from
+-   `policy` **[Policy](#policy)** the endorsment policy to satisfy
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;Peer>** An array of Peers that satisfy the policy
+Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>** An array of Peers that satisfy the policy
+
+## fabric-client (external)
+
+
+
+
+## Client
+
+fabric-client Client class see [Client](https://fabric-sdk-node.github.io/Client.html)
+
+## Peer
+
+fabric-client Peer class see [Peer](https://fabric-sdk-node.github.io/Peer.html)
+
+## Channel
+
+fabric-client Channel class see [Channel](https://fabric-sdk-node.github.io/Channel.html)
+
+## Orderer
+
+fabric-client Orderer class see [Orderer](https://fabric-sdk-node.github.io/Orderer.html)
+
+## EventHub
+
+fabric-client EventHub class see [EventHub](https://fabric-sdk-node.github.io/EventHub.html)
+
+## FabricCAClient
+
+fabric-ca-client FabricCAClient class see [FabricCAClient](https://fabric-sdk-node.github.io/FabricCAClient.html)
+
+## KeyValueStore
+
+fabric-client KeyValueStore object see [KeyValueStore](https://fabric-sdk-node.github.io/module-api.KeyValueStore.html)
+
+## CryptoSuite
+
+fabric-client CryptoSuite object see [CryptoSuite](https://fabric-sdk-node.github.io/module-api.CryptoSuite.html)
+
+## ConnectionOpts
+
+fabric-client ConnectionOpts object see [ConnectionOpts](https://fabric-sdk-node.github.io/global.html#ConnectionOpts)
+
+## Policy
+
+fabric-client Policy object see the endorsement policy example listed here <https://fabric-sdk-node.github.io/global.html#ChaincodeInstantiateUpgradeRequest>
+
+## TransactionRequest
+
+fabric-client TransactionRequest object see [TransactionRequest](https://fabric-sdk-node.github.io/global.html#TransactionRequest)
+
+## RegisterRequest
+
+fabric-ca-client RegisterRequest object see [RegisterRequest](https://fabric-sdk-node.github.io/global.html#RegisterRequest)
