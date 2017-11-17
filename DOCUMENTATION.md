@@ -2,7 +2,7 @@
 
 ### Table of Contents
 
--   [fabric-client-wrapper](#fabric-client-wrapper)
+-   [Main](#main)
 -   [fcw](#fcw)
     -   [setupChannel](#setupchannel)
 -   [ChannelSetup](#channelsetup)
@@ -79,12 +79,12 @@
 -   [EventHubPeer](#eventhubpeer)
     -   [getEventHubManager](#geteventhubmanager-1)
     -   [canConnect](#canconnect)
+-   [FcwChannel](#fcwchannel)
+    -   [getTransactionIdTimeMap](#gettransactionidtimemap)
 -   [TransactionIdTimeMap](#transactionidtimemap)
     -   [has](#has)
     -   [set](#set)
     -   [clear](#clear)
--   [CryptoStore](#cryptostore)
--   [CreateFcwChannelOpts](#createfcwchannelopts)
 -   [upgradePeerToFcwPeer](#upgradepeertofcwpeer)
 -   [createFcwPeer](#createfcwpeer)
 -   [isFcwPeer](#isfcwpeer)
@@ -93,8 +93,6 @@
 -   [createEventHubPeer](#createeventhubpeer-1)
 -   [isEventHubPeer](#iseventhubpeer)
 -   [upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)
--   [FcwChannel](#fcwchannel)
-    -   [getTransactionIdTimeMap](#gettransactionidtimemap)
 -   [createFcwChannel](#createfcwchannel)
 -   [isFcwChannel](#isfcwchannel)
 -   [createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)
@@ -104,6 +102,9 @@
 -   [createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)
 -   [createUserClientFromStore](#createuserclientfromstore)
 -   [pickPeersForPolicy](#pickpeersforpolicy)
+-   [Objects](#objects)
+-   [CreateFcwChannelOpts](#createfcwchannelopts)
+-   [CryptoStore](#cryptostore)
 -   [fabric-client (external)](#fabric-client-external)
 -   [Client](#client)
 -   [Peer](#peer)
@@ -115,10 +116,11 @@
 -   [CryptoSuite](#cryptosuite)
 -   [ConnectionOpts](#connectionopts)
 -   [Policy](#policy)
+-   [IdentityPEMs](#identitypems)
 -   [TransactionRequest](#transactionrequest)
 -   [RegisterRequest](#registerrequest)
 
-## fabric-client-wrapper
+## Main
 
 
 
@@ -167,9 +169,22 @@ creates an object for building and running channel setup requests
 **Parameters**
 
 -   `userClient`  The UserClient representing the user setting up the channel
--   `channelOrChannelName`  Either the channel object you wish to use or the name of the channel
--   `peers`  The peers you wish to use for the channel, only required when supplying the name of the channel
--   `orderer`  The orderer you wish to use for the channel, only required when supplying the name of the channel
+-   `channelOrChannelName`  
+-   `peers`  
+-   `orderer`  
+-   `channelOrChannelOpts`  Either the channel object you wish to use or the arguments to create a new channel
+-   `opts`  Additional options[swallowAlreadyCreatedErrors]
+    -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
+    -   `opts.network`  Network options
+        -   `opts.network.leader` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Whether to be the network leader (the server)
+        -   `opts.network.mspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The MSP IDs that the org represents, only required for non-leaders
+        -   `opts.network.externalMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The MSP IDs of external organisations. Is optional and is only used by leader
+        -   `opts.network.host` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The host of the server. Is optional and is only used by non-leaders.
+        -   `opts.network.port` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The port to communicate on. (optional, default `45207`)
+        -   `opts.network.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The maximum amount of time to wait between various stages of the network setup phase
+        -   `opts.network.onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** Callback function for socket errors
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Channel](#channel)>** The setup channel
 
 ## ChannelSetup
 
@@ -989,6 +1004,20 @@ Checks whether the peer can currently correct
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** true if the peer can connect, false otherwisek
 
+## FcwChannel
+
+**Extends Channel**
+
+A fabric-client Channel that keeps track of transactionIds
+
+Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+### getTransactionIdTimeMap
+
+Gets the TransactionIdTimeMap instance
+
+Returns **TransactionIdMap** The TransactionIdMap of the FcwChannel
+
 ## TransactionIdTimeMap
 
 A Class that holds a map of transaction IDs and removes them after a period of time
@@ -1018,31 +1047,6 @@ Sets the transaction ID in the map. If the transaction ID has been previously se
 ### clear
 
 Clears all timers and transaction IDs
-
-## CryptoStore
-
-A set of objects and configuration used by/representing the organization
-
-Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
-
-**Properties**
-
--   `cryptoSuite` **[CryptoSuite](#cryptosuite)** An abstraction over crytpographic algorithms
--   `store` **[KeyValueStore](#keyvaluestore)** A key value store used to store user credentials
-
-## CreateFcwChannelOpts
-
-Options to create a FcwChannel
-
-Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
-
-**Properties**
-
--   `channelName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the channel
--   `client` **([Client](#client) \| [UserClient](#userclient))?** The client context to use for operations
--   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of peers to use for channel operations
--   `orderers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Orderer](#orderer)>** The orderers to use for the channel
--   `transactionTimeMapLifetime` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The amount of time to remember past transaction IDs
 
 ## upgradePeerToFcwPeer
 
@@ -1154,20 +1158,6 @@ A fabric-client Channel with a more flexible constructor that keeps track of tra
 
 Returns **[Channel](#channel)** The FcwChannel
 
-## FcwChannel
-
-**Extends Channel**
-
-A fabric-client Channel that keeps track of transactionIds
-
-Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
-
-### getTransactionIdTimeMap
-
-Gets the TransactionIdTimeMap instance
-
-Returns **TransactionIdMap** The TransactionIdMap of the FcwChannel
-
 ## createFcwChannel
 
 Creates a fabric-client Channel that keeps track of transactionIds
@@ -1222,7 +1212,7 @@ Creates a new UserClient from a public private key pair
 
 -   `opts` **any** The options to create the user with
     -   `opts.username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username of the user
-    -   `opts.cryptoContent` **CryptoContent** The public/private key pair for the user
+    -   `opts.cryptoContent` **[IdentityPEMs](#identitypems)** The public/private key pair for the user
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID that the user belongs to
     -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)** The CryptoSuite to use to create the user
     -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in
@@ -1253,20 +1243,13 @@ Creates a new UserClient from registering and enrolling in the CA
 
 **Parameters**
 
--   `$0` **any** 
-    -   `$0.userClient`  
-    -   `$0.mspId`  
-    -   `$0.cryptoSuite`  
-    -   `$0.store`  
-    -   `$0.roles`  
-    -   `$0.registerRequest`  
--   `opts`  The options to create the user with
+-   `opts` **any** The options to create the user with
     -   `opts.userClient` **[UserClient](#userclient)** The UserClient to register and enroll with
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The MSP ID that the user belongs to. Fallsback to userClient's MSP ID
     -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)** The CryptoSuite to use to create the user
     -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in
     -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has
--   `registerRequest` **[RegisterRequest](#registerrequest)** The request arguments to register the user with
+    -   `opts.registerRequest` **[RegisterRequest](#registerrequest)** The request arguments to register the user with
 
 Returns **any** A promise containing a new UserClient instance
 
@@ -1283,7 +1266,7 @@ Creates a new UserClient from the key value store
     -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)?** The CryptoSuite to use to create the user. Fallsback to the userClient's CryptoSuite
     -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in. Fallsback to the userClient's KeyValueStore
     -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has
-    -   `opts.cryptoContent` **CryptoContent** The public/private key pair for the user
+    -   `opts.cryptoContent` **[IdentityPEMs](#identitypems)** The public/private key pair for the user
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
 
@@ -1297,6 +1280,36 @@ Picks peers from a larger set that satisfy an endorsement policy
 -   `policy` **[Policy](#policy)** the endorsment policy to satisfy
 
 Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>** An array of Peers that satisfy the policy
+
+## Objects
+
+
+
+
+## CreateFcwChannelOpts
+
+Options to create a FcwChannel
+
+Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+**Properties**
+
+-   `channelName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the channel
+-   `client` **([Client](#client) \| [UserClient](#userclient))?** The client context to use for operations
+-   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of peers to use for channel operations
+-   `orderers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Orderer](#orderer)>** The orderers to use for the channel
+-   `transactionTimeMapLifetime` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The amount of time to remember past transaction IDs
+
+## CryptoStore
+
+A set of objects and configuration used by/representing the organization
+
+Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+**Properties**
+
+-   `cryptoSuite` **[CryptoSuite](#cryptosuite)** An abstraction over crytpographic algorithms
+-   `store` **[KeyValueStore](#keyvaluestore)** A key value store used to store user credentials
 
 ## fabric-client (external)
 
@@ -1342,6 +1355,10 @@ fabric-client ConnectionOpts object see [ConnectionOpts](https://fabric-sdk-node
 ## Policy
 
 fabric-client Policy object see the endorsement policy example listed here <https://fabric-sdk-node.github.io/global.html#ChaincodeInstantiateUpgradeRequest>
+
+## IdentityPEMs
+
+fabric-client IdentityPEMs object see [IdentityPEMs](https://fabric-sdk-node.github.io/global.html#IdentityPEMs)
 
 ## TransactionRequest
 

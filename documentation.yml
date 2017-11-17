@@ -1,5 +1,5 @@
 toc:
-  - name: fabric-client-wrapper
+  - name: Main
   - fcw
   - ChannelSetup
   - Transactor
@@ -7,9 +7,8 @@ toc:
   - EventHubManager
   - FcwPeer
   - EventHubPeer
+  - FcwChannel
   - TransactionIdTimeMap
-  - CryptoStore
-  - CreateFcwChannelOpts
   - upgradePeerToFcwPeer
   - createFcwPeer
   - isFcwPeer
@@ -18,7 +17,6 @@ toc:
   - createEventHubPeer
   - isEventHubPeer
   - upgradeChannelToFcwChannel
-  - FcwChannel
   - createFcwChannel
   - isFcwChannel
   - createFileKeyValueStoreAndCryptoSuite
@@ -28,6 +26,9 @@ toc:
   - createUserClientFromCARegisterAndEnroll
   - createUserClientFromStore
   - pickPeersForPolicy
+  - name: Objects
+  - CreateFcwChannelOpts
+  - CryptoStore
   - name: fabric-client (external)
   - Client
   - Peer
@@ -39,5 +40,6 @@ toc:
   - CryptoSuite
   - ConnectionOpts
   - Policy
+  - IdentityPEMs
   - TransactionRequest
   - RegisterRequest
