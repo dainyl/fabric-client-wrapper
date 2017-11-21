@@ -29,8 +29,17 @@ toc:
   - name: Objects
   - CreateFcwChannelOpts
   - CryptoStore
+  - InvokeChaincodeResponse
+  - QueryChaincodeResponse
+  - SendTransactionProposalResponse
+  - SendTransactionResponse
+  - WaitSendTransaction
+  - WaitPoll
+  - WaitTimeout
+  - WaitSimple
+  - WaitCreateChannel
   - name: fabric-client (external)
-  - Client
+  - FabricClient
   - Peer
   - Channel
   - Orderer
@@ -41,5 +50,7 @@ toc:
   - ConnectionOpts
   - Policy
   - IdentityPEMs
+  - ProposalResponse
+  - ProposalResponseObject
   - TransactionRequest
   - RegisterRequest
