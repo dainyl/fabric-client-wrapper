@@ -1,6 +1,6 @@
 # Running Tests
 
-1. Build `configtxlator` for the fabric release (obtain by following instructions here http://hyperledger-fabric.readthedocs.io/en/latest/samples.html#download-platform-specific-binaries)
+1. Retrieve Hyperledger fabric images and the `configtxlator` executable (obtain both by following instructions here http://hyperledger-fabric.readthedocs.io/en/latest/samples.html#download-platform-specific-binaries)
 
 2. Bring up the `configtxlator` which was downloaded in the platform-specific-binaries via:
 ```
