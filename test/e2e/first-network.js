@@ -72,13 +72,13 @@ describe("first-network", function() {
             network.chaincode.endorsementPolicy
         )
 
-        // const invokeResponse = await transactor.invoke("move", ["a", "b", "10"])
-        // expect(invokeResponse.data).to.be.an("object")
-        // expect(invokeResponse.data.transactionResponse).to.be.an("object")
-        // expect(invokeResponse.data.proposalResponse).to.be.an("object")
-        // expect(invokeResponse.data.transactionId).to.be.a("string")
-        // expect(invokeResponse.wait).to.be.a("function")
-        // await invokeResponse.wait({ race: true })
+        const invokeResponse = await transactor.invoke("move", ["a", "b", "10"])
+        expect(invokeResponse.data).to.be.an("object")
+        expect(invokeResponse.data.transactionResponse).to.be.an("object")
+        expect(invokeResponse.data.proposalResponse).to.be.an("object")
+        expect(invokeResponse.data.transactionId).to.be.a("string")
+        expect(invokeResponse.wait).to.be.a("function")
+        await invokeResponse.wait({ race: true })
 
         const queryResponse = await transactor.query("query", ["a"])
         expect(queryResponse).to.be.an("object")
@@ -181,6 +181,51 @@ describe("first-network", function() {
         })
     })
 
+    it("should upgrade a chaincode", async function() {
+        this.timeout(60000)
+        const admins = [
+            network.organizations.Org1MSP.admins.greg,
+            network.organizations.Org2MSP.admins.peerOrg2Admin
+        ]
+        await Promise.all(
+            admins.map((admin, index) =>
+                fcw
+                    .setupChannel(admin, network.channel, {
+                        network: {
+                            leader: index === 0,
+                            host: "localhost",
+                            timeout: 10 * 60000
+                        }
+                    })
+                    .withInstallChaincode(
+                        {
+                            chaincodeId: network.chaincode.id,
+                            chaincodePath: "github.com/example_cc",
+                            chaincodeVersion: "v1"
+                        },
+                        {
+                            timeout: 10 * 60000
+                        }
+                    )
+                    .withUpgradeChaincode(
+                        {
+                            chaincodeId: network.chaincode.id,
+                            chaincodeVersion: "v1",
+                            fcn: "init",
+                            args: ["a", "100", "b", "200"]
+                        },
+                        {
+                            timeout: 10 * 60000,
+                            waitOpts: {
+                                timeout: 10 * 60000
+                            }
+                        }
+                    )
+                    .run()
+            )
+        )
+    })
+
     it("should update the channel", async function() {
         this.timeout(60000)
         const org1Channel = network.organizations.Org1MSP.admins.greg.bindChannel(
@@ -196,8 +241,6 @@ describe("first-network", function() {
             )
             .buffer()
         const updatedConfig = JSON.parse(decodeResponse.text.toString())
-        // delete Org2
-        // delete updatedConfig.channel_group.groups.Application.groups.Org2MSP
         if (
             updatedConfig.channel_group.groups.Orderer.values.BatchSize.value
                 .max_message_count === 10
