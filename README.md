@@ -1,6 +1,6 @@
 # Hyperledger Fabric Client Wrapper
 
-This is a wrapper over the [Hyperledger Fabric Node SDK](https://github.com/hyperledger/fabric-sdk-node/), that attempts to cover up some of the pain points.
+This is a wrapper over the [Hyperledger Fabric Node SDK](https://github.com/hyperledger/fabric-sdk-node/), that simplifies setting up the network and making transactions
 
 ## Node Versions
 
