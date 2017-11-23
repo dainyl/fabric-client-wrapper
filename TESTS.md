@@ -1,4 +1,4 @@
-# E2E tests
+# Running Tests
 
 1. Build `configtxlator` for the fabric release (obtain by following instructions here http://hyperledger-fabric.readthedocs.io/en/latest/samples.html#download-platform-specific-binaries)
 

@@ -6,8 +6,8 @@ This is a wrapper over the [Hyperledger Fabric Node SDK](https://github.com/hype
 
 Node runtime version 6.9.x or higher, and 8.4.0 or higher ( Node v7+ is not supported )
 
-## Trying out `fabric-client-wrapper` with `fabric-samples`
-[See Here](./E2E_TESTS.md)
+## Running Tests
+[See Here](./TESTS.md)
 
 ## Fabric Client Wrapper Documentation
 [See here](./DOCUMENTATION.md)
