@@ -52,5 +52,6 @@ toc:
   - IdentityPEMs
   - ProposalResponse
   - ProposalResponseObject
+  - Block
   - TransactionRequest
   - RegisterRequest

@@ -128,6 +128,7 @@
 -   [IdentityPEMs](#identitypems)
 -   [ProposalResponse](#proposalresponse)
 -   [ProposalResponseObject](#proposalresponseobject)
+-   [Block](#block)
 -   [TransactionRequest](#transactionrequest)
 -   [RegisterRequest](#registerrequest)
 
@@ -184,7 +185,7 @@ creates an object for building and running channel setup requests
 -   `peers`  
 -   `orderer`  
 -   `channelOrChannelOpts`  Either the channel object you wish to use or the arguments to create a new channel
--   `opts`  Additional options[swallowAlreadyCreatedErrors]
+-   `opts`  Additional options
     -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
     -   `opts.network`  Network options
         -   `opts.network.leader` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Whether to be the network leader (the server)
@@ -242,7 +243,7 @@ Adds a joinChannel operation to the builder
 
 -   `joinChannelRequest` **JoinChannelRequest** The options for joining the channel on the network
     -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;([Peer](#peer) \| [FcwPeer](#fcwpeer) \| [EventHubPeer](#eventhubpeer))>?** An array of Peer objects or Peer names that will be asked to join this channel.
-    -   `joinChannelRequest.genesisBlock` **GenesisBlock?** The genesis block for the channel
+    -   `joinChannelRequest.genesisBlock` **[Block](#block)?** The genesis block for the channel
 -   `opts` **any** Additional options
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for the channel to be joined (optional, default `60000`)
     -   `opts.waitOpts`  Options for waiting
@@ -742,7 +743,7 @@ This method sends a join channel proposal to one or more endorsing peers.
 -   `channel` **[Channel](#channel)** The channel object to use
 -   `joinChannelRequest` **any** The options for joining the channel
     -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects or Peer names that will be asked to join this channel.
-    -   `joinChannelRequest.genesisBlock` **GenesisBlock?** The genesis block for the channel
+    -   `joinChannelRequest.genesisBlock` **[Block](#block)?** The genesis block for the channel
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings.
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[ProposalResponse](#proposalresponse)>, wait: WaitTimeout}>** a promise containing an array of proposal response objects
@@ -1480,6 +1481,10 @@ fabric-client ProposalResponse object see <https://fabric-sdk-node.github.io/glo
 ## ProposalResponseObject
 
 fabric-client ProposalResponseObject object see <https://fabric-sdk-node.github.io/global.html#ProposalResponseObject>
+
+## Block
+
+fabric-client Block object see <https://fabric-sdk-node.github.io/global.html#Block>
 
 ## TransactionRequest
 
