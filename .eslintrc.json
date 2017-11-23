@@ -52,7 +52,7 @@
         "node": true
     },
     "overrides": [{
-        "files": ["lib/**/*.spec.js", "test/e2e/**/*.js"],
+        "files": ["lib/**/*.spec.js", "test/**/*.js"],
         "rules": {
             "func-names": "off",
             "no-unused-expressions": "off",

@@ -1,9 +1,9 @@
 test
 lib
-fabric-samples
 .babelrc
 .eslintignore
 .eslintrc.json
 .flowconfig
 .gitignore
+.documentation.yml
 *.md

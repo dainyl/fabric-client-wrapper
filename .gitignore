@@ -8,5 +8,4 @@ flow-typed/npm
 
 # fabric-client-wrapper
 dist
-fabric-samples
 keystores
