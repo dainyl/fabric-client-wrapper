@@ -111,7 +111,7 @@
 -   [SendTransactionResponse](#sendtransactionresponse)
 -   [WaitSendTransaction](#waitsendtransaction)
 -   [WaitPoll](#waitpoll)
--   [WaitTimeout](#waittimeout)
+-   [WaitEvent](#waitevent)
 -   [WaitSimple](#waitsimple)
 -   [WaitCreateChannel](#waitcreatechannel)
 -   [fabric-client (external)](#fabric-client-external)
@@ -709,8 +709,8 @@ Calls the orderer to start building the new channel. A channel typically has mor
 
 -   `channel` **[Channel](#channel)** The channel object to users
 -   `createChannelRequest` **any** The options for building a new channel on the network
-    -   `createChannelRequest.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
-    -   `createChannelRequest.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
+    -   `createChannelRequest.envelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
+    -   `createChannelRequest.config` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
     -   `createChannelRequest.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new channel, required if no envelope is specified
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [WaitCreateChannel](#waitcreatechannel)}>** Promise containing the status of the create channel order, note that the wait function returns the genesis block
@@ -723,11 +723,15 @@ Calls the orderer to update an existing channel. After the channel updates are s
 
 -   `channel` **[Channel](#channel)** The channel object to users
 -   `updateChannelRequest` **any** The options for updating a channel on the network
-    -   `updateChannelRequest.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the updated channel, required if no config is specified
-    -   `updateChannelRequest.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the updated channel, required if no envelope is specified
+    -   `updateChannelRequest.envelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the updated channel, required if no config is specified
+    -   `updateChannelRequest.config` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the updated channel, required if no envelope is specified
     -   `updateChannelRequest.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the updated channel, required if no envelope is specified
+-   `waitOpts` **any** The options for the wait function
+    -   `waitOpts.disable` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Disables wait function. Enable if you do not want to listen to peers for confirmation (optional, default `false`)
+    -   `waitOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Max time to wait for peers (optional, default `60000`)
+    -   `waitOpts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use, defaults to peers used for the function the wait is attached to
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [WaitTimeout](#waittimeout)}>** Promise containing the status of the update channel order
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), wait: [WaitSimple](#waitsimple)}>** Promise containing the status of the update channel order
 
 ### joinChannel
 
@@ -741,7 +745,7 @@ This method sends a join channel proposal to one or more endorsing peers.
     -   `joinChannelRequest.genesisBlock` **GenesisBlock?** The genesis block for the channel
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. This overrides the default timeout of the Peer instance and the global timeout in the config settings.
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[ProposalResponse](#proposalresponse)>, wait: [WaitTimeout](#waittimeout)}>** a promise containing an array of proposal response objects
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;{data: [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[ProposalResponse](#proposalresponse)>, wait: WaitTimeout}>** a promise containing an array of proposal response objects
 
 ### installChaincode
 
@@ -1370,7 +1374,7 @@ Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referen
 **Parameters**
 
 -   `opts`  Options for wait function
-    -   `opts.peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use, defaults to peers used for endorsement
+    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use, defaults to peers used for the function the wait is attached to
     -   `opts.race` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option to only wait for a single peer (optional, default `false`)
     -   `opts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Time between polls (optional, default `1000`)
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Max time to wait for peers (optional, default `60000`)
@@ -1384,18 +1388,20 @@ Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referen
 **Parameters**
 
 -   `opts`  Options for wait function
+    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use, defaults to peers used for the function the wait is attached to
     -   `opts.pollInterval` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Time between polls (optional, default `1000`)
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Max time to wait for peers (optional, default `60000`)
 
 Returns **any** Resolves once peer(s) have responded
 
-## WaitTimeout
+## WaitEvent
 
 Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)
 
 **Parameters**
 
 -   `opts`  Options for wait function
+    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use, defaults to peers used for the function the wait is attached to
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Max time to wait for peers (optional, default `60000`)
 
 Returns **any** Resolves once peer(s) have responded

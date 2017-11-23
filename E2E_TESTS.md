@@ -27,7 +27,7 @@ This builds a directory structure like this; each directory is an example.
 
 2. Go into the `first-network` directory. There is a script `byfn.sh` which
    we will use to build examples with their certificates and crypto-material for a channel named `mychannel`.
-   Make sure to build `configtxgen` and `cryptogen` for the fabric release (obtain by following instructions here http://hyperledger-fabric.readthedocs.io/en/latest/samples.html#download-platform-specific-binaries), and
+   Make sure to build `configtxgen`, `cryptogen`, and `configtxlator` for the fabric release (obtain by following instructions here http://hyperledger-fabric.readthedocs.io/en/latest/samples.html#download-platform-specific-binaries), and
    to have these executables on the `PATH`.
 ```
 first-network$ ./byfn.sh -m generate -c mychannel
@@ -46,6 +46,11 @@ This generates the files like so:
 3. Bring up the network using the `docker-compose-e2e.yaml`
 ```
 first-network$ docker-compose -f docker-compose-e2e.yaml up
+```
+
+4. Bring up the `configtxlator` which was downloaded in the platform-specific-binaries via:
+```
+first-network$ configtxlator start
 ```
 
 ## Running Tests

@@ -1,6 +1,6 @@
 {
   "name": "@blockchain/fabric-client-wrapper",
-  "version": "1.1.0-preview-alpha.8",
+  "version": "1.1.0-preview-alpha.9",
   "description": "A wrapper around the Fabric Node SDK",
   "main": "dist/index.js",
   "author": "",
@@ -52,6 +52,9 @@
     "lint-staged": "^4.3.0",
     "mocha": "^3.5.0",
     "prettier": "1.8.2",
+    "request": "^2.83.0",
+    "superagent": "^3.8.1",
+    "superagent-promise": "^1.1.0",
     "uuid": "^3.1.0"
   },
   "publishConfig": {

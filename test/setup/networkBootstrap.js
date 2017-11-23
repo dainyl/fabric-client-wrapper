@@ -184,13 +184,11 @@ function createCreateChannelOpts(organizations, channelConfigEnvelope) {
     const admins = _.flatten(
         organizations.map(organization => Object.values(organization.admins))
     )
-    const channelConfig = admins[0].extractChannelConfig(channelConfigEnvelope)
-    const signatures = admins.map(admin =>
-        admin.signChannelConfig(channelConfig)
-    )
+    const config = admins[0].extractChannelConfig(channelConfigEnvelope)
+    const signatures = admins.map(admin => admin.signChannelConfig(config))
 
     return {
-        channelConfig,
+        config,
         signatures
     }
 }
