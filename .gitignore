@@ -6,6 +6,9 @@ npm-debug.log
 #flow
 flow-typed/npm
 
+#istanbul
+.nyc_output
+
 # fabric-client-wrapper
 dist
 keystores

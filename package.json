@@ -5,12 +5,24 @@
   "main": "dist/index.js",
   "author": "",
   "license": "ISC",
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false,
+    "instrument": false,
+    "exclude": [
+      "dist",
+      "test",
+      "lib/**/*.spec.js"
+    ]
+  },
   "scripts": {
     "build": "BABEL_ENV=production babel lib -d dist",
     "build-publish": "rm -rf ./dist && npm run build-doc && npm run build && npm publish",
     "lint": "eslint \"**/*.js\"",
     "format": "eslint --fix \"**/*.js\"",
-    "test": "GOPATH=./test/fixtures/chaincode HFC_LOGGING={} mocha --compilers js:babel-core/register --require babel-polyfill test/testRunner.js",
+    "test": "BABEL_ENV=test GOPATH=./test/fixtures/chaincode HFC_LOGGING={} nyc mocha --compilers js:babel-core/register --require babel-polyfill test/testRunner.js",
     "precommit": "lint-staged",
     "flow": "flow",
     "build-doc": "documentation --config documentation.yml build lib/index.js -f md -o DOCUMENTATION.md",
@@ -29,7 +41,7 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",
-    "babel-plugin-rewire": "^1.1.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
     "babel-preset-stage-3": "^6.24.1",
@@ -40,7 +52,7 @@
     "eslint-config-airbnb-base": "11.3.2",
     "eslint-config-prettier": "1.6.0",
     "eslint-plugin-flowtype": "^2.39.1",
-    "eslint-plugin-flowtype-errors": "^3.3.5",
+    "eslint-plugin-flowtype-errors": "^3.3.6",
     "eslint-plugin-import": "2.7.0",
     "eslint-plugin-lodash-fp": "^2.1.3",
     "eslint-plugin-prettier": "2.3.1",
@@ -51,6 +63,7 @@
     "husky": "^0.14.3",
     "lint-staged": "^4.3.0",
     "mocha": "^3.5.0",
+    "nyc": "^11.3.0",
     "prettier": "1.8.2",
     "request": "^2.83.0",
     "superagent": "^3.8.1",

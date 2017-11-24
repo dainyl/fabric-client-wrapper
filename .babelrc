@@ -10,10 +10,8 @@
     ],
     "env": {
         "test": {
-            "plugins": ["rewire"]
-        }
-    },
-    "env": {
+            "plugins": ["istanbul"]
+        },
         "production": {
             "ignore": ["**/*.spec.js"]
         }
