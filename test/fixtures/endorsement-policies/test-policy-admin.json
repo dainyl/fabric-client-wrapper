@@ -1,17 +1,17 @@
 {
     "identities": [{
         "role": {
-            "name": "member",
+            "name": "admin",
             "mspId": "peerOrg1"
         }
     }, {
         "role": {
-            "name": "member",
+            "name": "admin",
             "mspId": "peerOrg2"
         }
     }, {
         "role": {
-            "name": "member",
+            "name": "admin",
             "mspId": "ordererOrg"
         }
     }],
