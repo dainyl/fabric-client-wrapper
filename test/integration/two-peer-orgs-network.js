@@ -195,11 +195,11 @@ describe("two-peer-orgs-network", function() {
     })
 
     it("should try load the admin from the store", async function() {
-        await fcw.createUserClientFromStore({
+        await fcw.newUserClientFromStore({
             ...network.organizations.Org1MSP.config,
             username: "greg"
         })
-        await fcw.createUserClientFromStore({
+        await fcw.newUserClientFromStore({
             userClient: network.organizations.Org1MSP.admins.greg,
             username: "greg"
         })
@@ -214,7 +214,7 @@ describe("two-peer-orgs-network", function() {
             network.organizations.Org1MSP.config.cryptoSuite
         )
 
-        const caAdmin = await fcw.createUserClientFromCAEnroll({
+        const caAdmin = await fcw.newUserClientFromCAEnroll({
             fabricCAClient,
             enrollmentID: "admin",
             enrollmentSecret: "adminpw",
@@ -222,7 +222,7 @@ describe("two-peer-orgs-network", function() {
         })
 
         const username = uuidv4()
-        await fcw.createUserClientFromCARegisterAndEnroll({
+        await fcw.newUserClientFromCARegisterAndEnroll({
             userClient: caAdmin,
             registerRequest: {
                 enrollmentID: username,
@@ -230,15 +230,15 @@ describe("two-peer-orgs-network", function() {
             }
         })
 
-        await fcw.createUserClientFromStore({
+        await fcw.newUserClientFromStore({
             userClient: network.organizations.Org1MSP.admins.greg,
             username
         })
-        await fcw.createUserClientFromStore({
+        await fcw.newUserClientFromStore({
             userClient: caAdmin,
             username
         })
-        await fcw.createUserClientFromStore({
+        await fcw.newUserClientFromStore({
             ...network.organizations.Org1MSP.config,
             username
         })

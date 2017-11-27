@@ -21,9 +21,9 @@ import fs from "fs"
 import path from "path"
 import Orderer from "fabric-client/lib/Orderer"
 import fcw, {
-    createFcwChannel,
-    createUserClientFromKeys,
-    createFileKeyValueStoreAndCryptoSuite,
+    newFcwChannel,
+    newUserClientFromKeys,
+    newFileKeyValueStoreAndCryptoSuite,
     ADMIN_ROLE
 } from "../../lib"
 
@@ -83,7 +83,7 @@ function parseOrganizationsJSON(organizationsJSON) {
                     members: {}
                 }
                 organization.config = {
-                    ...(await createFileKeyValueStoreAndCryptoSuite(
+                    ...(await newFileKeyValueStoreAndCryptoSuite(
                         path.join(__dirname, `../keystores/${mspId}`)
                     )),
                     mspId
@@ -106,7 +106,7 @@ function parseOrganizationsJSON(organizationsJSON) {
                                 path.join(userJSON.signcerts, signCertFileName)
                             )
                             .toString()
-                        const user = await createUserClientFromKeys({
+                        const user = await newUserClientFromKeys({
                             ...organization.config,
                             username: userJSON.username,
                             cryptoContent: {
@@ -131,7 +131,7 @@ function parseOrganizationsJSON(organizationsJSON) {
                     ).toString()
                     peersJSON.filter(endorserFilterLambda).forEach(peerJSON => {
                         organization.peers.push(
-                            admin.createEventHubPeer({
+                            admin.newEventHubPeer({
                                 requestUrl: peerJSON.requests,
                                 eventUrl: peerJSON.events,
                                 peerOpts: {
@@ -221,7 +221,7 @@ async function parseChannelChaincodeJSON(
     const peers = _.flatten(
         organizations.map(organization => organization.peers)
     ).filter(channelPeerFilterLambda)
-    const channel = createFcwChannel({
+    const channel = newFcwChannel({
         channelName: channelJSON.name,
         peers,
         orderers: [orderer]

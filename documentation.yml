@@ -10,24 +10,24 @@ toc:
   - FcwChannel
   - TransactionIdTimeMap
   - upgradePeerToFcwPeer
-  - createFcwPeer
+  - newFcwPeer
   - isFcwPeer
   - upgradeFcwPeerToEventHubPeer
   - upgradePeerToEventHubPeer
-  - createEventHubPeer
+  - newEventHubPeer
   - isEventHubPeer
   - upgradeChannelToFcwChannel
-  - createFcwChannel
+  - newFcwChannel
   - isFcwChannel
-  - createFileKeyValueStoreAndCryptoSuite
-  - createCouchDBKeyValueStoreAndCryptoSuite
-  - createUserClientFromKeys
-  - createUserClientFromCAEnroll
-  - createUserClientFromCARegisterAndEnroll
-  - createUserClientFromStore
+  - newFileKeyValueStoreAndCryptoSuite
+  - newCouchDBKeyValueStoreAndCryptoSuite
+  - newUserClientFromKeys
+  - newUserClientFromCAEnroll
+  - newUserClientFromCARegisterAndEnroll
+  - newUserClientFromStore
   - pickPeersForPolicy
   - name: Objects
-  - CreateFcwChannelOpts
+  - NewFcwChannelOpts
   - CryptoStore
   - InvokeChaincodeResponse
   - QueryChaincodeResponse

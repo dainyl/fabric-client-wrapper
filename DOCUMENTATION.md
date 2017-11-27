@@ -35,7 +35,7 @@
     -   [setFabricCAClient](#setfabriccaclient)
     -   [getEnrollmentSecret](#getenrollmentsecret)
     -   [setEnrollmentSecret](#setenrollmentsecret)
-    -   [createEventHubPeer](#createeventhubpeer)
+    -   [newEventHubPeer](#neweventhubpeer)
     -   [registerUserInCA](#registeruserinca)
     -   [extractChannelConfig](#extractchannelconfig)
     -   [signChannelConfig](#signchannelconfig)
@@ -86,24 +86,24 @@
     -   [set](#set)
     -   [clear](#clear)
 -   [upgradePeerToFcwPeer](#upgradepeertofcwpeer)
--   [createFcwPeer](#createfcwpeer)
+-   [newFcwPeer](#newfcwpeer)
 -   [isFcwPeer](#isfcwpeer)
 -   [upgradeFcwPeerToEventHubPeer](#upgradefcwpeertoeventhubpeer)
 -   [upgradePeerToEventHubPeer](#upgradepeertoeventhubpeer)
--   [createEventHubPeer](#createeventhubpeer-1)
+-   [newEventHubPeer](#neweventhubpeer-1)
 -   [isEventHubPeer](#iseventhubpeer)
 -   [upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)
--   [createFcwChannel](#createfcwchannel)
+-   [newFcwChannel](#newfcwchannel)
 -   [isFcwChannel](#isfcwchannel)
--   [createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)
--   [createCouchDBKeyValueStoreAndCryptoSuite](#createcouchdbkeyvaluestoreandcryptosuite)
--   [createUserClientFromKeys](#createuserclientfromkeys)
--   [createUserClientFromCAEnroll](#createuserclientfromcaenroll)
--   [createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)
--   [createUserClientFromStore](#createuserclientfromstore)
+-   [newFileKeyValueStoreAndCryptoSuite](#newfilekeyvaluestoreandcryptosuite)
+-   [newCouchDBKeyValueStoreAndCryptoSuite](#newcouchdbkeyvaluestoreandcryptosuite)
+-   [newUserClientFromKeys](#newuserclientfromkeys)
+-   [newUserClientFromCAEnroll](#newuserclientfromcaenroll)
+-   [newUserClientFromCARegisterAndEnroll](#newuserclientfromcaregisterandenroll)
+-   [newUserClientFromStore](#newuserclientfromstore)
 -   [pickPeersForPolicy](#pickpeersforpolicy)
 -   [Objects](#objects)
--   [CreateFcwChannelOpts](#createfcwchannelopts)
+-   [NewFcwChannelOpts](#newfcwchannelopts)
 -   [CryptoStore](#cryptostore)
 -   [InvokeChaincodeResponse](#invokechaincoderesponse)
 -   [QueryChaincodeResponse](#querychaincoderesponse)
@@ -152,21 +152,21 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 
 -   `UserClient` **[UserClient](#userclient)** Class representing a user and also a wrapper over FabricClient
 -   `upgradePeerToFcwPeer` **[upgradePeerToFcwPeer](#upgradepeertofcwpeer)** Upgrades a fabric-client Peer with additional MSP information
--   `createFcwPeer` **[createFcwPeer](#createfcwpeer)** Creates a fabric-clietn Peer with additional MSP information
+-   `newFcwPeer` **[newFcwPeer](#newfcwpeer)** Creates a fabric-clietn Peer with additional MSP information
 -   `isFcwPeer` **[isFcwPeer](#isfcwpeer)** Checks whether an object is a FcwPeer
 -   `upgradeFcwPeerToEventHubPeer` **[upgradeFcwPeerToEventHubPeer](#upgradefcwpeertoeventhubpeer)** Upgrades a FcwPeer with an EventHubManager
 -   `upgradePeerToEventHubPeer` **[upgradePeerToEventHubPeer](#upgradepeertoeventhubpeer)** Upgrades a fabric-client Peer with additional MSP information and an EventHubManager
--   `createEventHubPeer` **[createEventHubPeer](#createeventhubpeer)** Creates a fabric-client Peer with additional MSP information and an EventHubManager
+-   `newEventHubPeer` **[newEventHubPeer](#neweventhubpeer)** Creates a fabric-client Peer with additional MSP information and an EventHubManager
 -   `isEventHubPeer` **[isEventHubPeer](#iseventhubpeer)** Checks whether an object is an EventHubPeer
 -   `upgradeChannelToFcwChannel` **[upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)** Upgrades a fabric-client Channel to keep track of recent transactions
--   `createFcwChannel` **[createFcwChannel](#createfcwchannel)** Creates a fabric-client Channel that keeps track of recent transactions
+-   `newFcwChannel` **[newFcwChannel](#newfcwchannel)** Creates a fabric-client Channel that keeps track of recent transactions
 -   `isFcwChannel` **[isFcwChannel](#isfcwchannel)** Checks whether an object is a FcwChannel
--   `createFileKeyValueStoreAndCryptoSuite` **[createFileKeyValueStoreAndCryptoSuite](#createfilekeyvaluestoreandcryptosuite)** Creates a new file based key-value store and the associated cryptoSuite
--   `createCouchDBKeyValueStoreAndCryptoSuite` **[createCouchDBKeyValueStoreAndCryptoSuite](#createcouchdbkeyvaluestoreandcryptosuite)** Creates a new CouchDB based key-value and the associated cryptoSuite
--   `createUserClientFromKeys` **[createUserClientFromKeys](#createuserclientfromkeys)** Creates a new UserClient from a public private key pair
--   `createUserClientFromCAEnroll` **[createUserClientFromCAEnroll](#createuserclientfromcaenroll)** Creates a new UserClient from enrolling in the CA
--   `createUserClientFromCARegisterAndEnroll` **[createUserClientFromCARegisterAndEnroll](#createuserclientfromcaregisterandenroll)** Creates a new UserClient from registering and enrolling in the CA
--   `createUserClientFromStore` **[createUserClientFromStore](#createuserclientfromstore)** Creates a new UserClient from the key value store
+-   `newFileKeyValueStoreAndCryptoSuite` **[newFileKeyValueStoreAndCryptoSuite](#newfilekeyvaluestoreandcryptosuite)** Creates a new file based key-value store and the associated cryptoSuite
+-   `newCouchDBKeyValueStoreAndCryptoSuite` **[newCouchDBKeyValueStoreAndCryptoSuite](#newcouchdbkeyvaluestoreandcryptosuite)** Creates a new CouchDB based key-value and the associated cryptoSuite
+-   `newUserClientFromKeys` **[newUserClientFromKeys](#newuserclientfromkeys)** Creates a new UserClient from a public private key pair
+-   `newUserClientFromCAEnroll` **[newUserClientFromCAEnroll](#newuserclientfromcaenroll)** Creates a new UserClient from enrolling in the CA
+-   `newUserClientFromCARegisterAndEnroll` **[newUserClientFromCARegisterAndEnroll](#newuserclientfromcaregisterandenroll)** Creates a new UserClient from registering and enrolling in the CA
+-   `newUserClientFromStore` **[newUserClientFromStore](#newuserclientfromstore)** Creates a new UserClient from the key value store
 -   `pickPeersForPolicy` **[pickPeersForPolicy](#pickpeersforpolicy)** Picks peers from a larger set that satisfy an endorsement policy
 -   `ADMIN_ROLE` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The string 'admin'
 -   `CA_ADMIN_ROLE` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The string 'ca_admin'
@@ -205,7 +205,7 @@ Class for building and running channel setup requests
 **Parameters**
 
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user setting up the channel
--   `channelOrChannelOpts` **([Channel](#channel) \| [CreateFcwChannelOpts](#createfcwchannelopts))** Either the channel object you wish to use or the arguments to create a new channel
+-   `channelOrChannelOpts` **([Channel](#channel) \| [NewFcwChannelOpts](#newfcwchannelopts))** Either the channel object you wish to use or the arguments to create a new channel
 -   `opts` **any** Additional options[swallowAlreadyCreatedErrors]
     -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
     -   `opts.network`  Network options
@@ -227,6 +227,7 @@ Adds a createChannel operation to the builder
     -   `createChannelRequest.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
     -   `createChannelRequest.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
     -   `createChannelRequest.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
+    -   `createChannelRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
 -   `opts` **any** Additional options
     -   `opts.waitOpts`  Options for waiting
         -   `opts.waitOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Max amount of time to wait
@@ -244,6 +245,7 @@ Adds a joinChannel operation to the builder
 -   `joinChannelRequest` **JoinChannelRequest** The options for joining the channel on the network
     -   `joinChannelRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;([Peer](#peer) \| [FcwPeer](#fcwpeer) \| [EventHubPeer](#eventhubpeer))>?** An array of Peer objects or Peer names that will be asked to join this channel.
     -   `joinChannelRequest.genesisBlock` **[Block](#block)?** The genesis block for the channel
+    -   `joinChannelRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
 -   `opts` **any** Additional options
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum number of ms to wait for the channel to be joined (optional, default `60000`)
     -   `opts.waitOpts`  Options for waiting
@@ -263,6 +265,7 @@ Adds an updateChannel operation to the builder
     -   `updateChannelRequest.channelEnvelope` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The envelope for the new channel, required if no config is specified
     -   `updateChannelRequest.channelConfig` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;byte>?** The configuration for the new channel, required if no envelope is specified
     -   `updateChannelRequest.signatures` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;ConfigSignature>?** The signatures required for the new chanel, required if no envelope is specified
+    -   `updateChannelRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
 -   `opts` **any** Additional options
     -   `opts.waitOpts`  Options for waiting
         -   `opts.waitOpts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Max amount of time to wait
@@ -300,6 +303,7 @@ Adds an instantiateChaincode operation to the builder
     -   `chaincodeInstantiateRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeInstantiateRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeInstantiateRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
+    -   `chaincodeInstantiateRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
     -   `chaincodeInstantiateRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
     -   `chaincodeInstantiateRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
     -   `chaincodeInstantiateRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
@@ -325,6 +329,7 @@ Adds an upgradeChaincode operation to the builder
     -   `chaincodeUpgradeRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeUpgradeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeUpgradeRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
+    -   `chaincodeUpgradeRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
     -   `chaincodeUpgradeRequest.chaincodeType` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?**  Type of chaincode. One of 'golang', 'car' or 'java'. Default is 'golang'. Note that 'java' is not supported as of v1.0.
     -   `chaincodeUpgradeRequest.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
     -   `chaincodeUpgradeRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function name to be returned when calling stub.GetFunctionAndParameters() in the target chaincode. Default is 'init'
@@ -540,7 +545,7 @@ Sets the Enrollment secret for the user
 
 -   `enrollmentSecret` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The FabricCAClient for the CA the user is associated with
 
-### createEventHubPeer
+### newEventHubPeer
 
 Creates an EventHubPeer object
 
@@ -1075,7 +1080,7 @@ Upgrades a fabric-client Peer with additional MSP information
 
 Returns **[FcwPeer](#fcwpeer)** The FcwPeer
 
-## createFcwPeer
+## newFcwPeer
 
 Creates a fabric-client Peer with additional MSP information
 
@@ -1131,13 +1136,13 @@ Upgrades a fabric-client Peer with additional MSP information and an EventHubMan
 
 Returns **[EventHubPeer](#eventhubpeer)** The EventHubPeer
 
-## createEventHubPeer
+## newEventHubPeer
 
 Creates a fabric-client Peer with additional MSP information and an EventHubManager
 
 **Parameters**
 
--   `opts` **CreateEventHubPeerOpts** The options for creating the EventhHubPeer
+-   `opts` **NewEventHubPeerOpts** The options for creating the EventhHubPeer
     -   `opts.requestUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to issue requests to the Peer with
     -   `opts.peerOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peer's request url
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID of the organization the peer belongs to
@@ -1171,7 +1176,7 @@ A fabric-client Channel with a more flexible constructor that keeps track of tra
 
 Returns **[Channel](#channel)** The FcwChannel
 
-## createFcwChannel
+## newFcwChannel
 
 Creates a fabric-client Channel that keeps track of transactionIds
 
@@ -1196,7 +1201,7 @@ Checks whether an object is a FcwChannel
 
 Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if the object is a FcwChannel, false otherwise
 
-## createFileKeyValueStoreAndCryptoSuite
+## newFileKeyValueStoreAndCryptoSuite
 
 Creates a new OrganizationConfig that's based on a file based key value store
 
@@ -1206,7 +1211,7 @@ Creates a new OrganizationConfig that's based on a file based key value store
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[CryptoStore](#cryptostore)>** an object holding information about a organization
 
-## createCouchDBKeyValueStoreAndCryptoSuite
+## newCouchDBKeyValueStoreAndCryptoSuite
 
 Creates a new OrganizationConfig that's based on a CouchDB key value store
 
@@ -1217,7 +1222,7 @@ Creates a new OrganizationConfig that's based on a CouchDB key value store
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[CryptoStore](#cryptostore)>** an object holding information about a organization
 
-## createUserClientFromKeys
+## newUserClientFromKeys
 
 Creates a new UserClient from a public private key pair
 
@@ -1233,7 +1238,7 @@ Creates a new UserClient from a public private key pair
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
 
-## createUserClientFromCAEnroll
+## newUserClientFromCAEnroll
 
 Creates a new UserClient from enrolling in the CA
 
@@ -1250,7 +1255,7 @@ Creates a new UserClient from enrolling in the CA
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UserClient](#userclient)>** A promise containing a new UserClient instance
 
-## createUserClientFromCARegisterAndEnroll
+## newUserClientFromCARegisterAndEnroll
 
 Creates a new UserClient from registering and enrolling in the CA
 
@@ -1266,7 +1271,7 @@ Creates a new UserClient from registering and enrolling in the CA
 
 Returns **any** A promise containing a new UserClient instance
 
-## createUserClientFromStore
+## newUserClientFromStore
 
 Creates a new UserClient from the key value store
 
@@ -1299,7 +1304,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 
 
-## CreateFcwChannelOpts
+## NewFcwChannelOpts
 
 Options to create a FcwChannel
 
