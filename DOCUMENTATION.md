@@ -1248,6 +1248,7 @@ Creates a new UserClient from enrolling in the CA
     -   `opts.fabricCAClient` **[FabricCAClient](#fabriccaclient)** The FabricCAClient to use to interact with the CA
     -   `opts.enrollmentID` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The username to enroll with
     -   `opts.enrollmentSecret` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The secret to enroll with
+    -   `opts.username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The username to use for the user, defaults to enrollmentID
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID that the user belongs to
     -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)** The CryptoSuite to use to create the user
     -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in
@@ -1264,6 +1265,7 @@ Creates a new UserClient from registering and enrolling in the CA
 -   `opts` **any** The options to create the user with
     -   `opts.userClient` **[UserClient](#userclient)** The UserClient to register and enroll with
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The MSP ID that the user belongs to. Fallsback to userClient's MSP ID
+    -   `opts.username` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The username to use for the user, defaults to enrollmentID
     -   `opts.cryptoSuite` **[CryptoSuite](#cryptosuite)** The CryptoSuite to use to create the user
     -   `opts.store` **[KeyValueStore](#keyvaluestore)?** The store to persist the user information in
     -   `opts.roles` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An array containing the roles that the user has

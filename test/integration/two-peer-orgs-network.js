@@ -218,6 +218,7 @@ describe("two-peer-orgs-network", function() {
             fabricCAClient,
             enrollmentID: "admin",
             enrollmentSecret: "adminpw",
+            username: "caAdmin",
             ...network.organizations.Org1MSP.config
         })
 
@@ -228,6 +229,47 @@ describe("two-peer-orgs-network", function() {
                 enrollmentID: username,
                 affiliation: "org1.department1"
             }
+        })
+
+        await fcw.newUserClientFromStore({
+            userClient: network.organizations.Org1MSP.admins.greg,
+            username
+        })
+        await fcw.newUserClientFromStore({
+            userClient: caAdmin,
+            username
+        })
+        await fcw.newUserClientFromStore({
+            ...network.organizations.Org1MSP.config,
+            username
+        })
+    })
+
+    it("should register+enroll a new user under a different username and try load it from the store", async function() {
+        this.timeout(60000)
+        const fabricCAClient = new FabricCAClient(
+            "https://localhost:7054",
+            null,
+            "",
+            network.organizations.Org1MSP.config.cryptoSuite
+        )
+
+        const caAdmin = await fcw.newUserClientFromCAEnroll({
+            fabricCAClient,
+            enrollmentID: "admin",
+            enrollmentSecret: "adminpw",
+            username: "caAdmin",
+            ...network.organizations.Org1MSP.config
+        })
+
+        const username = "foobar"
+        await fcw.newUserClientFromCARegisterAndEnroll({
+            userClient: caAdmin,
+            registerRequest: {
+                enrollmentID: uuidv4(),
+                affiliation: "org1.department1"
+            },
+            username
         })
 
         await fcw.newUserClientFromStore({
