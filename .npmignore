@@ -6,5 +6,4 @@ lib
 .eslintrc.json
 .flowconfig
 .gitignore
-.documentation.yml
-*.md
+documentation.yml
