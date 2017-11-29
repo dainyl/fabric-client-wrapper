@@ -287,7 +287,7 @@ describe("two-peer-orgs-network", function() {
     })
 
     it("should upgrade a chaincode", async function() {
-        this.timeout(60000)
+        this.timeout(10 * 60000)
         const admins = [
             network.organizations.Org1MSP.admins.greg,
             network.organizations.Org2MSP.admins.peerOrg2Admin
