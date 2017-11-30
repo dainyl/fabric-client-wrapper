@@ -268,7 +268,7 @@ async function parseChannelChaincodeJSON(
                     chaincodeVersion: chaincodeJSON.version,
                     fcn: chaincodeJSON.instantiate.fcn,
                     args: chaincodeJSON.instantiate.args,
-                    targetsPolicy: chaincodeJSON["instantiation-policy"],
+                    targets: chaincodeJSON["instantiation-policy"],
                     "endorsement-policy": chaincodeJSON["endorsement-policy"]
                 })
                 .run()
