@@ -137,14 +137,11 @@ async function foo() {
       .withJoinChannel()
       .withInstallChaincode({ chaincodeId, chaincodePath, chaincodeVersion })
       .withInstantiateChaincode({
-          {
-              chaincodeId,
-              chaincodeVersion,
-              fcn: 'init',
-              args: ["a", "100", "b", "200"],
-          },
-		  5 * 60000
-      )
+          chaincodeId,
+          chaincodeVersion,
+          fcn: 'init',
+          args: ["a", "100", "b", "200"],
+      })
       .run()
 }
 

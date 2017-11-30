@@ -252,40 +252,25 @@ async function parseChannelChaincodeJSON(
                 .setupChannel(admin, channel, {
                     network: {
                         leader: index === 0,
-                        host: "localhost",
-                        timeout: 10 * 60000
+                        host: "localhost"
                     },
                     swallowAlreadyCreatedErrors: true
                 })
                 .withCreateChannel(createChannelOpts)
-                .withInstallChaincode(
-                    {
-                        chaincodeId: chaincodeJSON.id,
-                        chaincodePath: chaincodeJSON.path,
-                        chaincodeVersion: chaincodeJSON.version
-                    },
-                    {
-                        timeout: 10 * 60000
-                    }
-                )
+                .withInstallChaincode({
+                    chaincodeId: chaincodeJSON.id,
+                    chaincodePath: chaincodeJSON.path,
+                    chaincodeVersion: chaincodeJSON.version
+                })
                 .withJoinChannel()
-                .withInstantiateChaincode(
-                    {
-                        chaincodeId: chaincodeJSON.id,
-                        chaincodeVersion: chaincodeJSON.version,
-                        fcn: chaincodeJSON.instantiate.fcn,
-                        args: chaincodeJSON.instantiate.args,
-                        targetsPolicy: chaincodeJSON["instantiation-policy"],
-                        "endorsement-policy":
-                            chaincodeJSON["endorsement-policy"]
-                    },
-                    {
-                        timeout: 10 * 60000,
-                        waitOpts: {
-                            timeout: 10 * 60000
-                        }
-                    }
-                )
+                .withInstantiateChaincode({
+                    chaincodeId: chaincodeJSON.id,
+                    chaincodeVersion: chaincodeJSON.version,
+                    fcn: chaincodeJSON.instantiate.fcn,
+                    args: chaincodeJSON.instantiate.args,
+                    targetsPolicy: chaincodeJSON["instantiation-policy"],
+                    "endorsement-policy": chaincodeJSON["endorsement-policy"]
+                })
                 .run()
         )
     )
