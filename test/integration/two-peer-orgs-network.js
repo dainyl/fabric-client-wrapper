@@ -141,7 +141,7 @@ describe("two-peer-orgs-network", function() {
         expect(invokeResponse.data.proposalResponse).to.be.an("object")
         expect(invokeResponse.data.transactionId).to.be.a("string")
         expect(invokeResponse.wait).to.be.a("function")
-        await invokeResponse.wait({ race: true })
+        await invokeResponse.wait()
 
         const queryResponse = await transactor.query("query", ["a"])
         expect(queryResponse).to.be.an("object")
@@ -151,6 +151,21 @@ describe("two-peer-orgs-network", function() {
         expect(parseFloat(queryResponse.data.payload.toString())).to.be.a(
             "number"
         )
+
+        // specify endorsement policy in targets example
+        const invokeResponse2 = await transactor.invoke(
+            "move",
+            ["a", "b", "10"],
+            {
+                targets: network.chaincode.endorsementPolicy
+            }
+        )
+        expect(invokeResponse2.data).to.be.an("object")
+        expect(invokeResponse2.data.transactionResponse).to.be.an("object")
+        expect(invokeResponse2.data.proposalResponse).to.be.an("object")
+        expect(invokeResponse2.data.transactionId).to.be.a("string")
+        expect(invokeResponse2.wait).to.be.a("function")
+        await invokeResponse2.wait({ race: true }) // race example
 
         // buffer example
         const queryResponse2 = await transactor.query(
