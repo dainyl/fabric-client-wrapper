@@ -14,6 +14,7 @@
     -   [withUpgradeChaincode](#withupgradechaincode)
     -   [run](#run)
 -   [Transactor](#transactor)
+    -   [setPeers](#setpeers)
     -   [getUserClient](#getuserclient)
     -   [getChannel](#getchannel)
     -   [getChaincodeId](#getchaincodeid)
@@ -299,8 +300,7 @@ Adds an instantiateChaincode operation to the builder
 **Parameters**
 
 -   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode instantiation request to be made
-    -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeInstantiateRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
+    -   `chaincodeInstantiateRequest.targets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))?** An array of Peer objects that are used to satisfy the instantiation policy or a policy used to select peers from the channel. If targets is not specified Defaults to channel peers if not specified
     -   `chaincodeInstantiateRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeInstantiateRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
     -   `chaincodeInstantiateRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
@@ -325,8 +325,6 @@ Adds an upgradeChaincode operation to the builder
 **Parameters**
 
 -   `chaincodeUpgradeRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode upgrade request to be made
-    -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeUpgradeRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeUpgradeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeUpgradeRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
     -   `chaincodeUpgradeRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
@@ -359,7 +357,17 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user performing chaincode transactions
 -   `channel` **[Channel](#channel)** The Channel object representing the channel to transact on
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The ID of the chaincode being transacted on
--   `peersOrPolicy` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))** An array of peers to transact with or the endorsement policy to select peers with
+-   `defaultTargets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))** An array of peers to transact with or the endorsement policy to select peers with
+
+### setPeers
+
+Updates the endorsing peers that are used
+
+**Parameters**
+
+-   `targets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))** An array of peers to transact with or the endorsement policy to select peers with
+
+Returns **void** 
 
 ### getUserClient
 
@@ -413,7 +421,7 @@ Performs a chaincode invoke
 -   `opts` **any** The options for the invoke
     -   `opts.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
-    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use for the transaction proposal, falls back to the first peer in the channel if unspecified
+    -   `opts.targets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))?** The peers to use for the transaction proposal or endorsement policy for the chaincode, falls back to the peers in the channel if unspecified
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 -   `args`  An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 
@@ -430,7 +438,7 @@ Performs a chaincode transaction proposal
 -   `opts` **any** The options for the transaction proposal
     -   `opts.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
-    -   `opts.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use for the transaction proposal, falls back to the first peer in the channel if unspecified
+    -   `opts.targets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))?** The peers to use for the transaction proposal or endorsement policy for the chaincode, falls back to the peers in the channel if unspecified
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[SendTransactionProposalResponse](#sendtransactionproposalresponse)>** A promise containing a transactionProposal response from all the peers
@@ -784,8 +792,7 @@ Sends a chaincode instantiate proposal to one or more endorsing peers. A chainco
 
 -   `channel` **[Channel](#channel)** The channel to use
 -   `chaincodeInstantiateRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode instantiation request to be made
-    -   `chaincodeInstantiateRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeInstantiateRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
+    -   `chaincodeInstantiateRequest.targets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))?** An array of Peer objects that are used to satisfy the instantiation policy or a policy used to select peers from the channel. If targets is not specified Defaults to channel peers if not specified
     -   `chaincodeInstantiateRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeInstantiateRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
     -   `chaincodeInstantiateRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
@@ -806,8 +813,6 @@ Sends a chaincode upgrade proposal to one or more endorsing peers. A chaincode m
 
 -   `channel` **[Channel](#channel)** The channel to use
 -   `chaincodeUpgradeRequest` **FcwChaincodeInstantiateUpgradeRequest** The chaincode upgrade request to be made
-    -   `chaincodeUpgradeRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of Peer objects that are used to satisfy the instantiation policy. Defaults to channel peers if not specified
-    -   `chaincodeUpgradeRequest.targetsPolicy` **[Policy](#policy)?** A policy used to select peers from the channel if targets is not specified
     -   `chaincodeUpgradeRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the chaincode
     -   `chaincodeUpgradeRequest.chaincodeVersion` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Version string of the chaincode, such as 'v1'
     -   `chaincodeUpgradeRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
@@ -827,9 +832,9 @@ Sends a Transaction Proposal to peers in a channel
 **Parameters**
 
 -   `channel` **[Channel](#channel)** The channel object to use
--   `transactionProposalRequest` **TransactionProposalRequest** The arguments for the transaction proposal request
+-   `transactionProposalRequest` **FcwTransactionProposalRequest** The arguments for the transaction proposal request
     -   `transactionProposalRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
-    -   `transactionProposalRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+    -   `transactionProposalRequest.targets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))?** The peers to use for the transaction proposal or endorsement policy for the chaincode, falls back to the peers in the channel if unspecified
     -   `transactionProposalRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
     -   `transactionProposalRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
@@ -877,7 +882,7 @@ Sends a Transaction Proposal to peers in a channel and formats the response
 -   `channel` **[Channel](#channel)** The channel object to use
 -   `transactionProposalRequest` **TransactionProposalRequest** The arguments for the transaction proposal request
     -   `transactionProposalRequest.chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the channel
-    -   `transactionProposalRequest.targets` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** The peers to use for the transaction proposal, falls back to the peers in the channel if unspecified
+    -   `transactionProposalRequest.targets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))?** The peers to use for the transaction proposal or endorsement policy for the chaincode, falls back to the peers in the channel if unspecified
     -   `transactionProposalRequest.txId` **TransactionID?** TransactionID object with the transaction id and nonce. One will be generated automatically if not supplied
     -   `transactionProposalRequest.fcn` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The function to be called on the chaincode, defaults to 'invoke'
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
