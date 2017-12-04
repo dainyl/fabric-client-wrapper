@@ -10,6 +10,36 @@
                 "path": "github.com/example_cc",
                 "id": "examplecc",
                 "version": "v0",
+                "endorsement-policy": {
+                    "identities": [{
+                            "role": {
+                                "name": "member",
+                                "mspId": "Org1MSP"
+                            }
+                        },
+                        {
+                            "role": {
+                                "name": "member",
+                                "mspId": "Org2MSP"
+                            }
+                        }
+                    ],
+                    "policy": {
+                        "4-of": [{
+                                "signed-by": 0
+                            },
+                            {
+                                "signed-by": 0
+                            },
+                            {
+                                "signed-by": 1
+                            },
+                            {
+                                "signed-by": 1
+                            }
+                        ]
+                    }
+                },
                 "instantiate": {
                     "fcn": "init",
                     "args": ["a", "100", "b", "200"]
