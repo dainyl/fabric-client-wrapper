@@ -15,13 +15,13 @@ Node runtime version 6.9.x or higher, and 8.4.0 or higher ( Node v7+ is not supp
 ## Examples
 
 ### Example project
-[Node Blockchain Boilerplate](https://github.ibm.com/aur/node-blockchain-boilerplate)
+TODO
 
 ### Load a user from a public/private key pair
 ```JavaScript
 import fs from "fs"
 import path from "path"
-import fcw from "@blockchain/fabric-client-wrapper"
+import fcw from "fabric-client-wrapper"
 
 async function foo() {
     const mspId = "Org1MSP"
@@ -54,7 +54,7 @@ foo()
 import fs from "fs"
 import path from "path"
 import fabricCAClient from "fabric-ca-client"
-import fcw from "@blockchain/fabric-client-wrapper"
+import fcw from "fabric-client-wrapper"
 
 async function foo() {
     const mspId = "Org1MSP"
@@ -82,7 +82,7 @@ foo()
 ```JavaScript
 import fs from 'fs'
 import path from 'path'
-import fcw from '@blockchain/fabric-client-wrapper'
+import fcw from 'fabric-client-wrapper'
 import Orderer from 'fabric-client/lib/Orderer'
 
 async function foo() {
@@ -122,7 +122,7 @@ foo()
 ```JavaScript
 import fs from 'fs'
 import path from 'path'
-import fcw from '@blockchain/fabric-client-wrapper'
+import fcw from 'fabric-client-wrapper'
 
 async function foo() {
     const gregClient = ...
@@ -150,7 +150,7 @@ foo()
 
 ### Perform an invoke+query
 ```JavaScript
-import fcw from '@blockchain/fabric-client-wrapper'
+import fcw from 'fabric-client-wrapper'
 
 async function foo() {
     const gregClient = ...
