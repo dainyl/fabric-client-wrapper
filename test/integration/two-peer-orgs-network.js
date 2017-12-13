@@ -33,7 +33,7 @@ function cleanDocker() {
     // stop and remove chaincode docker instances
     try {
         execSync(
-            "docker kill $(docker ps | grep \"dev-peer0.org[12].example.com-e\" | awk '{print $1}')",
+            "docker kill $(docker ps | grep \"^dev-peer[01].org[12].example.com-e\" | awk '{print $1}')",
             {
                 stdio: "ignore"
             }
@@ -43,7 +43,7 @@ function cleanDocker() {
     }
     try {
         execSync(
-            "docker rm $(docker ps -a | grep \"dev-peer0.org[12].example.com-e\" | awk '{print $1}')",
+            "docker rm $(docker ps -a | grep \"^dev-peer[01].org[12].example.com-e\" | awk '{print $1}')",
             {
                 stdio: "ignore"
             }
@@ -54,7 +54,7 @@ function cleanDocker() {
     // remove chaincode images so that they get rebuilt during test
     try {
         execSync(
-            "docker rmi $(docker images | grep \"^dev-peer0.org[12].example.com-e\" | awk '{print $3}')",
+            "docker rmi $(docker images | grep \"^dev-peer[01].org[12].example.com-e\" | awk '{print $3}')",
             {
                 stdio: "ignore"
             }
