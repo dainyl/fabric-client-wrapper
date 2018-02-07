@@ -183,9 +183,6 @@ creates an object for building and running channel setup requests
 
 -   `userClient`  The UserClient representing the user setting up the channel
 -   `channelOrChannelName`  
--   `peers`  
--   `orderer`  
--   `channelOrChannelOpts`  Either the channel object you wish to use or the arguments to create a new channel
 -   `opts`  Additional options
     -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
     -   `opts.network`  Network options
@@ -196,6 +193,7 @@ creates an object for building and running channel setup requests
         -   `opts.network.port` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The port to communicate on. (optional, default `45207`)
         -   `opts.network.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The maximum amount of time to wait between various stages of the network setup phase
         -   `opts.network.onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** Callback function for socket errors
+-   `channelOrChannelOpts`  Either the channel object you wish to use or the arguments to create a new channel
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Channel](#channel)>** The setup channel
 
