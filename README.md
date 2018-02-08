@@ -15,7 +15,7 @@ Node runtime version 6.9.x or higher, and 8.4.0 or higher ( Node v7+ is not supp
 ## Examples
 
 ### Example project
-TODO
+Not opensourced yet, but coming soon
 
 ### Load a user from a public/private key pair
 ```JavaScript
