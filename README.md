@@ -7,10 +7,10 @@ This is a wrapper over the [Hyperledger Fabric Node SDK](https://github.com/hype
 Node runtime version 6.9.x or higher, and 8.4.0 or higher ( Node v7+ is not supported )
 
 ## Running Tests
-[See Here](./TESTS.md)
+[See Here](https://github.com/dainyl/fabric-client-wrapper/blob/master/TESTS.md)
 
 ## Fabric Client Wrapper Documentation
-[See here](./DOCUMENTATION.md)
+[See here](https://github.com/dainyl/fabric-client-wrapper/blob/master/DOCUMENTATION.md)
 
 ## Examples
 

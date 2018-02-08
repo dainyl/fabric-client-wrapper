@@ -1,6 +1,6 @@
 {
   "name": "fabric-client-wrapper",
-  "version": "1.1.0-preview-1",
+  "version": "1.1.0-alpha",
   "description": "A wrapper around the Fabric Node SDK",
   "main": "dist/index.js",
   "author": "",
@@ -35,7 +35,7 @@
     "lodash": "^4.17.4"
   },
   "peerDependencies": {
-    "fabric-client": "~1.1.0-preview"
+    "fabric-client": "~1.1.0-alpha"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
