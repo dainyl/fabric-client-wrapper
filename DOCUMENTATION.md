@@ -79,13 +79,9 @@
     -   [getAdminMspIds](#getadminmspids)
 -   [EventHubPeer](#eventhubpeer)
     -   [getEventHubManager](#geteventhubmanager-1)
+-   [EventHubChannel](#eventhubchannel)
+    -   [getEventHubManager](#geteventhubmanager-2)
     -   [canConnect](#canconnect)
--   [FcwChannel](#fcwchannel)
-    -   [getTransactionIdTimeMap](#gettransactionidtimemap)
--   [TransactionIdTimeMap](#transactionidtimemap)
-    -   [has](#has)
-    -   [set](#set)
-    -   [clear](#clear)
 -   [upgradePeerToFcwPeer](#upgradepeertofcwpeer)
 -   [newFcwPeer](#newfcwpeer)
 -   [isFcwPeer](#isfcwpeer)
@@ -93,9 +89,9 @@
 -   [upgradePeerToEventHubPeer](#upgradepeertoeventhubpeer)
 -   [newEventHubPeer](#neweventhubpeer-1)
 -   [isEventHubPeer](#iseventhubpeer)
--   [upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)
--   [newFcwChannel](#newfcwchannel)
--   [isFcwChannel](#isfcwchannel)
+-   [upgradeChannelToEventHubChannel](#upgradechanneltoeventhubchannel)
+-   [newEventHubChannel](#neweventhubchannel)
+-   [isEventHubChannel](#iseventhubchannel)
 -   [newFileKeyValueStoreAndCryptoSuite](#newfilekeyvaluestoreandcryptosuite)
 -   [newCouchDBKeyValueStoreAndCryptoSuite](#newcouchdbkeyvaluestoreandcryptosuite)
 -   [newUserClientFromKeys](#newuserclientfromkeys)
@@ -104,7 +100,7 @@
 -   [newUserClientFromStore](#newuserclientfromstore)
 -   [pickPeersForPolicy](#pickpeersforpolicy)
 -   [Objects](#objects)
--   [NewFcwChannelOpts](#newfcwchannelopts)
+-   [NewEventHubChannelOpts](#neweventhubchannelopts)
 -   [CryptoStore](#cryptostore)
 -   [InvokeChaincodeResponse](#invokechaincoderesponse)
 -   [QueryChaincodeResponse](#querychaincoderesponse)
@@ -159,9 +155,9 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 -   `upgradePeerToEventHubPeer` **[upgradePeerToEventHubPeer](#upgradepeertoeventhubpeer)** Upgrades a fabric-client Peer with additional MSP information and an EventHubManager
 -   `newEventHubPeer` **[newEventHubPeer](#neweventhubpeer)** Creates a fabric-client Peer with additional MSP information and an EventHubManager
 -   `isEventHubPeer` **[isEventHubPeer](#iseventhubpeer)** Checks whether an object is an EventHubPeer
--   `upgradeChannelToFcwChannel` **[upgradeChannelToFcwChannel](#upgradechanneltofcwchannel)** Upgrades a fabric-client Channel to keep track of recent transactions
--   `newFcwChannel` **[newFcwChannel](#newfcwchannel)** Creates a fabric-client Channel that keeps track of recent transactions
--   `isFcwChannel` **[isFcwChannel](#isfcwchannel)** Checks whether an object is a FcwChannel
+-   `upgradeChannelToFcwChannel` **upgradeChannelToFcwChannel** Upgrades a fabric-client Channel to keep track of recent transactions
+-   `newFcwChannel` **newFcwChannel** Creates a fabric-client Channel that keeps track of recent transactions
+-   `isFcwChannel` **isFcwChannel** Checks whether an object is a FcwChannel
 -   `newFileKeyValueStoreAndCryptoSuite` **[newFileKeyValueStoreAndCryptoSuite](#newfilekeyvaluestoreandcryptosuite)** Creates a new file based key-value store and the associated cryptoSuite
 -   `newCouchDBKeyValueStoreAndCryptoSuite` **[newCouchDBKeyValueStoreAndCryptoSuite](#newcouchdbkeyvaluestoreandcryptosuite)** Creates a new CouchDB based key-value and the associated cryptoSuite
 -   `newUserClientFromKeys` **[newUserClientFromKeys](#newuserclientfromkeys)** Creates a new UserClient from a public private key pair
@@ -204,7 +200,7 @@ Class for building and running channel setup requests
 **Parameters**
 
 -   `userClient` **[UserClient](#userclient)** The UserClient representing the user setting up the channel
--   `channelOrChannelOpts` **([Channel](#channel) \| [NewFcwChannelOpts](#newfcwchannelopts))** Either the channel object you wish to use or the arguments to create a new channel
+-   `channelOrChannelOpts` **([Channel](#channel) | ChannelOpts)** Either the EventHubChannel object you wish to use or the arguments to create a new EventHubChannel
 -   `opts` **any** Additional options[swallowAlreadyCreatedErrors]
     -   `opts.swallowAlreadyCreatedErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Option to swallow errors about channel being already created/joined or chaincode being installed/instantiated
     -   `opts.network`  Network options
@@ -356,6 +352,7 @@ Creates a new object for issuing chaincode transactions or listening for chainco
 -   `channel` **[Channel](#channel)** The Channel object representing the channel to transact on
 -   `chaincodeId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The ID of the chaincode being transacted on
 -   `defaultTargets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))** An array of peers to transact with or the endorsement policy to select peers with
+-   `queryPeer` **[Peer](#peer)** The peer you wish to use by default for queries
 
 ### setPeers
 
@@ -421,6 +418,7 @@ Performs a chaincode invoke
     -   `opts.transientMap` **[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)?** Map that can be used by the chaincode but not saved in the ledger, such as cryptographic information for encryption
     -   `opts.targets` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)> | [Policy](#policy))?** The peers to use for the transaction proposal or endorsement policy for the chaincode, falls back to the peers in the channel if unspecified
     -   `opts.timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+    -   `opts.waitOpts`  
 -   `args`  An array of string arguments or a buffer specific to the chaincode's 'Invoke' method
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[InvokeChaincodeResponse](#invokechaincoderesponse)>** A promise containing an object that contains information about the invoke
@@ -449,12 +447,13 @@ Performs a chaincode transaction
 
 -   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The id of the transaction
 -   `transactionRequest` **[TransactionRequest](#transactionrequest)** an object representing an transaction request
+-   `waitOpts` **WaitOpts** 
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[SendTransactionResponse](#sendtransactionresponse)>** A promise containing an object that contains information about the transaction
 
 ### registerChaincodeEventListener
 
-Registers a chaincode event listener on the channel. Note this is channel specific!
+Registers a chaincode event listener. Note this is not channel specific!
 
 **Parameters**
 
@@ -850,6 +849,7 @@ Sends a Transaction to peers in a channel
 -   `channel` **[Channel](#channel)** The channel object to use
 -   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to wait on
 -   `transactionRequest` **[TransactionRequest](#transactionrequest)** An object containing the proposal responses from the peers and the proposal
+-   `waitOpts` **WaitOpts** 
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[SendTransactionResponse](#sendtransactionresponse)>** A promise containing the response to the transaction
 
@@ -886,6 +886,7 @@ Sends a Transaction Proposal to peers in a channel and formats the response
     -   `transactionProposalRequest.args` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The arguments to suppied to the chaincode function
     -   `transactionProposalRequest.transientMap` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** Map that can be used by the chaincode during intialization, but not saved in the ledger. Data such as cryptographic information for encryption can be passed to the chaincode using this technique
 -   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** A number indicating milliseconds to wait on the response before rejecting the promise with a timeout error. (optional, default `60000`)
+-   `waitOpts` **WaitOpts** 
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[InvokeChaincodeResponse](#invokechaincoderesponse)>** An object holding the transaction response, transaction proposal response, and transaction ID
 
@@ -1015,59 +1016,29 @@ Gets the Peer's EventHubManager
 
 Returns **[EventHubManager](#eventhubmanager)** The Peer's EventHubManager
 
-### canConnect
+## EventHubChannel
 
-Checks whether the peer can currently correct
+**Extends FcwChannel**
 
-**Parameters**
-
--   `timeout`   (optional, default `60000`)
-
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** true if the peer can connect, false otherwisek
-
-## FcwChannel
-
-**Extends Channel**
-
-A fabric-client Channel that keeps track of transactionIds
+A fabric-client Channel with additional MSP information and an EventHubManager
 
 Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
 
-### getTransactionIdTimeMap
+### getEventHubManager
 
-Gets the TransactionIdTimeMap instance
+Gets the Channel's EventHubManager
 
-Returns **TransactionIdMap** The TransactionIdMap of the FcwChannel
+Returns **[EventHubManager](#eventhubmanager)** The Channel's EventHubManager
 
-## TransactionIdTimeMap
+### canConnect
 
-A Class that holds a map of transaction IDs and removes them after a period of time
-
-**Parameters**
-
--   `lifetime` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** the amount of time in ms to hold onto a transaction ID (optional, default `300000`)
-
-### has
-
-Checks whether the Map has a transaction ID
+Checks whether the eventHubManager can currently connect
 
 **Parameters**
 
--   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to check
+-   `timeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `60000`)
 
-Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
-
-### set
-
-Sets the transaction ID in the map. If the transaction ID has been previously set it will reset the timer
-
-**Parameters**
-
--   `transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The transaction ID to set
-
-### clear
-
-Clears all timers and transaction IDs
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** true if the channel can connect, false otherwise
 
 ## upgradePeerToFcwPeer
 
@@ -1115,10 +1086,11 @@ Upgrades a FcwPeer with an EventHubManager
 **Parameters**
 
 -   `fcwPeer` **[Peer](#peer)** 
--   `opts` **any** The options for upgrading the FcwPeer
-    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))** The Client/UserClient tied to the user that creates the EventHub
-    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Peer with
-    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peers event url
+-   `opts` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** The options for upgrading the FcwPeer or the EventHubManager to use
+    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))?** The Client/UserClient tied to the user that creates the EventHub
+    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The URL to listen to events from the Peer with
+    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)?** The options for connecting to the peers event url
+    -   `opts.eventHubManager` **[EventHubManager](#eventhubmanager)?** The eventHubManager to use, required if eventUrl and eventHubOpts aren't specified
 
 Returns **[EventHubPeer](#eventhubpeer)** The EventHubPeer
 
@@ -1133,9 +1105,10 @@ Upgrades a fabric-client Peer with additional MSP information and an EventHubMan
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID of the organization the peer belongs to
     -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
     -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the Peer. Defaults to member (optional, default `'member'`)
-    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))** The Client/UserClient tied to the user that creates the EventHub
-    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Peer with
-    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peers event url
+    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))?** The Client/UserClient tied to the user that creates the EventHub
+    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The URL to listen to events from the Peer with
+    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)?** The options for connecting to the peers event url
+    -   `opts.eventHubManager` **[EventHubManager](#eventhubmanager)?** The eventHubManager to use, required if eventUrl and eventHubOpts aren't specified
 
 Returns **[EventHubPeer](#eventhubpeer)** The EventHubPeer
 
@@ -1151,9 +1124,10 @@ Creates a fabric-client Peer with additional MSP information and an EventHubMana
     -   `opts.mspId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The MSP ID of the organization the peer belongs to
     -   `opts.role` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The role of the Peer. Defaults to member (optional, default `'member'`)
     -   `opts.adminMspIds` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>?** An Array of MSP ID's for organizations that have admin priviledges over the peer. Defaults to the peer's organization's mspId.
-    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))** The Client/UserClient tied to the user that creates the EventHub
-    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Peer with
-    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the peers event url
+    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))?** The Client/UserClient tied to the user that creates the EventHub
+    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The URL to listen to events from the Peer with
+    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)?** The options for connecting to the peers event url
+    -   `opts.eventHubManager` **[EventHubManager](#eventhubmanager)?** The eventHubManager to use, required if eventUrl and eventHubOpts aren't specified
 
 Returns **[EventHubPeer](#eventhubpeer)** The EventHubPeer
 
@@ -1167,42 +1141,49 @@ Checks whether an object is a EventHubPeer
 
 Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if the object is a EventHubPeer, false otherwise
 
-## upgradeChannelToFcwChannel
+## upgradeChannelToEventHubChannel
 
-A fabric-client Channel with a more flexible constructor that keeps track of transactionIds
-
-**Parameters**
-
--   `channel` **[Channel](#channel)** Upgrades a fabric-client Channel to keep track of recent transactions
--   `opts` **any** The options for upgrading the channel
-    -   `opts.transactionTimeMapLifetime` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The amount of time to remember past transaction IDs
-
-Returns **[Channel](#channel)** The FcwChannel
-
-## newFcwChannel
-
-Creates a fabric-client Channel that keeps track of transactionIds
+Upgrades a Channel with an EventHubManager
 
 **Parameters**
 
--   `opts` **any** The options for creating the Channel
-    -   `opts.channelName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the channel
-    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))?** The client context to use for operations
-    -   `opts.peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of peers to use for channel operations (optional, default `[]`)
-    -   `opts.orderers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Orderer](#orderer)>** The orderers to use for the channel (optional, default `[]`)
-    -   `opts.transactionTimeMapLifetime` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The amount of time to remember past transaction IDs
+-   `channel` **[Channel](#channel)** 
+-   `opts` **([EventHubManager](#eventhubmanager) \| [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))** The options for upgrading the Channel or an EventHubManager
+    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))** The Client/UserClient tied to the user that creates the EventHub
+    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Channel with
+    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the event url
+-   `fcwChannel` **[Channel](#channel)** 
 
-Returns **[Channel](#channel)** 
+Returns **[EventHubChannel](#eventhubchannel)** The EventHubChannel
 
-## isFcwChannel
+## newEventHubChannel
 
-Checks whether an object is a FcwChannel
+Creates a fabric-client Channel and adds an EventHubManager
+
+**Parameters**
+
+-   `opts` **any** The options for creating the EventhHubChannel
+    -   `opts.client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))** The Client/UserClient tied to the user that creates the EventHub
+    -   `opts.eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to listen to events from the Channel with
+    -   `opts.eventHubOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the channels event url
+    -   `opts.requestUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL to issue requests to the Channel with
+    -   `opts.channelOpts` **[ConnectionOpts](#connectionopts)** The options for connecting to the channel's request url
+    -   `opts.channelName`  
+    -   `opts.peers`  
+    -   `opts.orderers`  
+    -   `opts.eventHubManager`  
+
+Returns **[EventHubChannel](#eventhubchannel)** The EventHubChannel
+
+## isEventHubChannel
+
+Checks whether an object is a EventHubChannel
 
 **Parameters**
 
 -   `obj` **any** The object to check
 
-Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if the object is a FcwChannel, false otherwise
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if the object is a EventHubChannel, false otherwise
 
 ## newFileKeyValueStoreAndCryptoSuite
 
@@ -1309,9 +1290,9 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 
 
-## NewFcwChannelOpts
+## NewEventHubChannelOpts
 
-Options to create a FcwChannel
+Options to create a EventHubChannel
 
 Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
 
@@ -1321,7 +1302,9 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 -   `client` **([FabricClient](#fabricclient) \| [UserClient](#userclient))?** The client context to use for operations
 -   `peers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Peer](#peer)>?** An array of peers to use for channel operations
 -   `orderers` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Orderer](#orderer)>** The orderers to use for the channel
--   `transactionTimeMapLifetime` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The amount of time to remember past transaction IDs
+-   `eventUrl` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?** The URL to listen to events from the Channel with
+-   `eventHubOpts` **[ConnectionOpts](#connectionopts)?** The options for connecting to the event url
+-   `eventHubManager` **[EventHubManager](#eventhubmanager)?** The eventHubManager to use, required if eventUrl and eventHubOpts aren't specified
 
 ## CryptoStore
 
@@ -1338,7 +1321,7 @@ Type: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 Response to an chaincode invoke
 
-Type: {data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [WaitSendTransaction](#waitsendtransaction)}
+Type: {data: {transactionResponse: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, proposalResponse: {status: [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), message: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), payload: [Buffer](https://nodejs.org/api/buffer.html)}, transactionId: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?}
 
 **Properties**
 
@@ -1350,7 +1333,7 @@ Type: {data: {transactionResponse: {status: [string](https://developer.mozilla.o
 -   `data.proposalResponse.message` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 -   `data.proposalResponse.payload` **[Buffer](https://nodejs.org/api/buffer.html)** 
 -   `data.transactionId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `wait` **[WaitSendTransaction](#waitsendtransaction)** 
+-   `wait` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** 
 
 ## QueryChaincodeResponse
 
@@ -1381,13 +1364,13 @@ Type: {data: {txId: TransactionID, transactionRequest: [TransactionRequest](#tra
 
 Response to sending a chaincode transaction
 
-Type: {data: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)}
+Type: {data: {status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}, wait: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?}
 
 **Properties**
 
 -   `data` **{status: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)}** 
 -   `data.status` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `wait` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
+-   `wait` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** 
 
 ## WaitSendTransaction
 

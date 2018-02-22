@@ -7,8 +7,7 @@ toc:
   - EventHubManager
   - FcwPeer
   - EventHubPeer
-  - FcwChannel
-  - TransactionIdTimeMap
+  - EventHubChannel
   - upgradePeerToFcwPeer
   - newFcwPeer
   - isFcwPeer
@@ -16,9 +15,9 @@ toc:
   - upgradePeerToEventHubPeer
   - newEventHubPeer
   - isEventHubPeer
-  - upgradeChannelToFcwChannel
-  - newFcwChannel
-  - isFcwChannel
+  - upgradeChannelToEventHubChannel
+  - newEventHubChannel
+  - isEventHubChannel
   - newFileKeyValueStoreAndCryptoSuite
   - newCouchDBKeyValueStoreAndCryptoSuite
   - newUserClientFromKeys
@@ -27,7 +26,7 @@ toc:
   - newUserClientFromStore
   - pickPeersForPolicy
   - name: Objects
-  - NewFcwChannelOpts
+  - NewEventHubChannelOpts
   - CryptoStore
   - InvokeChaincodeResponse
   - QueryChaincodeResponse

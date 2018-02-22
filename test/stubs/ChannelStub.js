@@ -1,7 +1,7 @@
 /* eslint class-methods-use-this: 0 */
 
 export default class ChannelStub {
-    constructor(client) {
+    constructor(channelName, client) {
         this.client = client
         this.peers = []
         this.orderer = null

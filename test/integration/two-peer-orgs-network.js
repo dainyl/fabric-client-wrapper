@@ -150,7 +150,7 @@ describe("two-peer-orgs-network", function() {
         expect(invokeResponse2.data.proposalResponse).to.be.an("object")
         expect(invokeResponse2.data.transactionId).to.be.a("string")
         expect(invokeResponse2.wait).to.be.a("function")
-        await invokeResponse2.wait({ race: true }) // race example
+        await invokeResponse2.wait()
 
         // buffer example
         const queryResponse2 = await transactor.query(

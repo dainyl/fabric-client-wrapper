@@ -6,7 +6,7 @@ import fs from "fs"
 import path from "path"
 import Orderer from "fabric-client/lib/Orderer"
 import fcw, {
-    newFcwChannel,
+    newEventHubChannel,
     newUserClientFromKeys,
     newFileKeyValueStoreAndCryptoSuite,
     ADMIN_ROLE
@@ -206,10 +206,11 @@ async function parseChannelChaincodeJSON(
     const peers = _.flatten(
         organizations.map(organization => organization.peers)
     ).filter(channelPeerFilterLambda)
-    const channel = newFcwChannel({
+    const channel = newEventHubChannel({
         channelName: channelJSON.name,
         peers,
-        orderers: [orderer]
+        orderers: [orderer],
+        eventHubManager: peers[0].getEventHubManager()
     })
 
     const maxPeerRetryTimes = 10
@@ -218,7 +219,7 @@ async function parseChannelChaincodeJSON(
     for (let i = 0; i < maxPeerRetryTimes; i++) {
         // eslint-disable-next-line no-await-in-loop
         const canConnectResults = await Promise.all(
-            eventHubPeers.map(peer => peer.canConnect())
+            eventHubPeers.map(peer => peer.getEventHubManager().canConnect())
         )
         if (canConnectResults.every(result => result)) {
             break
