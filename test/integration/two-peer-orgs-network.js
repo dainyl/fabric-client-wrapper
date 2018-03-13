@@ -108,6 +108,12 @@ describe("two-peer-orgs-network", function() {
                 network.chaincode.version
             )
         ).to.be.true
+        expect(
+            network.channel
+                .getPeers()
+                .map(peer => peer.getEventHubManager().isconnected())
+                .every(connected => !connected)
+        ).to.be.true
     })
 
     it("should make a transaction", async function() {
@@ -164,6 +170,12 @@ describe("two-peer-orgs-network", function() {
         expect(parseFloat(queryResponse2.data.payload.toString())).to.be.a(
             "number"
         )
+        expect(
+            network.channel
+                .getPeers()
+                .map(peer => peer.getEventHubManager().isconnected())
+                .every(connected => !connected)
+        ).to.be.true
     })
 
     it("should listen to an event", function(done) {
@@ -192,6 +204,12 @@ describe("two-peer-orgs-network", function() {
         eventHubManager.waitEventHubConnected().then(() => {
             transactor.invoke("event")
         })
+        expect(
+            network.channel
+                .getPeers()
+                .map(peer => peer.getEventHubManager().isconnected())
+                .every(connected => !connected)
+        ).to.be.true
     })
 
     it("should try load the admin from the store", async function() {
@@ -329,6 +347,12 @@ describe("two-peer-orgs-network", function() {
                     .run()
             )
         )
+        expect(
+            network.channel
+                .getPeers()
+                .map(peer => peer.getEventHubManager().isconnected())
+                .every(connected => !connected)
+        ).to.be.true
     })
 
     it("should update the channel", async function() {
@@ -418,5 +442,12 @@ describe("two-peer-orgs-network", function() {
                 signatures
             })
             .run()
+
+        expect(
+            network.channel
+                .getPeers()
+                .map(peer => peer.getEventHubManager().isconnected())
+                .every(connected => !connected)
+        ).to.be.true
     })
 })
