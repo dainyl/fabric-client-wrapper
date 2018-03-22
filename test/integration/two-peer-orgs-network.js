@@ -16,7 +16,7 @@ const superagentPromise = require("superagent-promise")(
 )
 
 function removeKeystores() {
-    rimraf.sync(path.join(__dirname, "./keystores"))
+    rimraf.sync(path.join(__dirname, "../keystores"))
 }
 
 function cleanDocker() {
