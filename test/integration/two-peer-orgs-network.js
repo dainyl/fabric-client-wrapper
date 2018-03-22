@@ -2,6 +2,7 @@ import uuidv4 from "uuid/v4"
 import path from "path"
 import { expect } from "chai"
 import { execSync } from "child_process"
+import rimraf from "rimraf"
 
 import request from "request"
 import networkBootstrap from "../util/networkBootstrap"
@@ -13,6 +14,10 @@ const superagentPromise = require("superagent-promise")(
     require("superagent"),
     Promise
 )
+
+function removeKeystores() {
+    rimraf.sync(path.join(__dirname, "./keystores"))
+}
 
 function cleanDocker() {
     // stop and remove chaincode docker instances
@@ -73,6 +78,9 @@ describe("two-peer-orgs-network", function() {
 
     before(async function() {
         this.timeout(15 * 60 * 1000)
+
+        // remove keystores folder
+        removeKeystores()
 
         // clean up docker containers and images
         cleanDocker()
@@ -449,5 +457,13 @@ describe("two-peer-orgs-network", function() {
                 .map(peer => peer.getEventHubManager().isconnected())
                 .every(connected => !connected)
         ).to.be.true
+    })
+
+    after(async function() {
+        this.timeout(15 * 60 * 1000)
+        // remove keystores folder
+        removeKeystores()
+        // clean up docker containers and images
+        cleanDocker()
     })
 })
