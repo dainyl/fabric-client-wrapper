@@ -20,10 +20,22 @@ function removeKeystores() {
 }
 
 function cleanDocker() {
+    // clean up all the containers created by docker-compose
+    try {
+        execSync(`docker-compose down`, {
+            stdio: "ignore",
+            cwd: path.join(
+                __dirname,
+                "../fixtures/network/two-peer-orgs-network"
+            )
+        })
+    } catch (error) {
+        // ignore errors
+    }
     // stop and remove chaincode docker instances
     try {
         execSync(
-            "docker kill $(docker ps | grep \"^dev-peer[01].org[12].example.com-e\" | awk '{print $1}')",
+            "docker stop $(docker ps -a | grep \"dev-peer[01].org[12].example.com-e\" | awk '{print $1}')",
             {
                 stdio: "ignore"
             }
@@ -33,7 +45,7 @@ function cleanDocker() {
     }
     try {
         execSync(
-            "docker rm $(docker ps -a | grep \"^dev-peer[01].org[12].example.com-e\" | awk '{print $1}')",
+            "docker rm $(docker ps -a | grep \"dev-peer[01].org[12].example.com-e\" | awk '{print $1}')",
             {
                 stdio: "ignore"
             }
@@ -44,23 +56,11 @@ function cleanDocker() {
     // remove chaincode images so that they get rebuilt during test
     try {
         execSync(
-            "docker rmi $(docker images | grep \"^dev-peer[01].org[12].example.com-e\" | awk '{print $3}')",
+            "docker rmi -f $(docker images | grep \"dev-peer[01].org[12].example.com-e\" | awk '{print $3}')",
             {
                 stdio: "ignore"
             }
         )
-    } catch (error) {
-        // ignore errors
-    }
-    // clean up all the containers created by docker-compose
-    try {
-        execSync(`docker-compose down`, {
-            stdio: "ignore",
-            cwd: path.join(
-                __dirname,
-                "../fixtures/network/two-peer-orgs-network"
-            )
-        })
     } catch (error) {
         // ignore errors
     }
