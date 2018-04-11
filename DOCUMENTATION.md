@@ -922,6 +922,7 @@ Connects Eventhub if it is not connected and registers a listener to receive all
 
 -   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function that takes a single parameter of a Block object
 -   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
+-   `onConnectError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
 
 Returns **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
@@ -935,6 +936,7 @@ Connects Eventhub if it is not connected and registers a listener to receive cha
 -   `eventName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The exact name of the chaincode event (must match the name given to the target chaincode's call to stub.SetEvent(name, payload)), or a regex string to match more than one event by this chaincode
 -   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function for matched events. It gets passed a single parameter which is a ChaincodeEvent object
 -   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
+-   `onConnectError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
 
 Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 
@@ -947,6 +949,7 @@ Connects Eventhub if it is not connected and register a callback function to rec
 -   `txId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Transaction id string
 -   `onEvent` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback function that takes a parameter of type Transaction, and a string parameter which indicates if the transaction is valid (code = 'VALID'), or not (code string indicating the reason for invalid transaction)
 -   `onError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Optional callback function to be notified when this event hub is shutdown. The shutdown may be caused by a network error or by a call to the "disconnect()" method or a connection error.
+-   `onConnectError` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
 
 Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
