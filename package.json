@@ -1,6 +1,6 @@
 {
   "name": "fabric-client-wrapper",
-  "version": "1.1.0-1",
+  "version": "1.1.1",
   "description": "A wrapper around the Fabric Node SDK",
   "main": "dist/index.js",
   "author": "",
